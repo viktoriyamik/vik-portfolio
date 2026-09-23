@@ -1,0 +1,333 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Cpu, Folder, Mail, Terminal, User } from "lucide-react";
+import ThreeBackground from "./ThreeBackground";
+
+type Mode = "home" | "about" | "projects" | "contact" | "help";
+
+type Project = {
+  name: string;
+  title: string;
+  stack: string[];
+  description: string;
+};
+
+type HistoryEntry = {
+  command: string;
+  output?: string;
+  mode?: Mode;
+  type?: "project";
+  project?: Project;
+};
+
+type CommandResult = {
+  clear?: boolean;
+  mode: Mode;
+  output?: string;
+  type?: "project";
+  project?: Project;
+};
+
+const PROJECTS: Project[] = [
+  {
+    name: "pet-holder",
+    title: "Modular Pet Bottle Holder",
+    stack: ["3D Printing", "PLA", "Web Configurator", "Unity AR"],
+    description:
+      "A customizable modular bottle holder for pets with multiple mounting options and VR/AR visualization.",
+  },
+  {
+    name: "perfect-game",
+    title: "Perfect! Puzzle Game",
+    stack: ["Unity", "Game Design", "UX"],
+    description:
+      "A mobile puzzle game focusing on precision mechanics and minimal design.",
+  },
+  {
+    name: "data-platform",
+    title: "Data Platform Architecture",
+    stack: ["Azure", "Microsoft Fabric", "MDM", "Data Engineering"],
+    description:
+      "Designed scalable data architecture solutions with governance and integration pipelines.",
+  },
+];
+
+const COMMANDS = [
+  "help",
+  "whoami",
+  "about",
+  "projects",
+  "open pet-holder",
+  "open perfect-game",
+  "open data-platform",
+  "skills",
+  "experience",
+  "contact",
+  "clear",
+];
+
+export default function App() {
+  const [input, setInput] = useState("");
+  const [mode, setMode] = useState<Mode>("home");
+  const [activeProject, setActiveProject] = useState<string | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const [history, setHistory] = useState<HistoryEntry[]>([
+    {
+      command: "boot",
+      output: "Developer Console initialized.\nType 'help' to explore.",
+    },
+  ]);
+
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    terminalRef.current?.scrollTo({
+      top: terminalRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [history]);
+
+  const suggestions = useMemo(() => {
+    const value = input.toLowerCase().trim();
+
+    if (!value) return COMMANDS.slice(0, 6);
+
+    return COMMANDS
+      .filter((cmd) => cmd.toLowerCase().includes(value))
+      .sort((a, b) =>
+        a.startsWith(value) ? -1 : b.startsWith(value) ? 1 : 0
+      )
+      .slice(0, 6);
+  }, [input]);
+
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [suggestions]);
+
+  const handleCommand = (rawCommand: string): CommandResult | null => {
+    const cmd = rawCommand.trim().toLowerCase();
+
+    if (!cmd) return null;
+
+    if (cmd === "help") {
+      setActiveProject(null);
+      return {
+        mode: "help",
+        output:
+          "Commands:\nabout\nprojects\nopen <project>\nskills\nexperience\ncontact\nclear",
+      };
+    }
+
+    if (cmd === "whoami") {
+      setActiveProject(null);
+      return {
+        mode: "about",
+        output:
+          "Full-stack developer / Data engineer / Interactive systems builder",
+      };
+    }
+
+    if (cmd === "about") {
+      setActiveProject(null);
+      return {
+        mode: "about",
+        output:
+          "I build modern web applications and data-driven systems with interactive UI.",
+      };
+    }
+
+    if (cmd === "projects") {
+      setActiveProject(null);
+      return {
+        mode: "projects",
+        output:
+          PROJECTS.map((p) => `- ${p.name} → ${p.title}`).join("\n") +
+          "\n\nUse: open <project-name>",
+      };
+    }
+
+    if (cmd.startsWith("open ")) {
+      const name = cmd.replace(/^open\s+/, "").trim();
+
+      const project = PROJECTS.find(
+        (p) => p.name.toLowerCase() === name
+      );
+
+      if (project) {
+        setActiveProject(project.name);
+        return {
+          mode: "projects",
+          type: "project",
+          project,
+        };
+      }
+
+      return {
+        mode: "projects",
+        output: `Project not found: ${name}`,
+      };
+    }
+
+    if (cmd === "skills") {
+      setActiveProject(null);
+      return {
+        mode: "about",
+        output:
+          "JavaScript, TypeScript, React, Node.js, Azure, Data Engineering, Unity, 3D",
+      };
+    }
+
+    if (cmd === "experience") {
+      setActiveProject(null);
+      return {
+        mode: "about",
+        output: "Experience in software, data platforms, and interactive systems.",
+      };
+    }
+
+    if (cmd === "contact") {
+      setActiveProject(null);
+      return {
+        mode: "contact",
+        output:
+          "Email: your@email.com\nGitHub: github.com/yourname",
+      };
+    }
+
+    if (cmd === "clear") {
+      setActiveProject(null);
+      return { clear: true, mode: "home" };
+    }
+
+    return {
+      mode: "home",
+      output: `Command not found: ${cmd}`,
+    };
+  };
+
+  const submit = (cmdValue?: string) => {
+    const command = cmdValue ?? input;
+
+    const result = handleCommand(command);
+    if (!result) return;
+
+    if (result.clear) {
+      setHistory([]);
+      setMode("home");
+    } else {
+      setHistory((prev) => [
+        ...prev,
+        { command, ...result },
+      ]);
+      setMode(result.mode);
+    }
+
+    setInput("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (suggestions.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedIndex((i) => (i + 1) % suggestions.length);
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex((i) =>
+        i === 0 ? suggestions.length - 1 : i - 1
+      );
+    }
+
+    if (e.key === "Tab") {
+      e.preventDefault();
+      setInput(suggestions[selectedIndex]);
+    }
+
+    if (e.key === "Enter" && suggestions[selectedIndex]) {
+      e.preventDefault();
+      submit(suggestions[selectedIndex]);
+    }
+  };
+
+  const iconMap: Record<Mode, React.ReactNode> = {
+    home: <Terminal size={16} />,
+    about: <User size={16} />,
+    projects: <Folder size={16} />,
+    contact: <Mail size={16} />,
+    help: <Cpu size={16} />,
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white font-mono">
+      <ThreeBackground mode={mode} activeProject={activeProject} />
+
+      <main className="relative z-10 max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6">
+
+        <section className="border border-white/10 rounded-xl p-4 bg-black/40 backdrop-blur">
+
+          <div className="flex justify-between mb-4">
+            <div className="flex gap-2 items-center">
+              {iconMap[mode]}
+              <span>developer-console</span>
+            </div>
+          </div>
+
+          <div className="h-80 overflow-y-auto space-y-3 text-sm">
+            <AnimatePresence>
+              {history.map((entry, i) => (
+                <div key={i}>
+                  <div className="text-cyan-400">$ {entry.command}</div>
+
+                  {entry.type === "project" && entry.project ? (
+                    <div className="p-3 mt-2 border rounded bg-white/5">
+                      <h3>{entry.project.title}</h3>
+                      <p>{entry.project.description}</p>
+                    </div>
+                  ) : (
+                    <pre>{entry.output}</pre>
+                  )}
+                </div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit();
+            }}
+            className="mt-4"
+          >
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="w-full bg-transparent outline-none"
+              placeholder="type command..."
+            />
+          </form>
+
+          <div className="mt-2">
+            {suggestions.map((s, i) => (
+              <div
+                key={s}
+                className={`text-xs px-2 py-1 ${
+                  i === selectedIndex
+                    ? "bg-cyan-400/20"
+                    : ""
+                }`}
+              >
+                {s}
+              </div>
+            ))}
+          </div>
+
+        </section>
+
+      </main>
+    </div>
+  );
+}

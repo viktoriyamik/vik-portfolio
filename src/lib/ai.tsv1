@@ -1,0 +1,46 @@
+export type AISource = {
+  file: string;
+  score: number;
+};
+
+export type AIResponse = {
+  answer: string;
+  sources: AISource[];
+};
+
+const API_URL = "/api/ask";
+
+export async function askPortfolioAI(
+  question: string,
+  memory: {
+    role: "user" | "assistant";
+    text: string;
+  }[] = []
+): Promise<AIResponse> {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      question,
+      memory,
+    }),
+  });
+
+  if (!res.ok) {
+    let message = "AI request failed";
+
+    try {
+      const err = await res.json();
+
+      if (err?.error) {
+        message = err.error;
+      }
+    } catch {}
+
+    throw new Error(message);
+  }
+
+  return res.json();
+}

@@ -1,0 +1,389 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Cpu, Folder, Mail, Terminal, User } from "lucide-react";
+import ThreeBackground from "./ThreeBackground";
+
+type Mode = "home" | "about" | "projects" | "contact" | "help";
+
+type Project = {
+  name: string;
+  title: string;
+  stack: string[];
+  description: string;
+};
+
+type HistoryEntry = {
+  command: string;
+  output?: string;
+  mode?: Mode;
+  type?: "project";
+  project?: Project;
+};
+
+type CommandResult = {
+  clear?: boolean;
+  mode: Mode;
+  output?: string;
+  type?: "project";
+  project?: Project;
+};
+
+const PROJECTS: Project[] = [
+  {
+    name: "pet-holder",
+    title: "Modular Pet Bottle Holder",
+    stack: ["3D Printing", "PLA", "Web Configurator", "Unity AR"],
+    description:
+      "A customizable modular bottle holder for pets with multiple mounting options and VR/AR visualization.",
+  },
+  {
+    name: "perfect-game",
+    title: "Perfect! Puzzle Game",
+    stack: ["Unity", "Game Design", "UX"],
+    description:
+      "A mobile puzzle game focusing on precision mechanics and minimal design.",
+  },
+  {
+    name: "data-platform",
+    title: "Data Platform Architecture",
+    stack: ["Azure", "Microsoft Fabric", "MDM", "Data Engineering"],
+    description:
+      "Designed scalable data architecture solutions with governance, integration pipelines, and master data management.",
+  },
+];
+
+const COMMANDS = [
+  "help",
+  "whoami",
+  "about",
+  "projects",
+  "open pet-holder",
+  "open perfect-game",
+  "open data-platform",
+  "skills",
+  "experience",
+  "contact",
+  "clear",
+];
+
+export default function App() {
+  const [input, setInput] = useState("");
+  const [mode, setMode] = useState<Mode>("home");
+  const [activeProject, setActiveProject] = useState<string | null>(null);
+
+  const [history, setHistory] = useState<HistoryEntry[]>([
+    {
+      command: "boot",
+      output: "Developer Console initialized.\nType 'help' to explore.",
+    },
+  ]);
+
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    terminalRef.current?.scrollTo({
+      top: terminalRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [history]);
+
+  const suggestions = useMemo(() => {
+    const value = input.toLowerCase().trim();
+    if (!value) return COMMANDS.slice(0, 6);
+    return COMMANDS.filter((command) => command.startsWith(value)).slice(0, 6);
+  }, [input]);
+
+  const handleCommand = (rawCommand: string): CommandResult | null => {
+    const cmd = rawCommand.trim().toLowerCase();
+
+    if (!cmd) return null;
+
+    if (cmd === "help") {
+      setActiveProject(null);
+      return {
+        mode: "help",
+        output:
+          "Commands:\n\nabout\nprojects\nopen pet-holder\nopen perfect-game\nopen data-platform\nskills\nexperience\ncontact\nclear",
+      };
+    }
+
+    if (cmd === "whoami") {
+      setActiveProject(null);
+      return {
+        mode: "about",
+        output:
+          "Full-stack developer / Data engineer / Interactive systems builder",
+      };
+    }
+
+    if (cmd === "about") {
+      setActiveProject(null);
+      return {
+        mode: "about",
+        output:
+          "I build modern web applications, data-driven systems, and interactive user interfaces combining engineering and design.",
+      };
+    }
+
+    if (cmd === "projects") {
+      setActiveProject(null);
+      return {
+        mode: "projects",
+        output:
+          PROJECTS.map((p) => `- ${p.name} → ${p.title}`).join("\n") +
+          "\n\nUse: open <project-name>",
+      };
+    }
+
+    if (cmd.startsWith("open ")) {
+      const name = cmd.replace("open ", "").trim();
+      const project = PROJECTS.find((p) => p.name === name);
+
+      if (project) {
+        setActiveProject(project.name);
+        return {
+          mode: "projects",
+          type: "project",
+          project,
+        };
+      }
+
+      setActiveProject(null);
+      return {
+        mode: "projects",
+        output: `Project not found: ${name}`,
+      };
+    }
+
+    if (cmd === "skills") {
+      setActiveProject(null);
+      return {
+        mode: "about",
+        output:
+          "JavaScript, TypeScript, React, Node.js, Azure, Microsoft Fabric, Data Engineering, Unity, 3D Design, UI/UX.",
+      };
+    }
+
+    if (cmd === "experience") {
+      setActiveProject(null);
+      return {
+        mode: "about",
+        output:
+          "Experience in software development, data architecture, interactive applications, product prototyping, and technical documentation.",
+      };
+    }
+
+    if (cmd === "contact") {
+      setActiveProject(null);
+      return {
+        mode: "contact",
+        output:
+          "Email: your@email.com\nLinkedIn: linkedin.com/in/yourname\nGitHub: github.com/yourname",
+      };
+    }
+
+    if (cmd === "clear") {
+      setActiveProject(null);
+      return {
+        clear: true,
+        mode: "home",
+      };
+    }
+
+    setActiveProject(null);
+    return {
+      mode: "home",
+      output: `Command not found: ${rawCommand}\nType 'help' to see available commands.`,
+    };
+  };
+
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const result = handleCommand(input);
+    if (!result) return;
+
+    if (result.clear) {
+      setHistory([]);
+      setMode("home");
+      setInput("");
+      return;
+    }
+
+    setHistory((previous) => [
+      ...previous,
+      {
+        command: input,
+        output: result.output,
+        mode: result.mode,
+        type: result.type,
+        project: result.project,
+      },
+    ]);
+
+    setMode(result.mode);
+    setInput("");
+  };
+
+  const iconMap: Record<Mode, React.ReactNode> = {
+    home: <Terminal size={16} />,
+    about: <User size={16} />,
+    projects: <Folder size={16} />,
+    contact: <Mail size={16} />,
+    help: <Cpu size={16} />,
+  };
+
+  return (
+    <div className="min-h-screen overflow-hidden bg-slate-950 text-white font-mono">
+      <ThreeBackground mode={mode} activeProject={activeProject} />
+
+      <main className="relative z-10 max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6">
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="border border-white/10 rounded-2xl p-4 bg-black/45 backdrop-blur-xl shadow-2xl"
+        >
+          <div className="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
+            <div className="flex gap-2 items-center text-cyan-300">
+              {iconMap[mode]}
+              <span>developer-console</span>
+            </div>
+
+            <div className="flex gap-2">
+              <span className="w-3 h-3 rounded-full bg-red-400/80" />
+              <span className="w-3 h-3 rounded-full bg-yellow-400/80" />
+              <span className="w-3 h-3 rounded-full bg-green-400/80" />
+            </div>
+          </div>
+
+          <div
+            ref={terminalRef}
+            className="h-[460px] overflow-y-auto space-y-4 pr-2 text-sm"
+          >
+            <AnimatePresence initial={false}>
+              {history.map((entry, index) => (
+                <motion.div
+                  key={`${entry.command}-${index}`}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <div className="text-cyan-400">$ {entry.command}</div>
+
+                  {entry.type === "project" && entry.project ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.97 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="mt-2 p-4 rounded-xl border border-cyan-400/20 bg-white/5 backdrop-blur hover:border-cyan-300/50 transition"
+                    >
+                      <h3 className="text-xl text-cyan-300 font-semibold mb-2">
+                        {entry.project.title}
+                      </h3>
+
+                      <p className="text-gray-300 mb-4 leading-6">
+                        {entry.project.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        {entry.project.stack.map((tech) => (
+                          <span
+                            key={tech}
+                            className="text-xs px-2 py-1 border border-cyan-400/20 rounded-full bg-cyan-400/10 text-cyan-100"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      <p className="mt-4 text-xs text-cyan-200/60">
+                        3D scene updated for project: {entry.project.name}
+                      </p>
+                    </motion.div>
+                  ) : (
+                    <pre className="text-gray-300 whitespace-pre-wrap leading-6">
+                      {entry.output}
+                    </pre>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <form
+            onSubmit={submit}
+            className="mt-4 flex gap-2 border-t border-white/10 pt-4"
+          >
+            <span className="text-cyan-400">$</span>
+            <input
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              autoFocus
+              className="flex-1 bg-transparent outline-none text-white placeholder:text-gray-500"
+              placeholder="type a command..."
+            />
+          </form>
+
+          <div className="mt-3 flex gap-2 flex-wrap">
+            {suggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                type="button"
+                onClick={() => setInput(suggestion)}
+                className="text-xs px-3 py-1 border border-white/20 rounded-full bg-white/5 hover:bg-cyan-400/10 hover:border-cyan-300/40 transition"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.aside
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="border border-white/10 rounded-2xl p-5 bg-black/35 backdrop-blur-xl shadow-2xl"
+        >
+          <h2 className="text-xl text-cyan-400 mb-3">System</h2>
+
+          <p className="text-gray-400 text-sm leading-6">
+            Command-driven portfolio interface. Each command updates application
+            state, UI content, and the 3D particle scene.
+          </p>
+
+          <div className="mt-5 space-y-3 text-sm text-gray-300">
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+              UI: React + TypeScript + Tailwind
+            </div>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+              Motion: Framer Motion
+            </div>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+              3D: Three.js particle system
+            </div>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+              Active mode: <span className="text-cyan-300">{mode}</span>
+            </div>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+              Active project:{" "}
+              <span className="text-cyan-300">
+                {activeProject ?? "none"}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-sm uppercase tracking-[0.25em] text-cyan-200/60 mb-3">
+              Try
+            </h3>
+
+            <div className="space-y-2 text-sm text-gray-300">
+              <div>projects</div>
+              <div>open pet-holder</div>
+              <div>open perfect-game</div>
+              <div>open data-platform</div>
+              <div>contact</div>
+            </div>
+          </div>
+        </motion.aside>
+      </main>
+    </div>
+  );
+}

@@ -1,0 +1,373 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Terminal, Sparkles, Folder, User, Mail, HelpCircle } from "lucide-react";
+
+const PROJECTS = [
+  {
+    name: "windspell",
+    title: "Windspell",
+    stack: ["React", "Three.js", "GSAP", "GLSL", "Web Audio API"],
+    description:
+      "A poetic interactive web experience with shader-driven visuals, motion transitions, and subtle audio feedback.",
+  },
+  {
+    name: "archive",
+    title: "Archive System",
+    stack: ["React", "State Machines", "Framer Motion"],
+    description:
+      "A command-driven portfolio archive where users explore projects through terminal commands.",
+  },
+  {
+    name: "signal",
+    title: "Signal Room",
+    stack: ["WebGL", "Shaders", "Audio"],
+    description:
+      "A moody visual environment reacting to user input, cursor movement, and synthetic sound cues.",
+  },
+];
+
+const COMMANDS = [
+  "help",
+  "whoami",
+  "about",
+  "ls",
+  "projects",
+  "cat windspell",
+  "cat archive",
+  "cat signal",
+  "contact",
+  "clear",
+];
+
+function useTypewriter(text, speed = 14) {
+  const [displayed, setDisplayed] = useState("");
+
+  useEffect(() => {
+    setDisplayed("");
+    let index = 0;
+    const timer = setInterval(() => {
+      setDisplayed(text.slice(0, index + 1));
+      index += 1;
+      if (index >= text.length) clearInterval(timer);
+    }, speed);
+
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return displayed;
+}
+
+function BackgroundScene({ mode }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let animationId;
+    let t = 0;
+
+    const resize = () => {
+      canvas.width = window.innerWidth * window.devicePixelRatio;
+      canvas.height = window.innerHeight * window.devicePixelRatio;
+      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+    };
+
+    const draw = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      t += 0.008;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "rgba(5, 8, 15, 0.9)";
+      ctx.fillRect(0, 0, width, height);
+
+      const modeBoost = mode === "projects" ? 1.8 : mode === "contact" ? 1.3 : 1;
+
+      for (let i = 0; i < 90; i++) {
+        const x = width / 2 + Math.cos(t * modeBoost + i * 0.4) * (80 + i * 5);
+        const y = height / 2 + Math.sin(t * 1.3 + i * 0.23) * (40 + i * 2.5);
+        const r = 1 + Math.sin(t + i) * 0.8;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(160, 220, 255, ${0.08 + (i % 6) * 0.012})`;
+        ctx.arc(x, y, Math.max(0.5, r), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      for (let x = 0; x < width; x += 12) {
+        const y = height * 0.72 + Math.sin(x * 0.012 + t * 4) * 18 * modeBoost;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = "rgba(150, 220, 255, 0.16)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      animationId = requestAnimationFrame(draw);
+    };
+
+    resize();
+    draw();
+    window.addEventListener("resize", resize);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener("resize", resize);
+    };
+  }, [mode]);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0" />;
+}
+
+function StatusPanel({ mode }) {
+  const labels = {
+    home: "idle / home",
+    about: "identity loaded",
+    projects: "archive mounted",
+    contact: "signal open",
+    help: "manual active",
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl border border-cyan-200/10 bg-slate-950/45 p-5 shadow-2xl backdrop-blur-xl"
+    >
+      <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-cyan-200/60">
+        <Sparkles size={14} /> system
+      </div>
+      <div className="text-2xl font-semibold text-white">{labels[mode] || labels.home}</div>
+      <p className="mt-3 max-w-md text-sm leading-6 text-slate-300/75">
+        This panel represents the visual state engine. In a production build, each terminal command would trigger Three.js scenes, GSAP timelines, shader uniforms, and audio events.
+      </p>
+      <div className="mt-5 grid grid-cols-2 gap-3 text-xs text-slate-300/70">
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">renderer: WebGL</div>
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">motion: GSAP</div>
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">ui: React</div>
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">audio: Web Audio</div>
+      </div>
+    </motion.div>
+  );
+}
+
+function OutputBlock({ entry }) {
+  const typed = useTypewriter(entry.output || "", 8);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-1"
+    >
+      <div className="text-cyan-200/80">
+        <span className="text-slate-500">visitor@portfolio</span>
+        <span className="text-slate-600">:</span>
+        <span className="text-cyan-300">~</span>
+        <span className="text-slate-500">$ </span>
+        <span>{entry.command}</span>
+      </div>
+      {entry.type === "project" ? (
+        <div className="rounded-xl border border-cyan-200/10 bg-cyan-200/[0.03] p-4 text-slate-200">
+          <div className="mb-2 flex items-center gap-2 text-lg font-semibold text-white">
+            <Folder size={17} /> {entry.project.title}
+          </div>
+          <p className="text-sm leading-6 text-slate-300/80">{entry.project.description}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {entry.project.stack.map((item) => (
+              <span key={item} className="rounded-full border border-white/10 px-2 py-1 text-xs text-cyan-100/80">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <pre className="whitespace-pre-wrap text-slate-300/85">{typed}</pre>
+      )}
+    </motion.div>
+  );
+}
+
+function buildResponse(rawCommand) {
+  const command = rawCommand.trim().toLowerCase();
+
+  if (!command) return null;
+
+  if (command === "help") {
+    return {
+      mode: "help",
+      output:
+        "Available commands:\n\n  whoami          show identity\n  about           show bio\n  ls              list project files\n  projects        open project archive\n  cat windspell   inspect a project\n  cat archive     inspect a project\n  cat signal      inspect a project\n  contact         show contact section\n  clear           clear terminal",
+    };
+  }
+
+  if (command === "whoami") {
+    return {
+      mode: "about",
+      output: "creative-developer / interaction-designer / webgl-explorer",
+    };
+  }
+
+  if (command === "about") {
+    return {
+      mode: "about",
+      output:
+        "I build immersive browser experiences that combine terminal-style navigation, animated interface systems, real-time graphics, shaders, and sound.",
+    };
+  }
+
+  if (command === "ls" || command === "projects") {
+    return {
+      mode: "projects",
+      output: PROJECTS.map((project) => `  ${project.name}`).join("\n"),
+    };
+  }
+
+  if (command.startsWith("cat ")) {
+    const name = command.replace("cat ", "").trim();
+    const project = PROJECTS.find((item) => item.name === name);
+    if (project) {
+      return { mode: "projects", type: "project", project };
+    }
+    return { mode: "projects", output: `File not found: ${name}` };
+  }
+
+  if (command === "contact") {
+    return {
+      mode: "contact",
+      output:
+        "Transmission channel open.\n\nEmail: hello@example.com\nLinkedIn: /in/example\nGitHub: /example",
+    };
+  }
+
+  if (command === "clear") {
+    return { clear: true, mode: "home" };
+  }
+
+  return {
+    mode: "home",
+    output: `Command not found: ${rawCommand}\nType 'help' to see available commands.`,
+  };
+}
+
+export default function ZuiStyleTerminalPortfolio() {
+  const [input, setInput] = useState("");
+  const [history, setHistory] = useState([
+    {
+      command: "boot",
+      output:
+        "Interactive portfolio shell initialized.\nType 'help' to explore the system.",
+    },
+  ]);
+  const [mode, setMode] = useState("home");
+  const terminalRef = useRef(null);
+
+  const suggestions = useMemo(() => {
+    if (!input.trim()) return COMMANDS.slice(0, 5);
+    return COMMANDS.filter((command) => command.startsWith(input.toLowerCase())).slice(0, 5);
+  }, [input]);
+
+  useEffect(() => {
+    terminalRef.current?.scrollTo({ top: terminalRef.current.scrollHeight, behavior: "smooth" });
+  }, [history]);
+
+  const submit = (event) => {
+    event.preventDefault();
+    const response = buildResponse(input);
+    if (!response) return;
+
+    if (response.clear) {
+      setHistory([]);
+      setMode(response.mode);
+    } else {
+      setHistory((prev) => [...prev, { command: input, ...response }]);
+      setMode(response.mode || "home");
+    }
+    setInput("");
+  };
+
+  const iconForMode = {
+    home: <Terminal size={16} />,
+    about: <User size={16} />,
+    projects: <Folder size={16} />,
+    contact: <Mail size={16} />,
+    help: <HelpCircle size={16} />,
+  };
+
+  return (
+    <div className="min-h-screen overflow-hidden bg-slate-950 font-mono text-slate-100">
+      <BackgroundScene mode={mode} />
+
+      <main className="relative z-10 mx-auto grid min-h-screen max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[1.2fr_0.8fr] md:px-8 md:py-10">
+        <motion.section
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex min-h-[70vh] flex-col rounded-2xl border border-cyan-200/10 bg-slate-950/70 shadow-2xl backdrop-blur-xl"
+        >
+          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+            <div className="flex items-center gap-2 text-sm text-cyan-100/80">
+              {iconForMode[mode] || iconForMode.home}
+              zui-style-shell
+            </div>
+            <div className="flex gap-2">
+              <span className="h-3 w-3 rounded-full bg-red-400/70" />
+              <span className="h-3 w-3 rounded-full bg-yellow-400/70" />
+              <span className="h-3 w-3 rounded-full bg-green-400/70" />
+            </div>
+          </div>
+
+          <div ref={terminalRef} className="flex-1 space-y-5 overflow-y-auto p-5 text-sm leading-6">
+            <AnimatePresence>
+              {history.map((entry, index) => (
+                <OutputBlock key={`${entry.command}-${index}`} entry={entry} />
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <div className="border-t border-white/10 p-4">
+            <form onSubmit={submit} className="flex items-center gap-2">
+              <span className="text-slate-500">visitor@portfolio:~$</span>
+              <input
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                autoFocus
+                className="min-w-0 flex-1 bg-transparent text-cyan-100 outline-none placeholder:text-slate-600"
+                placeholder="type a command..."
+              />
+            </form>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {suggestions.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  onClick={() => setInput(suggestion)}
+                  className="rounded-full border border-cyan-200/10 bg-white/[0.03] px-3 py-1 text-xs text-slate-300/70 transition hover:border-cyan-200/30 hover:text-cyan-100"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        <aside className="flex flex-col gap-6">
+          <StatusPanel mode={mode} />
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-2xl border border-white/10 bg-slate-950/45 p-5 backdrop-blur-xl"
+          >
+            <div className="mb-3 text-xs uppercase tracking-[0.35em] text-cyan-200/50">architecture</div>
+            <ol className="space-y-3 text-sm text-slate-300/75">
+              <li>1. Terminal command parser receives input.</li>
+              <li>2. State engine updates mode.</li>
+              <li>3. UI content renders from state.</li>
+              <li>4. Visual layer reacts to mode changes.</li>
+              <li>5. Production version swaps canvas demo for Three.js scenes.</li>
+            </ol>
+          </motion.div>
+        </aside>
+      </main>
+    </div>
+  );
+}
