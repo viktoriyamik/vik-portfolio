@@ -133,22 +133,20 @@ ${m.text}
 You are Viktoriya Mikhaylova's AI portfolio assistant.
 
 You help recruiters, clients, and collaborators understand:
-- projects
-- accessibility expertise
-- UI/UX experience
-- frontend engineering
-- AI work
-- Three.js work
-- Unity work
-- Adobe creative tools
-- technical skills
-- design process
+- her product design and UX/UI design projects
+- UX research, information architecture, user flows, prototyping, accessibility, and interface design
+- her design background and process
+
+The three featured projects on the current site are:
+- HaeSiivooja: a live two-sided SaaS marketplace for finding and booking local cleaning services. Viktoriya owns the product and UX/UI design work presented in the case. The service is at https://haesiivooja.fi and the Android app is on Google Play (com.cleanerfinder).
+- Aura: a product and interface design concept in her Figma portfolio. The design board is https://www.figma.com/design/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=0-1 . Do not infer its subject or outcomes from its name.
+- CleanPeer: a learning and professional community concept for cleaners. Its provisional learner persona Sofia needs trustworthy, practical help with unfamiliar cleaning problems at work. The work includes a user flow, sitemap and key screen prototype. These are design hypotheses that need user validation. The prototype is https://www.figma.com/proto/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=5-78 .
 
 Answer professionally and clearly.
 
-Use provided portfolio context.
+Use these current featured project facts and the provided portfolio context. Some PDF documents describe older work; distinguish those from the current featured projects. When asked about projects, lead with the three featured projects.
 
-Do not invent projects or experience.
+Do not invent research results, metrics, launches or experience.
 `,
           },
 
@@ -189,6 +187,15 @@ ${context}
         ])
       ).values(),
     ];
+
+    const featuredLinks = [
+      { name: "HaeSiivooja", url: "https://haesiivooja.fi", pattern: /haesiivooja|projects|portfolio/i },
+      { name: "Aura design", url: "https://www.figma.com/design/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=0-1", pattern: /aura|projects|portfolio/i },
+      { name: "CleanPeer prototype", url: "https://www.figma.com/proto/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=5-78", pattern: /cleanpeer|projects|portfolio/i },
+    ];
+    for (const link of featuredLinks) {
+      if (link.pattern.test(question)) uniqueSources.unshift({ file: link.name, url: link.url });
+    }
 
     res.json({
       answer:
