@@ -31,7 +31,7 @@ function Assistant(){
   <h2 id="assistant-title">Ask about<br/><em>the work.</em></h2>
   <p className="assistant-intro">Explore Viktoriya’s projects and design background through the portfolio AI.</p>
   <div className="assistant-response" role="status" aria-live="polite">{answer}</div>
-  {sources.length>0&&<div className="assistant-sources"><small>SOURCES</small>{sources.map(source=><a key={source.url} href={source.url.startsWith('http')?source.url:source.url.startsWith('/')?source.url:`/${source.url}`} target="_blank" rel="noreferrer">{source.file} ↗</a>)}</div>}
+  <div className="assistant-sources">{sources.length>0&&<><small>SOURCES</small>{sources.map(source=><a key={source.url} href={source.url.startsWith('http')?source.url:source.url.startsWith('/')?source.url:`/${source.url}`} target="_blank" rel="noreferrer">{source.file} ↗</a>)}</>}</div>
   <form onSubmit={event=>{event.preventDefault();void ask(question)}}><label htmlFor="ai-question">Ask a question</label><div className="assistant-input"><input id="ai-question" value={question} onChange={event=>setQuestion(event.target.value)} placeholder="Ask about a case study…"/><button disabled={busy} type="submit">{busy?'Thinking…':'Ask ↗'}</button></div></form>
   <div className="assistant-shortcuts"><small>TRY A QUESTION</small>{suggestions.map(item=><button disabled={busy} key={item} onClick={()=>void ask(item)}>{item} <ArrowUpRight size={14}/></button>)}</div>
  </aside>
