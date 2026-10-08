@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react'
 import { askPortfolioAI } from './lib/ai'
 import './App.css'
+import HaesiivoojaCase from './HaesiivoojaCase'
 
 type ID = 'haesiivooja' | 'aura' | 'cleanpeer'
 type Case = { id: ID; name: string; category: string; headline: string; summary: string; role: string; platform: string; status: string; challenge: string; process: string[]; decisions: {title:string;text:string}[]; outcome: string; links: {text:string;url:string}[] }
@@ -59,7 +60,7 @@ function App(){
  const jump=(id:string)=>{setMenu(false);location.hash=id;setActive(null);setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'}),0)}
  return <div className="site">
   <header className="header"><a href="#top" onClick={()=>setActive(null)} className="logo">VM<span>.</span></a><nav className={menu?'open':''}><button onClick={()=>jump('work')}>Projects</button><button onClick={()=>jump('whoami')}>Who I am</button><button onClick={()=>jump('contact')}>Contact</button></nav><button className="menu" aria-label="Toggle menu" aria-expanded={menu} onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button></header>
-  {current?<main className="case" id="top">
+  {current?.id==='haesiivooja'?<HaesiivoojaCase back={()=>jump('work')}/>:current?<main className="case" id="top">
    <button className="back" onClick={()=>jump('work')}><ArrowLeft size={18}/> All projects</button>
    <div className="case-intro"><p className="overline">CASE STUDY / {current.category}</p><h1>{current.name}<em>{current.headline}</em></h1><p>{current.summary}</p></div>
    <Visual id={current.id}/>
