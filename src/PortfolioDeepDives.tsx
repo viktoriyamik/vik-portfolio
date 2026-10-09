@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { ArrowLeft, ArrowUpRight, ArrowRight } from 'lucide-react'
 import type { ReactNode } from 'react'
 import './PortfolioDeepDives.css'
@@ -111,6 +112,20 @@ export function CleanPeerCase({ back }: { back: () => void }) {
 }
 
 export function AuraCase({ back }: { back: () => void }) {
+  /* vik-aura-return-scroll-v2 */
+  useEffect(() => {
+    const handleReturnToAura = (event: MessageEvent) => {
+      if (event.data?.type !== 'vik:aura:return-to-case') return
+      const iframe = document.querySelector<HTMLIFrameElement>('#aura-demo iframe')
+      if (!iframe || event.source !== iframe.contentWindow) return
+      document.querySelector<HTMLElement>('.pd-case--aura')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }
+    window.addEventListener('message', handleReturnToAura)
+    return () => window.removeEventListener('message', handleReturnToAura)
+  }, [])
   return <main className="pd-case pd-case--aura" id="top">
     <CaseTop back={back} color="aura" label="AURA ATELIER / HUMAN-CENTERED AI & LUXURY EXPERIENCE" title="From too many choices" emphasized="to quiet confidence." lead="A mobile-first AI concierge for emotionally intelligent luxury discovery. I independently developed the product strategy, research plan, primary persona, user flows and high-fidelity conversational interface—keeping human expertise at the center of the experience." image="portfolio-aura-cover.webp" imageAlt="Original AURA Atelier mobile screens: personalized greeting, emotional styling request and visible AI progress" facts={[
       {label:'MY ROLE',value:'Sole product, UX & UI designer'},
