@@ -91,7 +91,7 @@ export function CleanPeerCase({ back }: { back: () => void }) {
           <div><span>EXPLORE THE WORKING FLOW</span><h3>Try solving a problem with CleanPeer.</h3><p>Describe a cleaning problem, review source-backed guidance, explore an expert and complete the journey. Photo, voice and conversations are interactive simulations.</p></div>
           <a href={cleanPeerDemo} target="_blank" rel="noreferrer">Open full-screen prototype ↗</a>
         </div>
-        <iframe src={cleanPeerDemo} title="Interactive CleanPeer problem-solving prototype" loading="lazy" sandbox="allow-scripts" />
+        <iframe src={cleanPeerDemo} title="Interactive CleanPeer problem-solving prototype" loading="lazy" sandbox="allow-scripts allow-forms" />
       </div>
     </Chapter>
 
@@ -144,7 +144,7 @@ export function AuraCase({ back }: { back: () => void }) {
       <p>The prototype uses warm neutrals, editorial typography and restrained cards to give the conversation space. Rather than confronting users with a catalog, it makes one question or decision visible at a time. Saved inspirations create continuity, while recognizable advisor information signals that assistance is always available.</p>
       <div className="pd-aura-demo" id="aura-demo">
         <div className="pd-aura-demo-intro"><div><span>EXPLORE THE EXPERIENCE</span><h3>Step into the AURA Atelier.</h3><p>Describe an occasion, compare curated looks, explore thoughtful AI guidance and choose when to involve Camille. The conversation and booking are interactive simulations.</p></div><a href="/viktoriya/aura-prototype/" target="_blank" rel="noreferrer">Open full-screen prototype ↗</a></div>
-        <iframe src="/viktoriya/aura-prototype/" title="Interactive AURA Atelier styling and advisor handoff prototype" loading="lazy" sandbox="allow-scripts" />
+        <iframe src="/viktoriya/aura-prototype/" title="Interactive AURA Atelier styling and advisor handoff prototype" loading="lazy" sandbox="allow-scripts allow-forms" />
       </div>
       <div className="pd-grid pd-grid--two">
         <Artifact file="portfolio-aura-intro.webp" alt="AURA onboarding and first conversation screens" caption="01 / Opening: contextual greeting, free-text prompt, saved inspirations and advisor presence."/>
