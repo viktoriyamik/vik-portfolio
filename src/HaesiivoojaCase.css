@@ -55,3 +55,26 @@
     width:100%;
   }
 }
+
+/* Accessible HaeSiivooja action buttons */
+#hc-reflection .links a,
+#hc-reflection .links a:link,
+#hc-reflection .links a:visited {
+  background-color: #184f3d;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+#hc-reflection .links a:hover,
+#hc-reflection .links a:focus-visible {
+  background-color: #103b2d;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff;
+}
+
+#hc-reflection .links a:focus-visible {
+  outline: 3px solid #111111;
+  outline-offset: 4px;
+}
