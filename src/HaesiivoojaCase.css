@@ -1,1 +1,57 @@
 .hc{max-width:1240px;margin:auto;padding:38px 40px 80px;color:#20231e}.hc-intro{padding:46px 0 48px;max-width:900px}.hc-intro h1{font-size:clamp(38px,5.6vw,76px);line-height:1.07;letter-spacing:-3px;margin:22px 0}.hc h1 em,.hc h2 em{font-family:Georgia,serif;font-weight:400}.hc-intro>p:not(.overline){font-size:20px;max-width:630px;line-height:1.6}.hc a{color:inherit}.hc-intro>a,.hc-prototype a{display:inline-flex;gap:10px;align-items:center;margin-top:18px}.hc-hero{background:linear-gradient(130deg,#e7e7d9,#d9d0f5 75%);border-radius:22px;margin:0;min-height:550px;display:grid;grid-template-columns:27% 73%;overflow:hidden;position:relative;padding:45px 34px 56px}.hc-hero-copy{align-self:center;z-index:1}.hc-hero-copy>span{font-size:12px;letter-spacing:2px;line-height:1.8}.hc-hero-copy>p{font-size:24px;line-height:1.4;letter-spacing:-.7px}.hc-hero-copy>small{font-size:11px;color:#575263}.hc-phones{display:flex;align-items:center;justify-content:center;gap:16px;min-width:0}.hc-phones img{width:29%;max-width:210px;box-shadow:0 18px 35px #342e4930;border-radius:24px;border:5px solid #fafafa;object-fit:contain}.hc-phones img:first-child{transform:translateY(28px) rotate(-7deg)}.hc-phones img:last-child{transform:translateY(-14px) rotate(7deg)}.hc-hero>figcaption{position:absolute;bottom:20px;left:34px;right:20px;font-size:11px;line-height:1.5;color:#534d60}.hc-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:34px 0;margin:0;border-bottom:1px solid #d9d9cf}.hc-facts dt{font-size:10px;letter-spacing:1.8px;margin-bottom:12px}.hc-facts dd{margin:0;font-size:14px;font-weight:600}.hc-nav{display:flex;gap:8px;flex-wrap:wrap;padding:25px 0}.hc-nav button{background:none;border:1px solid #d9d9cf;border-radius:30px;padding:10px 15px;font-size:12px;cursor:pointer;color:inherit}.hc-nav button:hover{background:#e6e7db}.hc-section{padding:65px 0;border-bottom:1px solid #d9d9cf;scroll-margin-top:30px}.hc-section h2{font-size:clamp(27px,3.2vw,42px);letter-spacing:-1.3px;line-height:1.15;margin:15px 0 24px;font-weight:500}.hc-section p,.hc-section li{font-size:16px;line-height:1.75;color:#52574b}.hc-split{display:grid;grid-template-columns:27% 73%;gap:0}.hc-split>div{max-width:740px}.hc-note{background:#eceee4;border-left:3px solid #68724f;padding:20px 24px;margin-top:28px;border-radius:0 8px 8px 0}.hc-note strong{font-size:13px}.hc-note p{font-size:14px;margin:8px 0 0}.hc-lead{max-width:700px}.hc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px}.hc-cards article{padding:26px;background:#eeefe7;border-radius:12px}.hc-cards small{font-size:10px;letter-spacing:1.5px}.hc h3{font-size:19px;letter-spacing:-.4px;font-weight:600;line-height:1.35}.hc-cards p{font-size:14px}.hc-cards b{font-size:12px;line-height:1.6;display:block;color:#5d664b}.hc-journey{background:#e7e1f2;border-radius:12px;padding:28px;margin-top:24px}.hc-journey>div{display:grid;grid-template-columns:115px 1fr;align-items:center;margin-bottom:15px}.hc-journey small{font-size:10px;letter-spacing:1.5px}.hc-journey ol{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0;margin:0}.hc-journey li{background:#f8f6fc;padding:13px;font-size:12px;border-radius:6px}.hc-journey>p{font-size:12px;margin:18px 0 0}.hc-screen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:35px}.hc-screen-grid figure{margin:0}.hc-screen-grid a{display:flex;justify-content:center;background:#e9e5ef;border-radius:16px;padding:30px 20px}.hc-screen-grid img{width:100%;max-width:215px;border-radius:20px;box-shadow:0 8px 20px #25203415}.hc-screen-grid figcaption h3{margin:24px 0 10px}.hc-screen-grid figcaption p{font-size:14px}.hc .hc-caption{font-size:11px;margin-top:22px}.hc-prototype{display:grid;grid-template-columns:1fr 430px;gap:65px;align-items:start}.hc-prototype iframe{width:100%;height:795px;border:1px solid #d8d1e0;border-radius:22px;background:#f4f1fa}.hc-prototype>div{padding-top:20px}.hc-section ul{padding-left:20px}.hc-section li{margin-bottom:14px}.hc .next{margin-top:50px}@media(max-width:850px){.hc{padding:25px 24px 60px}.hc-hero{grid-template-columns:1fr;padding:25px 20px 56px;min-height:0}.hc-hero-copy{display:flex;justify-content:space-between;gap:25px;margin-bottom:30px}.hc-hero-copy>p{font-size:18px;margin:0}.hc-hero-copy>small{display:none}.hc-phones{padding-bottom:18px}.hc-hero>figcaption{left:20px;font-size:10px}.hc-facts{grid-template-columns:repeat(2,1fr)}.hc-split{grid-template-columns:1fr}.hc-prototype{grid-template-columns:1fr;gap:30px}.hc-prototype iframe{max-width:430px;justify-self:center}.hc-cards{gap:10px}.hc-cards article{padding:20px}.hc-journey>div{grid-template-columns:1fr;gap:12px}}@media(max-width:550px){.hc-intro h1{letter-spacing:-1.5px}.hc-intro>p:not(.overline){font-size:17px}.hc-hero-copy{display:block}.hc-hero-copy>p{margin-top:16px}.hc-phones{gap:8px}.hc-phones img{border-width:3px;border-radius:13px;width:30%}.hc-section{padding:42px 0}.hc-cards,.hc-screen-grid{grid-template-columns:1fr}.hc-screen-grid{gap:22px}.hc-screen-grid a{padding:22px}.hc-screen-grid img{max-width:230px}.hc-journey{padding:20px}.hc-journey ol{grid-template-columns:repeat(2,1fr)}.hc-prototype iframe{height:795px}.hc-nav{gap:6px}.hc-nav button{font-size:11px;padding:8px 12px}}
+
+
+/* haesiivooja accessible CTA buttons */
+.hc-reflection .links{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:28px;
+}
+
+.hc-reflection .links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:56px;
+  padding:16px 26px;
+  background:#184f3d;
+  color:#f7f4ea;
+  text-decoration:none;
+  font-weight:700;
+  line-height:1.35;
+  border:2px solid #184f3d;
+  border-radius:4px;
+}
+
+.hc-reflection .links a:visited{
+  color:#f7f4ea;
+}
+
+.hc-reflection .links a:hover{
+  background:#123d2f;
+  border-color:#123d2f;
+  color:#ffffff;
+}
+
+.hc-reflection .links a:focus-visible{
+  outline:3px solid #111;
+  outline-offset:3px;
+  background:#123d2f;
+  color:#ffffff;
+}
+
+.hc-reflection .links a svg{
+  flex:0 0 auto;
+}
+
+@media (max-width: 640px){
+  .hc-reflection .links{
+    flex-direction:column;
+  }
+
+  .hc-reflection .links a{
+    width:100%;
+  }
+}
