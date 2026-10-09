@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="AURA Atelier interactive UX prototype: emotional discovery, curated luxury looks and a human advisor handoff. Designed by Viktoriya Mikhaylova.">
+  <title>AURA Atelier · Interactive experience prototype</title>
+  <style>
+    :root{--ink:#28221d;--muted:#6b6056;--gold:#917452;--gold-dark:#735732;--paper:#faf7f1;--cream:#f2ebe3;--line:#e4d8cc;--warm:#ebe0d3;--espresso:#382b22;--focus:#155ab6}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#f2ede6;color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit}
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+    button:disabled{cursor:not-allowed;opacity:.55}
+    h2[tabindex="-1"]:focus{outline:none}
+    .skip{position:absolute;top:-90px;left:14px;z-index:20;background:white;padding:10px 14px}.skip:focus{top:10px}
+    .layout{min-height:100dvh;display:grid;grid-template-columns:minmax(275px,365px) minmax(0,430px);justify-content:center;align-items:start;gap:clamp(20px,3vw,55px);padding:25px 28px 32px;max-width:1100px;margin:auto}
+    .story{position:sticky;top:20px;padding:24px 0 18px;min-width:0}
+    .upper{font-size:10px;letter-spacing:.22em;font-weight:750;color:#856a4c;text-transform:uppercase}
+    .story-brand{font-family:Georgia,"Times New Roman",serif;font-size:clamp(38px,4vw,56px);font-weight:400;letter-spacing:.21em;color:#3b2b1d;line-height:1.1;margin:20px 0 4px}
+    .story-brand small{display:block;font:700 10px/1.7 Arial,sans-serif;letter-spacing:.5em;padding-left:4px;color:#8b7053}
+    .story h1{font:normal clamp(32px,3.2vw,43px)/1.08 Georgia,"Times New Roman",serif;letter-spacing:-.04em;margin:36px 0 15px}
+    .story h1 em{font-style:italic;color:#947658}
+    .story p{font-size:13px;line-height:1.8;color:#6c5e51;max-width:310px}
+    .track{margin-top:30px;border-top:1px solid #cfbfaf;padding-top:18px}
+    .track-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+    .progress{height:3px;background:#e3d6c6;margin:0 0 21px}
+    .progress-bar{height:100%;width:16.666%;background:#917452;transition:width .25s ease}
+    .track button{border:0;background:transparent;display:flex;align-items:center;gap:12px;padding:8px 2px;width:100%;text-align:left;color:#827468;font-size:12px;min-height:40px}
+    .track button span{font:700 10px Arial,sans-serif;letter-spacing:.1em;border:1px solid #d5c5b4;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;flex:none}
+    .track button.active{color:#33291e;font-weight:750}
+    .track button.active span{background:#55402e;border-color:#55402e;color:white}
+    .story-foot{font-size:11px!important;color:#87776a!important;margin-top:34px;line-height:1.65!important}
+    .external{display:inline-flex;align-items:center;gap:8px;font-size:12px;text-underline-offset:4px;margin-top:14px}
+    .phone{width:100%;min-width:0;height:min(895px,calc(100dvh - 50px));min-height:650px;background:var(--paper);border:1px solid #c7b49e;border-radius:20px;box-shadow:0 26px 75px #4d3c291c;display:flex;flex-direction:column;overflow:hidden;position:relative}
+    .phone-header{background:#faf7f2;border-bottom:1px solid #d8c5ad;display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;gap:12px;flex:none}
+    .mark{width:32px;height:32px;border:1px solid #a98e6f;border-radius:50%;display:grid;place-items:center;color:#917452;font:italic 23px/1 Georgia,serif;flex:none}
+    .brand{flex:1;min-width:0;font:24px/1 Georgia,serif;letter-spacing:.14em;color:#917452}
+    .brand small{display:block;font:600 8px/1.9 sans-serif;letter-spacing:.46em;padding-left:2px}
+    .header-button{min-width:44px;min-height:44px;border:0;background:transparent;color:#675644;border-radius:3px;padding:6px;text-align:center;font-size:21px;position:relative}
+    .header-button[data-count]:not([data-count="0"])::after{content:attr(data-count);position:absolute;right:0;top:1px;font-size:10px;background:#4b382a;color:white;border-radius:50%;width:17px;height:17px;display:grid;place-items:center}
+    .phone-sub{display:flex;align-items:center;justify-content:space-between;padding:10px 17px;border-bottom:1px solid var(--line);color:#766353;background:#f9f4ed;font-size:11px;flex:none}
+    .step-name{text-transform:uppercase;letter-spacing:.12em;font-weight:800}
+    .live-dot{width:7px;height:7px;border-radius:50%;display:inline-block;background:#b69c78;margin-right:7px}
+    .viewport{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:#c9b6a2 transparent;scrollbar-width:thin}
+    .panel{padding:25px 23px 22px;animation:arrive .25s ease both}
+    @keyframes arrive{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+    h2{font:normal 32px/1.13 Georgia,serif;letter-spacing:-.035em;margin:7px 0 13px;color:#32271e}
+    h2 em{color:var(--gold);font-style:italic}
+    .lede{font-size:13px;line-height:1.7;color:#736558;margin:0 0 24px}
+    .subhead{font:normal 22px/1.2 Georgia,serif;color:#382d22;margin:22px 0 11px}
+    .banner{height:205px;background:#111;overflow:hidden;position:relative;border-radius:3px;margin:5px 0 22px}
+    .banner img{width:100%;height:100%;object-fit:cover;object-position:52% 30%}
+    .banner::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#14100dbb,transparent 80%)}
+    .banner-copy{position:absolute;z-index:1;bottom:17px;left:16px;color:#f7ebdb;font:italic 22px Georgia,serif;max-width:195px}
+    .primary,.secondary{border:1px solid #71553b;min-height:48px;padding:11px 15px;display:inline-flex;justify-content:center;align-items:center;gap:8px;font-size:12px;font-weight:750;letter-spacing:.01em;text-decoration:none;border-radius:2px;transition:background .16s,color .16s}
+    .primary{background:#533a26;color:#fff}
+    .primary:hover{background:#382619}
+    .secondary{background:#fffdf9;color:#5f422a}
+    .secondary:hover{background:#f2e8dc}
+    .full{width:100%}
+    .field{display:block;margin:14px 0 8px;color:#544738;font-size:12px;font-weight:700}
+    .field-hint{font-size:11px;line-height:1.55;color:#78695c;margin:2px 0 11px}
+    input[type=text],input[type=date],textarea,select{display:block;width:100%;background:#fffdf9;border:1px solid #c9b9a9;padding:12px;min-height:44px;border-radius:2px;color:#392e24}
+    textarea{min-height:82px;resize:vertical}
+    .choices{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0 18px}
+    .chip{border:1px solid #c2ad97;padding:10px 13px;border-radius:22px;background:#fffdf9;color:#604d3d;font-size:12px;min-height:43px}
+    .chip[aria-pressed=true]{background:#5e4937;color:white;border-color:#5e4937}
+    .summary{padding:15px;border:1px solid #d7c4ac;background:#f3ebe1;color:#665544;font-size:12px;line-height:1.6;margin:16px 0 20px}
+    .summary strong{color:#3f3023}
+    .summary p{margin:5px 0 0}
+    .chat-bubble{border:1px solid #e2d7cb;background:#fff;box-shadow:0 2px 7px #38271c08;padding:15px;border-radius:10px 10px 10px 2px;font-size:12px;line-height:1.7;margin-bottom:17px}
+    .chat-bubble strong{color:#674f38;display:block;font-size:10px;text-transform:uppercase;letter-spacing:.13em;margin-bottom:6px}
+    .look-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:17px 0 12px}
+    .look-card{border:1px solid #d7c7b8;background:white;min-width:0;display:flex;flex-direction:column;position:relative;border-radius:4px;overflow:hidden}
+    .look-card.chosen{border:2px solid #866546;box-shadow:0 0 0 1px #866546}
+    .look-picture{height:158px;overflow:hidden;background:#11100e;display:block}
+    .look-picture img{height:100%;width:100%;object-fit:cover;object-position:center top}
+    .look-title{font:600 11px/1.4 Georgia,serif;margin:8px 7px 1px;color:#3d3127}
+    .look-desc{font-size:10px;line-height:1.4;color:#685c51;min-height:34px;padding:0 7px 8px}
+    .look-select{border:0;border-top:1px solid #eee3d8;background:#fbf7f0;margin-top:auto;padding:9px 2px;min-height:42px;color:#5c422b;font-size:11px;font-weight:700}
+    .look-card.chosen .look-select{background:#533a26;color:white}
+    .heart{position:absolute;right:5px;top:5px;background:#fffffff0;color:#3e3125;border:0;width:33px;height:33px;border-radius:50%;font-size:17px;display:grid;place-items:center}
+    .heart[aria-pressed=true]{color:#a44738}
+    .explainer{background:#fffaf5;border-left:2px solid #b18c63;margin:13px 0 23px;padding:11px 13px;font-size:12px;line-height:1.7;color:#5b4a3a}
+    .explainer strong{display:block;font-size:10px;letter-spacing:.11em;margin-bottom:4px;color:#886746}
+    .action-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:18px 0 3px}
+    .action-row button{padding:10px 7px;min-width:0}
+    .question{font-size:13px;padding:15px;background:#e9dacc;color:#483628;border-radius:11px 11px 2px 11px;margin-bottom:18px}
+    .advisor{display:flex;align-items:center;gap:15px;background:#eadfd4;padding:12px;border:1px solid #dac6b4;margin:10px 0 18px}
+    .advisor img{width:90px;height:112px;object-fit:cover;object-position:center top;background:#111}
+    .advisor h3{margin:0;font:normal 23px/1.2 Georgia,serif}
+    .advisor p{font-size:11px;color:#776352;margin:5px 0}
+    .advisor .badge{display:inline-block;color:#6f4f32;font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}
+    .checkline{display:flex;align-items:flex-start;gap:11px;padding:11px 0;font-size:12px;line-height:1.6;color:#514131;cursor:pointer}
+    .checkline input{width:19px;height:19px;flex:none;accent-color:#61472f;margin-top:1px}
+    .slotset{border:0;padding:0;margin:16px 0 10px;min-width:0}
+    .slotset legend{font-size:12px;font-weight:700;color:#544738;padding:0 0 4px}
+    .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .slots label{position:relative}
+    .slots input{position:absolute;opacity:0;width:1px;height:1px}
+    .slots span{display:block;border:1px solid #cbb8a5;background:#fffdf9;text-align:center;padding:11px 5px;font-size:12px;border-radius:2px;cursor:pointer}
+    .slots input:checked+span{background:#604730;color:white;border-color:#604730}
+    .slots input:focus-visible+span{outline:3px solid var(--focus);outline-offset:3px}
+    .error{color:#9b2c22;font-size:12px;min-height:0;margin:10px 0;font-weight:650}
+    .success-mark{font:normal 42px Georgia,serif;color:#90714c;border:1px solid #b79a76;width:70px;height:70px;border-radius:50%;display:grid;place-items:center;margin:22px auto}
+    .end-title{text-align:center}.end-title h2{margin-top:0}.end-title .lede{margin:0 auto 18px;max-width:285px}
+    .confirmed{border:1px solid #cbb79c;background:#eee2d2;padding:20px;margin:22px 0;font-size:12px;line-height:1.8}
+    .confirmed strong{font:normal 24px/1.2 Georgia,serif;display:block;margin-bottom:8px;color:#3a2a1e}
+    .confirmed dl{display:grid;grid-template-columns:100px 1fr;gap:10px;margin:13px 0 0}.confirmed dt{color:#715d4b}.confirmed dd{margin:0;font-weight:650}
+    .small{font-size:11px;color:#786757;line-height:1.65}
+    .saved-panel{position:absolute;inset:0;background:#fdfaf6;z-index:6;display:none;flex-direction:column}
+    .saved-panel.open{display:flex}
+    .saved-head{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .saved-head h2{font-size:25px;margin:0}.saved-head button{background:transparent;border:1px solid #c8b8a4;min-height:40px;padding:8px 13px}
+    .saved-body{padding:22px;overflow-y:auto;flex:1}
+    .saved-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #e4d8cc}
+    .saved-item img{width:68px;height:90px;object-fit:cover;background:black}
+    .saved-item b{font:normal 18px Georgia,serif}.saved-item p{font-size:11px;color:#716252;margin:5px 0}
+    .text-button{border:0;background:none;color:#6a4c32;text-decoration:underline;padding:6px 0;font-size:11px;text-underline-offset:3px}
+    .phone-footer{display:flex;align-items:center;gap:10px;padding:9px 15px;background:#fcf9f4;border-top:1px solid var(--line);flex:none;min-height:61px}
+    .phone-footer .mini-logo{font:italic 29px Georgia,serif;color:#927956;flex:1;text-align:center}
+    .phone-footer button{background:transparent;border:0;padding:10px;font-size:11px;color:#745a3e;min-height:42px}
+    .phone-footer .mini-caption{font-size:10px;color:#897564;letter-spacing:.08em}
+    .proto-note{border-top:1px solid #e2d5c6;background:#f2e8db;padding:10px 16px;color:#695848;text-align:center;font-size:10px;flex:none}
+    .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    [hidden]{display:none!important}
+    @media(max-width:760px){.layout{grid-template-columns:1fr;gap:15px;padding:12px 14px 22px;max-width:470px}.story{position:static;padding:0;display:grid;grid-template-columns:1fr auto;align-items:center}.story-brand{font-size:28px;margin:0}.story-brand small{font-size:6px}.story h1,.story>p:not(.story-foot),.story-foot,.external{display:none}.track{margin:0;border:0;padding:0}.track-title,.progress,.track button{display:none}.phone{height:min(860px,calc(100dvh - 102px));min-height:580px}}
+    @media(max-width:430px){.layout{padding:0;gap:0}.story{display:none}.phone{border-radius:0;border:0;height:100dvh;min-height:520px;box-shadow:none}.look-picture{height:170px}.panel{padding:22px 18px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.panel{animation:none}.progress-bar,.primary,.secondary{transition:none}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#appContent">Skip to prototype</a>
+<div class="layout">
+  <aside class="story" aria-label="Prototype guide">
+    <div><div class="upper">Interactive concept · Viktoriya Mikhaylova</div><div class="story-brand">AURA <small>ATELIER</small></div></div>
+    <h1>From uncertainty<br>to <em>confidence.</em></h1>
+    <p>An editorial, mobile-first service where emotionally aware discovery meets the judgement of a real luxury advisor.</p>
+    <div class="track"><div class="track-title"><span class="upper">Experience journey</span><span id="stepNumber" class="upper">01 / 06</span></div><div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+      <nav id="journeyNav" aria-label="Jump to a prototype stage">
+        <button type="button" data-step="0"><span>1</span>Welcome</button><button type="button" data-step="1"><span>2</span>Discover the occasion</button><button type="button" data-step="2"><span>3</span>Curate & compare</button><button type="button" data-step="3"><span>4</span>Navigate uncertainty</button><button type="button" data-step="4"><span>5</span>Advisor & appointment</button><button type="button" data-step="5"><span>6</span>Confirmation</button>
+      </nav>
+    </div>
+    <p class="story-foot">Design principle: AI helps narrow and explain options, but it does not replace human judgement. All images are from the original AURA design presentation; interactions and services are simulated.</p>
+    <a class="external" href="https://vik.ooo/#case-aura" target="_blank" rel="noreferrer">← Return to the AURA case study</a>
+  </aside>
+  <div class="phone" id="appContent">
+    <header class="phone-header"><div class="mark" aria-hidden="true">A</div><div class="brand" aria-label="AURA Atelier">AURA <small>ATELIER</small></div><button type="button" class="header-button" id="savedButton" data-count="0" aria-label="Open saved inspirations">♡</button></header>
+    <div class="phone-sub"><span class="step-name" id="stepTitle">PERSONAL ATELIER</span><span><span class="live-dot" aria-hidden="true"></span>Private styling preview</span></div>
+    <main class="viewport" id="screen" aria-live="polite" aria-relevant="additions text"></main>
+    <footer class="phone-footer"><button type="button" id="backButton">← Back</button><div class="mini-logo" aria-hidden="true">A</div><button type="button" id="restartButton">Start over ↺</button></footer>
+    <div class="proto-note">Interactive portfolio prototype · No AI processing, purchases or real bookings</div>
+    <section class="saved-panel" id="savedPanel" aria-labelledby="savedTitle" aria-hidden="true"><div class="saved-head"><h2 id="savedTitle">Saved inspirations</h2><button type="button" id="closeSaved">Close ×</button></div><div class="saved-body" id="savedBody"></div></section>
+  </div>
+</div>
+<script>
+(function () {
+  'use strict';
+  const asset = 'assets/';
+  const looks = [
+    {id:'black',name:'Look 01',title:'Black silk midi & tailored blazer',description:'Quiet authority, clean tailoring',price:'€3,250',photo:'look-black.webp',rationale:'A tailored silhouette with a restrained palette: the strongest fit for an executive dinner where elegance matters more than making an entrance.'},
+    {id:'ivory',name:'Look 02',title:'Ivory crepe dress & minimal sandals',description:'Soft, modern sophistication',price:'Illustrative price',photo:'look-ivory.webp',rationale:'An effortless, luminous alternative. It expresses ease and a more contemporary mood, while still feeling polished.'},
+    {id:'taupe',name:'Look 03',title:'Soft taupe silk dress & structured belt',description:'Understated feminine finish',price:'€3,900',photo:'look-taupe.webp',rationale:'A quieter expression of occasion dressing, with subtle drape and structure that can feel both confident and personal.'}
+  ];
+  const stages = ['Personal atelier','Your occasion','Curated suggestions','A considered question','Advisor handoff','Your appointment'];
+  const $ = id => document.getElementById(id);
+  const escapeHTML = text => String(text).replace(/[&<>"']/g,char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  let stage=0, mood='Confident', occasion='Private dinner in Paris', budget='4000', question='Would this look be appropriate for a private dinner hosted by the CEO?',selected='black',saved=[],consent=false,date='',slot='15:00',questionAnswered=false;
+  let savedReturnFocus=null;
+  function dateFor(days){const d=new Date();d.setDate(d.getDate()+days);return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}
+  date=dateFor(1);
+  function focusContent(){const main=$('screen');main.scrollTop=0;const focus=main.querySelector('h2');if(focus){focus.tabIndex=-1;focus.focus({preventScroll:true});}}
+  function setStep(next){stage=Math.min(5,Math.max(0,next));$('stepNumber').textContent=String(stage+1).padStart(2,'0')+' / 06';$('stepTitle').textContent=stages[stage].toUpperCase();$('progressBar').style.width=((stage+1)/6*100)+'%';
+    document.querySelectorAll('#journeyNav button').forEach(b=>{const active=Number(b.dataset.step)===stage;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
+    $('backButton').disabled=stage===0;
+    render();focusContent();
+  }
+  function button(label,action,cls='primary full'){return `<button type="button" class="${cls}" data-action="${action}">${escapeHTML(label)}</button>`;}
+  function welcome(){return `<section class="panel"><span class="upper">Your private atelier</span><h2>Luxury begins<br>with <em>being understood.</em></h2><p class="lede">A quieter way to discover what feels right for an important moment, with personal advice never far away.</p><div class="banner"><img src="${asset}advisor.webp" alt="Original AURA Atelier concierge concept portrait"><div class="banner-copy">Curated around you, not a catalogue.</div></div><div class="chat-bubble"><strong>AURA · Conversational concierge</strong>Good afternoon, Léa. How would you like to feel at your next occasion? We can begin with the moment, rather than a product.</div>${button('Begin personal discovery →','start')}<p class="small" style="margin-top:15px">Explore a sample luxury client journey. All recommendations, advisor messages and appointments are simulated.</p></section>`;}
+  function discovery(){return `<section class="panel"><span class="upper">01 / Discovery</span><h2>Tell me about<br><em>the moment.</em></h2><p class="lede">AURA begins with context and emotion—rather than presenting a wall of products.</p><form id="discoverForm"><label class="field" for="occasion">What's the occasion?</label><textarea id="occasion" maxlength="240" required>${escapeHTML(occasion)}</textarea><div class="field">How would you like to feel?</div><div class="choices" role="group" aria-label="Desired feeling">${['Confident','Effortless','Sophisticated'].map(m=>`<button type="button" class="chip" data-mood="${m}" aria-pressed="${mood===m}">${m}</button>`).join('')}</div><label class="field" for="budget">Style budget</label><select id="budget"><option value="2500" ${budget==='2500'?'selected':''}>Up to €2,500</option><option value="4000" ${budget==='4000'?'selected':''}>Up to €4,000</option><option value="6000" ${budget==='6000'?'selected':''}>Up to €6,000</option></select><p class="field-hint">Used only to shape this demo. Nothing is sent to a server.</p><div class="summary"><strong>Your direction</strong><p>For an occasion that matters, you want to feel <em>${escapeHTML(mood.toLowerCase())}</em>—not overwhelmed by choices.</p></div><button type="submit" class="primary full">Curate my looks →</button><div id="discoverError" class="error" role="alert"></div></form></section>`;}
+  function recommendations(){const look=looks.find(l=>l.id===selected)||looks[0];return `<section class="panel"><span class="upper">02 / Considered recommendations</span><h2>A shortlist,<br><em>not an endless feed.</em></h2><div class="chat-bubble"><strong>AURA · Conversational concierge</strong>For <b>${escapeHTML(occasion.toLowerCase())}</b>, I've selected three looks that balance ${escapeHTML(mood.toLowerCase())} style with understated sophistication. You choose what feels right.</div><p class="small">Select a look. Save anything you would like to revisit.</p><div class="look-grid">${looks.map(l=>`<article class="look-card ${l.id===selected?'chosen':''}"><div class="look-picture"><img src="${asset}${l.photo}" alt="Original AURA design: ${escapeHTML(l.title)}"></div><button type="button" class="heart" data-save="${l.id}" aria-pressed="${saved.includes(l.id)}" aria-label="${saved.includes(l.id)?'Remove':'Save'} ${l.name} from saved inspirations">${saved.includes(l.id)?'♥':'♡'}</button><div class="look-title">${l.name}</div><div class="look-desc">${escapeHTML(l.description)}</div><button type="button" class="look-select" data-look="${l.id}" aria-pressed="${l.id===selected}">${l.id===selected?'✓ Selected':'Select look'}</button></article>`).join('')}</div><div class="explainer"><strong>Why ${look.name}?</strong>${escapeHTML(look.rationale)}</div><div class="action-row">${button('Edit preferences','edit','secondary')}${button('Ask a nuanced question →','ask','primary')}</div><div style="margin-top:10px">${button('Ask Camille directly →','advisor','secondary full')}</div></section>`;}
+  function friction(){return `<section class="panel"><span class="upper">03 / Handling uncertainty</span><h2>Good advice knows<br><em>its limits.</em></h2><p class="lede">An executive dinner can have unspoken expectations. AURA does not pretend to know the dress code or the host's preferences.</p><div class="question"><strong>You</strong><br>${escapeHTML(question)}</div><label for="question" class="field">Refine your question</label><textarea id="question" maxlength="260">${escapeHTML(question)}</textarea><div style="margin-top:12px">${button('Ask AURA','answer')}</div><div id="scenarioResponse" aria-live="polite">${questionAnswered?frictionResponse():''}</div><div class="summary"><strong>Design decision</strong><p>When the context requires judgement, offer a supported transition to a human advisor rather than confidently inventing an answer.</p></div>${button('Ask Camille to review my shortlist →','advisor','secondary full')}</section>`;}
+  function frictionResponse(){const look=looks.find(l=>l.id===selected)||looks[0];return `<div class="chat-bubble" style="margin-top:16px"><strong>AURA · Conversational concierge</strong>${escapeHTML(look.name)} could suit an occasion calling for quiet elegance. But the expectations of a private executive dinner vary, and I don't want to assume. Camille can review your shortlist and the context you've shared before your visit. Would you like that?</div>`;}
+  function handoff(){const look=looks.find(l=>l.id===selected)||looks[0];return `<section class="panel"><span class="upper">04 / Human expertise</span><h2>A thoughtful<br><em>handoff to Camille.</em></h2><p class="lede">Your advisor can build on the conversation—without asking you to repeat everything.</p><div class="advisor"><img src="${asset}advisor.webp" alt="Illustrative AURA advisor portrait from the original concept presentation"><div><div class="badge">Your boutique advisor</div><h3>Camille</h3><p>Avenue Montaigne · Paris</p><p>Personal styling and occasion advice</p></div></div><div class="summary"><strong>Context for Camille</strong><p>Occasion: ${escapeHTML(occasion)}</p><p>Feeling: ${escapeHTML(mood)}</p><p>Shortlist: ${escapeHTML(look.title)}</p><p>Budget: up to €${Number(budget).toLocaleString('en-US')}</p></div><label class="checkline"><input id="consent" type="checkbox" ${consent?'checked':''}><span>In a real service, I would agree to share this styling context with Camille so the advisor can prepare. <strong>No information is actually sent in this demo.</strong></span></label><label class="field" for="date">Preferred boutique visit date</label><input id="date" type="date" required min="${dateFor(1)}" value="${escapeHTML(date)}"><fieldset class="slotset"><legend>Preferred time (Paris time)</legend><div class="slots">${['11:00','15:00','17:00'].map(t=>`<label><input type="radio" name="time" value="${t}" ${slot===t?'checked':''}><span>${t}</span></label>`).join('')}</div></fieldset><div id="handoffError" class="error" role="alert"></div>${button('Preview appointment confirmation →','confirm')}</section>`;}
+  function confirmation(){const look=looks.find(l=>l.id===selected)||looks[0];let nice=date;try{nice=new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));}catch(e){}return `<section class="panel"><div class="success-mark" aria-hidden="true">✓</div><div class="end-title"><span class="upper">05 / Resolution</span><h2>Everything is ready<br><em>to review.</em></h2><p class="lede">A clear next step and an advisor who understands the context make the experience feel continuous.</p></div><div class="confirmed"><strong>Appointment preview</strong><dl><dt>Advisor</dt><dd>Camille</dd><dt>Location</dt><dd>Avenue Montaigne, Paris</dd><dt>Date</dt><dd>${escapeHTML(nice)}</dd><dt>Time</dt><dd>${escapeHTML(slot)} (Paris)</dd><dt>Shortlist</dt><dd>${escapeHTML(look.name)} · ${escapeHTML(look.title)}</dd><dt>Context</dt><dd>${escapeHTML(mood)} · ${escapeHTML(occasion)}</dd></dl></div><div class="chat-bubble"><strong>AURA · Conversational concierge</strong>Your preferences and shortlist are ready for Camille to review. This preview demonstrates how an appointment and saved inspirations could continue the relationship after the conversation.</div><p class="small"><strong>Prototype only:</strong> no appointment has been created, no message has been sent and no information has left this page.</p><div class="action-row">${button('View saved looks','saved','secondary')}${button('Start again ↺','restart','primary')}</div><p class="small" style="margin-top:15px"><a href="https://vik.ooo/#case-aura" target="_blank">Explore the design rationale and research ↗</a></p></section>`;}
+  function render(){const renderers=[welcome,discovery,recommendations,friction,handoff,confirmation];$('screen').innerHTML=renderers[stage]();$('savedButton').dataset.count=String(saved.length);$('savedButton').setAttribute('aria-label',`Open saved inspirations (${saved.length})`);}
+  function showSaved(){savedReturnFocus=document.activeElement;const body=$('savedBody');body.innerHTML=saved.length?saved.map(id=>{const l=looks.find(x=>x.id===id);return `<article class="saved-item"><img src="${asset}${l.photo}" alt="${escapeHTML(l.title)}"><div><b>${escapeHTML(l.name)}</b><p>${escapeHTML(l.title)}</p><button type="button" class="text-button" data-remove="${id}">Remove inspiration</button></div></article>`;}).join(''):'<p>You have no saved inspirations yet. Select the heart on a curated look to save it here.</p>';$('savedPanel').classList.add('open');$('savedPanel').setAttribute('aria-hidden','false');$('closeSaved').focus();}
+  function closeSaved(){ $('savedPanel').classList.remove('open');$('savedPanel').setAttribute('aria-hidden','true');if(savedReturnFocus&&savedReturnFocus.isConnected)savedReturnFocus.focus();else $('savedButton').focus(); }
+  function reset(){stage=0;mood='Confident';occasion='Private dinner in Paris';budget='4000';question='Would this look be appropriate for a private dinner hosted by the CEO?';selected='black';saved=[];consent=false;date=dateFor(1);slot='15:00';questionAnswered=false;closeSaved();setStep(0);}
+  $('backButton').addEventListener('click',()=>setStep(stage-1));$('restartButton').addEventListener('click',reset);$('savedButton').addEventListener('click',showSaved);$('closeSaved').addEventListener('click',closeSaved);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('savedPanel').classList.contains('open'))closeSaved();});
+  $('journeyNav').addEventListener('click',e=>{const btn=e.target.closest('[data-step]');if(btn)setStep(Number(btn.dataset.step));});
+  $('savedBody').addEventListener('click',e=>{const btn=e.target.closest('[data-remove]');if(!btn)return;saved=saved.filter(id=>id!==btn.dataset.remove);showSaved();render();});
+  $('screen').addEventListener('click',e=>{
+    const moodBtn=e.target.closest('[data-mood]');if(moodBtn){mood=moodBtn.dataset.mood;document.querySelectorAll('[data-mood]').forEach(b=>b.setAttribute('aria-pressed',String(b===moodBtn)));const summary=$('discoverForm')?.querySelector('.summary p em');if(summary)summary.textContent=mood.toLowerCase();return;}
+    const save=e.target.closest('[data-save]');if(save){const id=save.dataset.save;saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];render();$('screen').querySelector(`[data-save="${id}"]`)?.focus();return;}
+    const look=e.target.closest('[data-look]');if(look){selected=look.dataset.look;render();$('screen').querySelector(`[data-look="${selected}"]`)?.focus();return;}
+    const btn=e.target.closest('[data-action]');if(!btn)return;
+    switch(btn.dataset.action){
+      case 'start':setStep(1);break;
+      case 'edit':setStep(1);break;
+      case 'ask':setStep(3);break;
+      case 'answer':{question=($('question').value||'Can Camille advise on the social setting?').trim().slice(0,260);questionAnswered=true;render();const response=$('scenarioResponse');if(response)response.scrollIntoView({behavior:'smooth',block:'nearest'});break;}
+      case 'advisor':setStep(4);break;
+      case 'saved':showSaved();break;
+      case 'restart':reset();break;
+      case 'confirm':{
+        consent=$('consent').checked;date=$('date').value;const selectedTime=document.querySelector('input[name=time]:checked');slot=selectedTime?.value||'15:00';const err=$('handoffError');
+        if(!consent){err.textContent='Please review and select the consent checkbox to continue the simulated handoff.';$('consent').focus();return;}
+        if(!date||date<dateFor(1)){err.textContent='Choose a future date for the simulated appointment.';$('date').focus();return;}
+        setStep(5);break;
+      }
+    }
+  });
+  $('screen').addEventListener('submit',e=>{if(e.target?.id!=='discoverForm')return;e.preventDefault();occasion=$('occasion').value.trim().slice(0,240);budget=$('budget').value;if(!occasion){$('discoverError').textContent='Please describe your occasion.';$('occasion').focus();return;}setStep(2);});
+  setStep(0);
+})();
+</script>
+</body>
+</html>

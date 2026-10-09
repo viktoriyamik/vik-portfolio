@@ -52,7 +52,7 @@ export function CleanPeerCase({ back }: { back: () => void }) {
       {label:'PRIMARY USER',value:'Sofia, a developing professional cleaner'},
       {label:'OUTPUT',value:'Interactive mobile-first prototype'}
     ]} links={[{name:'Explore interactive prototype',href:cleanPeerDemo},{name:'Open design rationale in Figma',href:cleanPeerFigma}]}/>
-    <nav className="pd-local-nav" aria-label="CleanPeer case sections"><a href="#cp-problem">Challenge</a><a href="#cp-strategy">Strategy</a><a href="#cp-flow">User journey</a><a href="#cp-artifacts">Screens</a><a href="#cp-validation">Validation</a></nav>
+    <nav className="pd-local-nav" aria-label="CleanPeer case sections"><a href="#cp-problem">Challenge</a><a href="#cp-strategy">Strategy</a><a href="#cp-flow">User journey</a><a href="#cp-artifacts">Screens</a><a href="#cp-demo">Try prototype</a><a href="#cp-validation">Validation</a></nav>
 
     <Chapter id="cp-problem" number="01" eyebrow="PRODUCT OPPORTUNITY" title="Cleaning advice exists everywhere. Confidence does not.">
       <p>When a cleaner meets an unfamiliar surface, chemical or stain at work, a generic search result may not be enough. Advice is scattered across videos, forums and product pages; expertise and safety context are often difficult to judge. The important design problem is not simply finding content—it is helping someone make a sound next decision in the middle of real work.</p>
@@ -85,7 +85,14 @@ export function CleanPeerCase({ back }: { back: () => void }) {
       </div>
       <p>The later prototype gives each moment a job. On the problem screen, suggested topic tags are editable and text, photo and voice are visible alternatives. Search results distinguish guides, videos, experts and community content. A guide foregrounds steps, safety and source expertise. An achievement closes the loop only after the user confirms the problem was solved.</p>
       <Artifact file="portfolio-cleanpeer-midfi.webp" alt="Actual CleanPeer mid-fidelity screens showing Home, Solve, Results, Guidance, Expert and achievement" caption="Mid-fidelity interface: six connected moments in the problem-solving journey."/>
-      <div className="pd-cta"><div><h3>Explore the working prototype</h3><p>The demo shows the intended interactions; photo and voice inputs are simulations, not working recognition services.</p></div><a href={cleanPeerDemo} target="_blank" rel="noreferrer">Launch prototype <ArrowUpRight size={18}/></a></div>
+
+      <div className="pd-inline-demo pd-inline-demo--cleanpeer" id="cp-demo">
+        <div className="pd-inline-demo-head">
+          <div><span>EXPLORE THE WORKING FLOW</span><h3>Try solving a problem with CleanPeer.</h3><p>Describe a cleaning problem, review source-backed guidance, explore an expert and complete the journey. Photo, voice and conversations are interactive simulations.</p></div>
+          <a href={cleanPeerDemo} target="_blank" rel="noreferrer">Open full-screen prototype ↗</a>
+        </div>
+        <iframe src={cleanPeerDemo} title="Interactive CleanPeer problem-solving prototype" loading="lazy" sandbox="allow-scripts" />
+      </div>
     </Chapter>
 
     <Chapter id="cp-validation" number="05" eyebrow="EVALUATION & ITERATION" title="Feedback revealed the difference between seeing an action and trusting it.">
@@ -110,8 +117,8 @@ export function AuraCase({ back }: { back: () => void }) {
       {label:'DISCIPLINE',value:'Human–AI interaction, strategy & UX research'},
       {label:'DELIVERABLE',value:'Mobile-first prototype & end-to-end flow'},
       {label:'PRODUCT STATUS',value:'Concept and designed prototype'}
-    ]} links={[{name:'View AURA Figma source',href:auraFigma}]}/>
-    <nav className="pd-local-nav" aria-label="Aura case sections"><a href="#aura-challenge">Problem</a><a href="#aura-persona">Research framing</a><a href="#aura-journey">Experience flow</a><a href="#aura-ui">Interface</a><a href="#aura-trust">Human–AI trust</a></nav>
+    ]} links={[{name:'Try interactive AURA prototype',href:'/viktoriya/aura-prototype/'},{name:'View AURA Figma source',href:auraFigma}]}/>
+    <nav className="pd-local-nav" aria-label="Aura case sections"><a href="#aura-challenge">Problem</a><a href="#aura-persona">Research framing</a><a href="#aura-journey">Experience flow</a><a href="#aura-ui">Interface</a><a href="#aura-demo">Interactive prototype</a><a href="#aura-trust">Human–AI trust</a></nav>
 
     <Chapter id="aura-challenge" number="01" eyebrow="STRATEGIC CHALLENGE" title="Luxury customers don't just buy products. They seek assurance.">
       <p>High-end discovery can still feel overwhelming. An abundance of product options doesn't resolve the emotional pressure of dressing for an important moment. AURA Atelier begins with the client's occasion, preferences and desired feeling instead of a product grid. Its goal is to reduce uncertainty while preserving the care and discretion associated with a personal advisor.</p>
@@ -135,6 +142,10 @@ export function AuraCase({ back }: { back: () => void }) {
 
     <Chapter id="aura-ui" number="04" eyebrow="THE DESIGNED EXPERIENCE" title="A quiet interface that stays out of the way.">
       <p>The prototype uses warm neutrals, editorial typography and restrained cards to give the conversation space. Rather than confronting users with a catalog, it makes one question or decision visible at a time. Saved inspirations create continuity, while recognizable advisor information signals that assistance is always available.</p>
+      <div className="pd-aura-demo" id="aura-demo">
+        <div className="pd-aura-demo-intro"><div><span>EXPLORE THE EXPERIENCE</span><h3>Step into the AURA Atelier.</h3><p>Describe an occasion, compare curated looks, explore thoughtful AI guidance and choose when to involve Camille. The conversation and booking are interactive simulations.</p></div><a href="/viktoriya/aura-prototype/" target="_blank" rel="noreferrer">Open full-screen prototype ↗</a></div>
+        <iframe src="/viktoriya/aura-prototype/" title="Interactive AURA Atelier styling and advisor handoff prototype" loading="lazy" sandbox="allow-scripts" />
+      </div>
       <div className="pd-grid pd-grid--two">
         <Artifact file="portfolio-aura-intro.webp" alt="AURA onboarding and first conversation screens" caption="01 / Opening: contextual greeting, free-text prompt, saved inspirations and advisor presence."/>
         <Artifact file="portfolio-aura-interactions.webp" alt="AURA conversational preference input and micro-interactions" caption="02 / Interaction: conversational refinement rather than complicated filters."/>

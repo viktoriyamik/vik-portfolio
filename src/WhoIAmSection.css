@@ -1,0 +1,45 @@
+/* A focused editorial profile that inherits the site's typography without affecting case pages. */
+.vm-about{color:#1c3b30;background:#f7f8f2;border-top:1px solid #d8dfd5;scroll-margin-top:45px}
+.vm-about *{box-sizing:border-box}
+.vm-about-inner{max-width:1370px;margin:0 auto;padding:92px clamp(24px,5.5vw,90px) 100px}
+.vm-about-eyebrow,.vm-about-label,.vm-about-kicker{font-family:inherit;letter-spacing:.16em;text-transform:uppercase;font-size:11px;font-weight:750;color:#527364}
+.vm-about-eyebrow{display:flex;gap:10px;align-items:center}
+.vm-about-dot{background:#537c68;width:8px;height:8px;border-radius:50%;display:inline-block}
+.vm-about-hero{display:grid;grid-template-columns:1.13fr 1fr;gap:clamp(30px,6vw,94px);padding:35px 0 68px}
+.vm-about-kicker{margin:0 0 16px}
+.vm-about h2,.vm-about h3,.vm-about h4{color:#17392d}
+.vm-about h2{font-size:clamp(48px,5.8vw,86px);font-weight:680;line-height:1.06;letter-spacing:-.07em;margin:0;max-width:750px}
+.vm-about h2 em,.vm-about-statement em{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-.055em;color:#6b8776}
+.vm-about-intro{padding-top:12px;max-width:620px}
+.vm-about-intro p{font-size:16px;line-height:1.85;margin:0 0 18px;color:#435e50}
+.vm-about-intro .vm-about-lead{font-weight:610;color:#1c3b30;font-size:clamp(19px,2vw,24px);line-height:1.6}
+.vm-about-intro strong{color:#24493b;font-weight:750}
+.vm-about-statement{border-top:1px solid #d0dcd1;border-bottom:1px solid #d0dcd1;padding:35px 0 43px;display:grid;grid-template-columns:23% 1fr;gap:35px;align-items:start}
+.vm-about-statement p{max-width:900px;font-size:clamp(27px,3.2vw,44px);line-height:1.28;letter-spacing:-.04em;font-weight:610;margin:0}
+.vm-about-subhead{padding:75px 0 27px;display:flex;align-items:end;justify-content:space-between;gap:40px}
+.vm-about-subhead h3,.vm-about-method h3,.vm-about-proof h3{font-size:clamp(27px,3vw,40px);line-height:1.2;letter-spacing:-.05em;margin:12px 0 0;font-weight:650}
+.vm-about-subhead>p{max-width:355px;line-height:1.7;color:#4e6859;margin:0}
+.vm-about-capabilities{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.vm-about-capabilities article{border:1px solid #d6e0d6;background:#edf2ea;border-radius:8px;padding:23px 20px 29px;min-width:0}
+.vm-about-cap-top{display:flex;justify-content:space-between;align-items:center;color:#628373;font-size:12px;font-weight:750;letter-spacing:.12em}
+.vm-about-capabilities h4{font-size:20px;line-height:1.22;letter-spacing:-.04em;margin:47px 0 12px;font-weight:700}
+.vm-about-capabilities p,.vm-about-method p,.vm-about-steps p,.vm-about-proof p,.vm-about-footer>p{font-size:14px;line-height:1.78;color:#4a6454;margin:0}
+.vm-about-method{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(30px,7vw,115px);padding:82px 0;border-bottom:1px solid #d0dcd1}
+.vm-about-method-intro p{margin-top:23px;max-width:460px;font-size:16px}
+.vm-about-steps{margin:0;padding:0;list-style:none;border-top:1px solid #d0dcd1}
+.vm-about-steps li{display:grid;grid-template-columns:54px 1fr;gap:18px;border-bottom:1px solid #d0dcd1;padding:20px 0}
+.vm-about-steps li>span{color:#618572;font-size:13px;font-weight:800}
+.vm-about-steps h4{font-size:17px;margin:0 0 5px;line-height:1.4}
+.vm-about-proof{padding:74px 0;border-bottom:1px solid #d0dcd1;display:grid;grid-template-columns:1fr 1fr;gap:clamp(35px,8vw,115px)}
+.vm-about-proof p{font-size:16px;line-height:1.85;max-width:560px}
+.vm-about-proof strong{color:#1d4031}
+.vm-about-footer{padding-top:43px;display:flex;gap:60px;align-items:start;justify-content:space-between}
+.vm-about-footer>p{max-width:560px;font-size:15px}
+.vm-about-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.vm-about-links a{min-height:48px;display:inline-flex;align-items:center;justify-content:space-between;gap:18px;padding:13px 17px;background:#204a37;color:#fff!important;text-decoration:none;font-size:13px;font-weight:750;border:1px solid #204a37;border-radius:3px}
+.vm-about-links a:last-child{background:transparent;color:#204a37!important}
+.vm-about-links a:hover{background:#153b2a;color:#fff!important}
+.vm-about-links a:focus-visible{outline:3px solid #235f41;outline-offset:3px}
+@media(max-width:980px){.vm-about-capabilities{grid-template-columns:repeat(2,minmax(0,1fr))}.vm-about-hero,.vm-about-method,.vm-about-proof{gap:35px}.vm-about-hero{grid-template-columns:1fr}.vm-about-intro{max-width:750px}.vm-about-method{grid-template-columns:1fr}.vm-about-statement{grid-template-columns:1fr;gap:18px}}
+@media(max-width:620px){.vm-about-inner{padding:64px 22px 72px}.vm-about-hero{padding:28px 0 43px}.vm-about h2{font-size:clamp(44px,12vw,60px)}.vm-about-intro p{font-size:15px}.vm-about-capabilities{grid-template-columns:1fr}.vm-about-capabilities h4{margin-top:25px}.vm-about-subhead{padding-top:51px;display:block}.vm-about-subhead>p{margin-top:14px}.vm-about-method{padding:57px 0}.vm-about-proof{padding:53px 0;grid-template-columns:1fr}.vm-about-footer{flex-direction:column;gap:25px}.vm-about-links{width:100%}.vm-about-links a{flex:1;min-width:190px}.vm-about-statement p{font-size:29px}}
+@media(prefers-reduced-motion:reduce){.vm-about *{scroll-behavior:auto!important}}

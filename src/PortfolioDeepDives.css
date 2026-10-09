@@ -20,3 +20,27 @@
   .portfolio-feature-visual--aura img,
   .portfolio-feature-visual--cleanpeer img {padding:5px;}
 }
+
+
+/* embedded-case-prototypes-v2 */
+.pd-inline-demo,.pd-aura-demo{scroll-margin-top:26px;overflow:hidden;border:1px solid #c8dbd0;border-radius:12px;background:#f0f5f1;margin:34px 0 43px}
+.pd-inline-demo-head,.pd-aura-demo-intro{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 27px}
+.pd-inline-demo-head>div,.pd-aura-demo-intro>div{min-width:0;flex:1}
+.pd-inline-demo-head span,.pd-aura-demo-intro span{font-size:11px;letter-spacing:.16em;font-weight:800;color:#527762}
+.pd-inline-demo-head h3,.pd-aura-demo-intro h3{margin:8px 0 10px;font:normal clamp(23px,2.4vw,32px)/1.23 Georgia,serif;color:#204636}
+.pd-case .pd-inline-demo-head p,.pd-case .pd-aura-demo-intro p{margin:0;font-size:14px;line-height:1.7;color:#425c4c;max-width:620px}
+.pd-inline-demo-head a,.pd-aura-demo-intro a{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:10px;background:#214a36!important;color:#fff!important;text-decoration:none!important;border:2px solid #214a36;border-radius:4px;padding:12px 18px;font-size:13px;font-weight:800;text-align:center}
+.pd-inline-demo-head a:visited,.pd-aura-demo-intro a:visited{color:#fff!important}
+.pd-inline-demo-head a:hover,.pd-aura-demo-intro a:hover{background:#163728!important}
+.pd-inline-demo-head a:focus-visible,.pd-aura-demo-intro a:focus-visible{outline:3px solid #202e24;outline-offset:3px}
+.pd-inline-demo iframe,.pd-aura-demo iframe{display:block;width:100%;height:930px;border:0;background:#f5f6f2}
+.pd-inline-demo--cleanpeer iframe{height:950px}
+.pd-case--aura .pd-aura-demo{border-color:#ddc7b1;background:#f3e9de}
+.pd-case--aura .pd-aura-demo-intro{background:#e9ddd0}
+.pd-case--aura .pd-aura-demo-intro span{color:#76583f}
+.pd-case--aura .pd-aura-demo-intro h3{color:#4a3426}
+.pd-case--aura .pd-aura-demo-intro p{color:#604f40}
+.pd-case--aura .pd-aura-demo-intro a{background:#533a26!important;border-color:#533a26!important;color:#fff!important}
+.pd-case--aura .pd-aura-demo-intro a:hover{background:#372517!important}
+@media(max-width:740px){.pd-inline-demo-head,.pd-aura-demo-intro{flex-direction:column;align-items:stretch;padding:21px}.pd-inline-demo-head a,.pd-aura-demo-intro a{align-self:stretch}.pd-inline-demo iframe,.pd-aura-demo iframe{height:860px}.pd-inline-demo--cleanpeer iframe{height:920px}}
+@media(max-width:430px){.pd-inline-demo iframe,.pd-aura-demo iframe{height:790px}.pd-inline-demo--cleanpeer iframe{height:865px}}
