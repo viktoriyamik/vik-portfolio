@@ -4,7 +4,7 @@ import './PortfolioDeepDives.css'
 
 const root = '/cases/'
 const cleanPeerFigma = 'https://www.figma.com/design/gohnjvc6zywSi4MdoG6E79/Viktoriya-Mikhaylova?node-id=0-1'
-const cleanPeerDemo = 'https://cleanpeer-interactive-prototype.lihvoinenoleg.chatgpt.site'
+const cleanPeerDemo = '/viktoriya/cleanpeer-prototype/'
 const auraFigma = 'https://www.figma.com/design/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=0-1'
 
 function Artifact({ file, alt, caption, className = '' }: { file: string; alt: string; caption: string; className?: string }) {
