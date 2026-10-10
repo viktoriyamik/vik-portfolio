@@ -19,8 +19,8 @@ const expertise = [
   },
   {
     number: '04', icon: <Layers size={21} strokeWidth={1.7} aria-hidden="true" />,
-    title: 'Interface systems & execution',
-    text: 'I move from information architecture and service journeys to accessible interfaces, design systems and interactive prototypes. My technical understanding helps me design for feasibility as well as experience quality.'
+    title: 'Interface systems & visual craft',
+    text: 'I translate information architecture and service journeys into accessible interfaces, design systems and prototypes. Typography, composition and visual storytelling give those experiences clarity, while technical understanding keeps them feasible.'
   }
 ]
 
@@ -44,7 +44,7 @@ export default function WhoIAmSection() {
           <div className="vm-about-intro">
             <p className="vm-about-lead">I’m Viktoriya, an <strong>AI-driven Product Designer</strong> who turns complex needs and emerging technologies into useful, considered digital products.</p>
             <p>I work across the product lifecycle—from opportunity framing and research to experience strategy, interaction design, accessible interfaces and working prototypes. My focus is the whole product experience, not an isolated screen.</p>
-            <p>I bring together <strong>Business Information Technology, graphic design and photography</strong> with digital product practice. That combination helps me connect the human experience with systems, feasibility and the details of delivery.</p>
+            <p>My background combines <strong>Business Information Technology with graphic design and photography</strong>. It gives me both systems thinking and an eye for visual hierarchy, composition and storytelling—skills I apply to products that need to feel as clear as they are capable.</p>
           </div>
         </div>
       </header>
@@ -65,6 +65,34 @@ export default function WhoIAmSection() {
           <p>{item.text}</p>
         </article>)}
       </div>
+
+
+      <section className="vm-about-visual" aria-labelledby="vm-about-visual-title">
+        <div className="vm-about-visual-intro">
+          <span className="vm-about-label">THE FOUNDATION BEHIND MY UI CRAFT</span>
+          <h3 id="vm-about-visual-title">Visual communication is part of the product—not a finishing touch.</h3>
+          <p>Graphic design taught me to build hierarchy, rhythm and consistency. Photography sharpened how I think about framing, focus and storytelling. I use both to guide attention and make complex digital experiences easier to understand, without losing sight of usability or accessibility.</p>
+        </div>
+        <div className="vm-about-visual-grid">
+          <article><span>01 / GRAPHIC DESIGN</span><h4>Make information clear.</h4><p>Typography, layout and visual identity help people recognize what matters and navigate with confidence.</p></article>
+          <article><span>02 / PHOTOGRAPHY</span><h4>Give every detail a purpose.</h4><p>Composition, light and narrative inform my approach to imagery, art direction and visual focus.</p></article>
+          <article><span>03 / PRODUCT APPLICATION</span><h4>Connect craft to usability.</h4><p>I apply that visual foundation to responsive interfaces, accessible components and coherent product systems.</p></article>
+        </div>
+      </section>
+
+
+      <section className="vm-about-toolkit" aria-labelledby="vm-about-toolkit-title">
+        <div className="vm-about-toolkit-heading">
+          <span className="vm-about-label">TOOLS &amp; PLATFORMS</span>
+          <h3 id="vm-about-toolkit-title">From design thinking to tangible experiences.</h3>
+          <p>I choose tools according to the product, its users and what needs to be tested or delivered.</p>
+        </div>
+        <div className="vm-about-toolkit-list">
+          <div><h4>Product design &amp; prototyping</h4><p>Figma, interaction flows, design systems and functional prototypes.</p></div>
+          <div><h4>Graphic design &amp; photography</h4><p>Adobe Creative Cloud for visual assets, image editing, illustration and layout.</p></div>
+          <div><h4>Web implementation &amp; CMS</h4><p>React, HTML, CSS and JavaScript for interactive web experiences; WordPress and Wix for content-managed websites.</p></div>
+        </div>
+      </section>
 
       <div className="vm-about-method">
         <div className="vm-about-method-intro">

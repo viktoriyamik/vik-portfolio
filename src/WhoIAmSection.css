@@ -43,3 +43,86 @@
 @media(max-width:980px){.vm-about-capabilities{grid-template-columns:repeat(2,minmax(0,1fr))}.vm-about-hero,.vm-about-method,.vm-about-proof{gap:35px}.vm-about-hero{grid-template-columns:1fr}.vm-about-intro{max-width:750px}.vm-about-method{grid-template-columns:1fr}.vm-about-statement{grid-template-columns:1fr;gap:18px}}
 @media(max-width:620px){.vm-about-inner{padding:64px 22px 72px}.vm-about-hero{padding:28px 0 43px}.vm-about h2{font-size:clamp(44px,12vw,60px)}.vm-about-intro p{font-size:15px}.vm-about-capabilities{grid-template-columns:1fr}.vm-about-capabilities h4{margin-top:25px}.vm-about-subhead{padding-top:51px;display:block}.vm-about-subhead>p{margin-top:14px}.vm-about-method{padding:57px 0}.vm-about-proof{padding:53px 0;grid-template-columns:1fr}.vm-about-footer{flex-direction:column;gap:25px}.vm-about-links{width:100%}.vm-about-links a{flex:1;min-width:190px}.vm-about-statement p{font-size:29px}}
 @media(prefers-reduced-motion:reduce){.vm-about *{scroll-behavior:auto!important}}
+
+
+/* Visual craft & storytelling / Who I Am / 2026-10 */
+.vm-about-visual{
+  display:grid;
+  grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+  gap:clamp(30px,5vw,72px);
+  padding:72px 0;
+  border-bottom:1px solid #d0dcd1;
+}
+.vm-about-visual-intro h3{
+  font-size:clamp(27px,3vw,40px);
+  line-height:1.2;
+  letter-spacing:-.045em;
+  margin:12px 0 20px;
+  font-weight:650;
+}
+.vm-about-visual-intro p{
+  font-size:16px;
+  line-height:1.85;
+  color:#405e4f;
+  max-width:570px;
+  margin:0;
+}
+.vm-about-visual-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch;}
+.vm-about-visual-grid article{
+  min-width:0;
+  padding:23px 18px 25px;
+  border-radius:8px;
+  background:#e9f0e6;
+  border:1px solid #d4e0d2;
+}
+.vm-about-visual-grid article>span{
+  color:#436c56;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.10em;
+  line-height:1.5;
+}
+.vm-about-visual-grid h4{
+  margin:25px 0 10px;
+  font-size:18px;
+  line-height:1.28;
+  letter-spacing:-.025em;
+}
+.vm-about-visual-grid p{margin:0;color:#435d4e;font-size:13px;line-height:1.7;}
+@media(max-width:1100px){
+  .vm-about-visual{grid-template-columns:1fr;gap:28px}
+  .vm-about-visual-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:620px){
+  .vm-about-visual{padding:50px 0}
+  .vm-about-visual-grid{grid-template-columns:1fr}
+  .vm-about-visual-grid h4{margin-top:14px}
+}
+
+
+/* Who I Am — supporting toolkit, 2026-10 */
+.vm-about-toolkit {
+  display: grid;
+  grid-template-columns: minmax(0, .76fr) minmax(0, 1.24fr);
+  gap: clamp(28px, 5vw, 75px);
+  padding: 58px 0 64px;
+  border-bottom: 1px solid #d0dcd1;
+}
+.vm-about-toolkit-heading h3 {
+  font-size: clamp(26px, 2.7vw, 37px);
+  line-height: 1.2;
+  letter-spacing: -.045em;
+  margin: 12px 0 16px;
+  font-weight: 650;
+}
+.vm-about-toolkit-heading p, .vm-about-toolkit-list p {
+  margin: 0; color: #405e4f; line-height: 1.75;
+}
+.vm-about-toolkit-heading p { max-width: 420px; font-size: 15px; }
+.vm-about-toolkit-list { display: grid; gap: 0; }
+.vm-about-toolkit-list > div { padding: 15px 0; border-top: 1px solid #d0dcd1; }
+.vm-about-toolkit-list > div:last-child { border-bottom: 1px solid #d0dcd1; }
+.vm-about-toolkit-list h4 { font-size: 16px; line-height: 1.45; margin: 0 0 4px; font-weight: 700; }
+.vm-about-toolkit-list p { font-size: 14px; }
+@media (max-width: 850px) { .vm-about-toolkit { grid-template-columns: 1fr; gap: 20px; } }
+@media (max-width: 620px) { .vm-about-toolkit { padding: 43px 0 46px; } }
