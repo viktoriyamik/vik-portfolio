@@ -1,5 +1,6 @@
 import WhoIAmSection from './WhoIAmSection'
-import { useEffect, useState }\nimport type { FormEvent } from 'react' from 'react'
+import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react'
 import { askPortfolioAI } from './lib/ai'
 import './App.css'
