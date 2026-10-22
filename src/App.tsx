@@ -27,7 +27,7 @@ function AccessBloomCheck(){
  const open=(event:FormEvent<HTMLFormElement>)=>{
   event.preventDefault()
   const value=url.trim()
-  try {const parsed=new URL(/^https?:\\/\\//i.test(value)?value:'https://'+value);if(!['http:','https:'].includes(parsed.protocol)||!parsed.hostname.includes('.')||parsed.username||parsed.password)throw Error();setError('');window.location.assign('/accessbloom/?url='+encodeURIComponent(parsed.href))}
+  try {const parsed=new URL(value.toLowerCase().startsWith('http://')||value.toLowerCase().startsWith('https://')?value:'https://'+value);if(!['http:','https:'].includes(parsed.protocol)||!parsed.hostname.includes('.')||parsed.username||parsed.password)throw Error();setError('');window.location.assign('/accessbloom/?url='+encodeURIComponent(parsed.href))}
   catch{setError('Enter a valid public website address, such as https://example.com.')}
  }
  return <section className="ab-showcase" aria-labelledby="ab-title">
