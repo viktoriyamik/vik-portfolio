@@ -1,0 +1,725 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import ThreeBackground from "./ThreeBackground";
+import { askPortfolioAI } from "./lib/ai";
+
+type Mode =
+  | "home"
+  | "about"
+  | "projects"
+  | "contact"
+  | "help";
+
+type Project = {
+  name: string;
+  title: string;
+  stack: string[];
+  description: string;
+};
+
+type HistoryEntry = {
+  command: string;
+  output?: string;
+  type?: "project";
+  project?: Project;
+};
+
+const PROJECTS: Record<string, Project> = {
+  "ai-puzzle": {
+    name: "ai-puzzle",
+    title: "AI Puzzle Game for Android",
+    stack: [
+      "React",
+      "TypeScript",
+      "Unity",
+      "Accessibility",
+      "UI/UX",
+      "AI Systems",
+    ],
+    description:
+      "Adaptive AI-powered Android puzzle experience with accessible interaction design and procedural gameplay systems.",
+  },
+
+  "pet-holder": {
+    name: "pet-holder",
+    title: "Modular Pet Bottle Holder",
+    stack: [
+      "3D Design",
+      "Unity AR",
+      "PLA",
+      "Product UX",
+    ],
+    description:
+      "Eco-friendly modular pet bottle holder system with AR visualization and customizable mounting.",
+  },
+
+  "creative-ui": {
+    name: "creative-ui",
+    title: "Accessible Creative UI System",
+    stack: [
+      "Figma",
+      "Adobe XD",
+      "Photoshop",
+      "Illustrator",
+      "Accessibility",
+      "UI/UX",
+    ],
+    description:
+      "High-contrast accessible UI system focused on interaction design, usability, and visual consistency.",
+  },
+};
+
+const SHORTCUTS = [
+  "help",
+  "whoami",
+  "contact",
+  "ls",
+  "pwd",
+  "cd projects",
+  "cat ai-puzzle",
+  "cat pet-holder",
+  "cat creative-ui",
+  "ask what projects do you have?",
+  "clear",
+];
+
+const ASCII_LOGO = String.raw`
+██╗   ██╗██╗██╗  ██╗████████╗ ██████╗ ██████╗ ██╗██╗   ██╗ █████╗ 
+██║   ██║██║██║ ██╔╝╚══██╔══╝██╔═══██╗██╔══██╗██║╚██╗ ██╔╝██╔══██╗
+██║   ██║██║█████╔╝    ██║   ██║   ██║██████╔╝██║ ╚████╔╝ ███████║
+╚██╗ ██╔╝██║██╔═██╗    ██║   ██║   ██║██╔══██╗██║  ╚██╔╝  ██╔══██║
+ ╚████╔╝ ██║██║  ██╗   ██║   ╚██████╔╝██║  ██║██║   ██║   ██║  ██║
+  ╚═══╝  ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝  ╚═╝
+`;
+
+function App() {
+  const [input, setInput] = useState("");
+  const [aiInput, setAiInput] = useState("");
+  const [mode, setMode] = useState<Mode>("home");
+  const [activeProject, setActiveProject] =
+    useState("ai-puzzle");
+
+  const [history, setHistory] = useState<
+    HistoryEntry[]
+  >([
+    {
+      command: "boot",
+      output:
+        "System initialized. Type 'help' or use shortcuts below.",
+    },
+  ]);
+
+  const [commandHistory, setCommandHistory] =
+    useState<string[]>([]);
+
+  const [historyIndex, setHistoryIndex] =
+    useState(-1);
+
+  const [draftInput, setDraftInput] =
+    useState("");
+
+  const [aiAnswer, setAiAnswer] = useState(
+    "Ask about projects, AI, accessibility, UI/UX, or portfolio PDFs."
+  );
+
+  const [isAiLoading, setIsAiLoading] =
+    useState(false);
+
+  const [aiConversation, setAiConversation] =
+    useState<
+      {
+        role: "user" | "assistant";
+        text: string;
+      }[]
+    >([]);
+
+  const terminalRef =
+    useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    terminalRef.current?.scrollTo({
+      top: terminalRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [history]);
+
+  const currentProject =
+    PROJECTS[activeProject];
+
+  const playSound = () => {
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as any).webkitAudioContext;
+
+    if (!AudioContextClass) return;
+
+    const ctx = new AudioContextClass();
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.value = 520;
+
+    gain.gain.value = 0.03;
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.05);
+  };
+
+  const typeText = async (
+    text: string,
+    speed = 6
+  ) => {
+    let current = "";
+
+    setAiAnswer("");
+
+    for (let i = 0; i < text.length; i++) {
+      current += text[i];
+
+      setAiAnswer(current);
+
+      await new Promise((r) =>
+        setTimeout(r, speed)
+      );
+    }
+  };
+
+  const submitAI = async (
+    questionOverride?: string
+  ) => {
+    const question = (
+      questionOverride ?? aiInput
+    ).trim();
+
+    if (!question || isAiLoading) return;
+
+    playSound();
+
+    window.__TRIGGER_PARTICLE_PULSE__?.(1.2);
+
+    setAiInput("");
+    setIsAiLoading(true);
+
+    setAiConversation((prev) => [
+      ...prev,
+      {
+        role: "user",
+        text: question,
+      },
+    ]);
+
+    try {
+      const data = await askPortfolioAI(
+        question,
+        aiConversation.slice(-6)
+      );
+
+      const sourceText = data.sources
+        .map(
+          (s, i) =>
+            `${i + 1}. ${s.file}`
+        )
+        .join("\n");
+
+      const final =
+        `${data.answer}\n\nSources:\n${sourceText}`;
+
+      await typeText(final);
+
+      setAiConversation((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          text: final,
+        },
+      ]);
+
+      setHistory((prev) => [
+        ...prev,
+        {
+          command: `ask ${question}`,
+          output: final,
+        },
+      ]);
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "AI request failed";
+
+      setAiAnswer(message);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  const handleCommand = (
+    raw: string
+  ): HistoryEntry | null => {
+    const cmd = raw.trim();
+
+    if (!cmd) return null;
+
+    const lower = cmd.toLowerCase();
+
+    if (lower === "help") {
+      return {
+        command: cmd,
+        output: `Available commands:
+
+help
+whoami
+contact
+ls
+pwd
+cd projects
+cat ai-puzzle
+cat pet-holder
+cat creative-ui
+ask <question>
+clear`,
+      };
+    }
+
+    if (lower === "whoami") {
+      return {
+        command: cmd,
+        output:
+          "viktoriya — frontend/UI engineer focused on AI-powered experiences, accessibility, UI/UX systems, Three.js interaction design, and creative product development.",
+      };
+    }
+
+    if (lower === "contact") {
+      return {
+        command: cmd,
+        output: `Email: your@email.com
+GitHub: github.com/yourname
+LinkedIn: linkedin.com/in/yourname`,
+      };
+    }
+
+    if (lower === "ls") {
+      return {
+        command: cmd,
+        output:
+          "about  contact  projects  ai-puzzle  pet-holder  creative-ui",
+      };
+    }
+
+    if (lower === "pwd") {
+      return {
+        command: cmd,
+        output: "/home/viktoriya/portfolio",
+      };
+    }
+
+    if (lower === "cd projects") {
+      setMode("projects");
+
+      return {
+        command: cmd,
+        output: "Entered projects directory.",
+      };
+    }
+
+    if (lower.startsWith("cat ")) {
+      const projectName = lower.replace(
+        "cat ",
+        ""
+      );
+
+      if (PROJECTS[projectName]) {
+        setMode("projects");
+        setActiveProject(projectName);
+
+        return {
+          command: cmd,
+          type: "project",
+          project: PROJECTS[projectName],
+        };
+      }
+
+      return {
+        command: cmd,
+        output: `File not found: ${projectName}`,
+      };
+    }
+
+    if (lower.startsWith("ask ")) {
+      const question = cmd.slice(4);
+
+      submitAI(question);
+
+      return {
+        command: cmd,
+        output: "Sending question to AI...",
+      };
+    }
+
+    if (lower === "clear") {
+      setHistory([]);
+
+      return null;
+    }
+
+    return {
+      command: cmd,
+      output: `command not found: ${cmd}`,
+    };
+  };
+
+  const submit = (
+    override?: string
+  ) => {
+    const command =
+      (override ?? input).trim();
+
+    if (!command) return;
+
+    playSound();
+
+    const intensity =
+      command.includes("cat")
+        ? 1.2
+        : command.includes("cd")
+        ? 0.8
+        : command.includes("ask")
+        ? 1.1
+        : 0.5;
+
+    window.__TRIGGER_PARTICLE_PULSE__?.(
+      intensity
+    );
+
+    const result = handleCommand(command);
+
+    setCommandHistory((prev) => [
+      ...prev,
+      command,
+    ]);
+
+    setHistoryIndex(-1);
+    setDraftInput("");
+
+    if (result) {
+      setHistory((prev) => [...prev, result]);
+    }
+
+    setInput("");
+  };
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+
+      if (commandHistory.length === 0)
+        return;
+
+      if (historyIndex === -1)
+        setDraftInput(input);
+
+      const nextIndex =
+        historyIndex === -1
+          ? commandHistory.length - 1
+          : Math.max(0, historyIndex - 1);
+
+      setHistoryIndex(nextIndex);
+      setInput(commandHistory[nextIndex]);
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+
+      if (commandHistory.length === 0)
+        return;
+
+      const nextIndex =
+        historyIndex === -1
+          ? -1
+          : Math.min(
+              commandHistory.length - 1,
+              historyIndex + 1
+            );
+
+      setHistoryIndex(nextIndex);
+
+      setInput(
+        nextIndex === -1
+          ? draftInput
+          : commandHistory[nextIndex]
+      );
+    }
+
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submit();
+    }
+  };
+
+  const rightPanelSkills = useMemo(
+    () => [
+      "React",
+      "TypeScript",
+      "Three.js",
+      "Accessibility",
+      "UI/UX",
+      "Tailwind",
+      "Figma",
+      "Adobe XD",
+      "Photoshop",
+      "Illustrator",
+      "AI-assisted UX",
+    ],
+    []
+  );
+
+  return (
+    <div className="min-h-screen overflow-hidden bg-black text-white font-mono">
+      <ThreeBackground
+        mode={mode}
+        activeProject={activeProject}
+      />
+
+      <div className="pointer-events-none absolute top-4 left-1/2 z-20 w-[96vw] -translate-x-1/2 rotate-[-2deg] overflow-hidden">
+        <pre className="select-none whitespace-pre text-[7px] leading-[0.85] tracking-[-0.05em] text-cyan-300 opacity-90 drop-shadow-[0_0_20px_rgba(34,211,238,0.95)] sm:text-[8px] md:text-[9px] lg:text-[10px]">
+          {ASCII_LOGO}
+        </pre>
+      </div>
+
+      <main className="relative z-10 mx-auto grid max-w-7xl gap-6 px-6 pb-6 pt-44 md:grid-cols-[1fr_0.9fr]">
+        {/* LEFT TERMINAL */}
+        <section className="rounded-2xl border border-cyan-400/20 bg-black/80 p-5 shadow-2xl backdrop-blur-md">
+          <div className="mb-4 flex items-center justify-between border-b border-cyan-400/10 pb-3">
+            <div className="text-cyan-300">
+              viktoriya@portfolio:~$
+            </div>
+
+            <div className="flex gap-2">
+              <span className="h-3 w-3 rounded-full bg-red-400" />
+              <span className="h-3 w-3 rounded-full bg-yellow-400" />
+              <span className="h-3 w-3 rounded-full bg-green-400" />
+            </div>
+          </div>
+
+          <div
+            ref={terminalRef}
+            className="h-[460px] overflow-y-auto space-y-4 pr-2 text-sm leading-6"
+          >
+            <AnimatePresence initial={false}>
+              {history.map((entry, index) => (
+                <motion.div
+                  key={`${entry.command}-${index}`}
+                  initial={{
+                    opacity: 0,
+                    y: 8,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                >
+                  <div className="text-cyan-300">
+                    viktoriya@portfolio:~${" "}
+                    {entry.command}
+                  </div>
+
+                  {entry.type ===
+                    "project" &&
+                  entry.project ? (
+                    <div className="mt-2 rounded-xl border border-cyan-300/25 bg-cyan-300/5 p-4">
+                      <h3 className="mb-2 text-lg font-semibold text-cyan-200">
+                        {entry.project.title}
+                      </h3>
+
+                      <p className="mb-3 text-slate-200">
+                        {
+                          entry.project
+                            .description
+                        }
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        {entry.project.stack.map(
+                          (item) => (
+                            <span
+                              key={item}
+                              className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100"
+                            >
+                              {item}
+                            </span>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <pre className="whitespace-pre-wrap text-slate-100">
+                      {entry.output}
+                    </pre>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit();
+            }}
+            className="mt-4 flex items-center gap-2 border-t border-cyan-400/10 pt-4"
+          >
+            <span className="text-cyan-300">
+              viktoriya@portfolio:~$
+            </span>
+
+            <input
+              value={input}
+              onChange={(e) =>
+                setInput(e.target.value)
+              }
+              onKeyDown={handleKeyDown}
+              className="min-w-0 flex-1 bg-transparent text-white outline-none placeholder:text-slate-500"
+              placeholder="type command..."
+              autoFocus
+            />
+          </form>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {SHORTCUTS.map((shortcut) => (
+              <button
+                key={shortcut}
+                type="button"
+                onClick={() =>
+                  submit(shortcut)
+                }
+                className="rounded-full border border-cyan-300/25 bg-slate-900/80 px-3 py-1 text-xs text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/10"
+              >
+                {shortcut}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* RIGHT PANEL */}
+        <aside className="rounded-2xl border border-cyan-400/20 bg-black/80 p-5 shadow-2xl backdrop-blur-md">
+          <h2 className="mb-4 text-xl font-semibold text-cyan-300">
+            System
+          </h2>
+
+          <div className="space-y-5 text-sm text-slate-200">
+            <div>
+              <div className="mb-1 text-cyan-300">
+                Active Project
+              </div>
+
+              <div className="font-semibold text-white">
+                {currentProject.title}
+              </div>
+
+              <p className="mt-1 text-xs leading-5 text-slate-300">
+                {
+                  currentProject.description
+                }
+              </p>
+            </div>
+
+            <div>
+              <div className="mb-1 text-cyan-300">
+                Stack
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {currentProject.stack.map(
+                  (item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100"
+                    >
+                      {item}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-1 text-cyan-300">
+                Core Skills
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {rightPanelSkills.map(
+                  (skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs"
+                    >
+                      {skill}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* AI PANEL */}
+            <div>
+              <div className="mb-2 text-cyan-300">
+                AI Assistant
+              </div>
+
+              <div className="rounded-xl border border-cyan-300/20 bg-black/35 p-3">
+                <div className="mb-3 max-h-52 overflow-y-auto whitespace-pre-wrap text-xs leading-5 text-slate-200">
+                  {isAiLoading ? (
+                    <div className="flex items-center gap-2 text-cyan-300">
+                      <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-300" />
+                      <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-300 delay-75" />
+                      <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-300 delay-150" />
+                      Thinking...
+                    </div>
+                  ) : (
+                    aiAnswer
+                  )}
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    submitAI();
+                  }}
+                  className="flex gap-2"
+                >
+                  <input
+                    value={aiInput}
+                    onChange={(e) =>
+                      setAiInput(
+                        e.target.value
+                      )
+                    }
+                    className="min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-900/80 px-2 py-1 text-xs outline-none placeholder:text-slate-500"
+                    placeholder="Ask about projects..."
+                  />
+
+                  <button
+                    type="submit"
+                    className="rounded-lg border border-cyan-300/25 px-3 py-1 text-xs text-cyan-100 hover:bg-cyan-300/10"
+                  >
+                    ask
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </div>
+  );
+}
+
+export default App;

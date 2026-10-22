@@ -1,0 +1,275 @@
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+
+
+type Props = {
+  mode?: string;
+  activeProject?: string | null;
+};
+
+declare global {
+  interface Window {
+    __TRIGGER_PARTICLE_PULSE__?: (intensity?: number) => void;
+  }
+}
+
+export default function ThreeBackground({
+  mode = "home",
+  activeProject = null,
+}: Props) {
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const initializedRef = useRef(false);
+
+  const [webglFailed, setWebglFailed] = useState(false);
+
+  useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    const mount = mountRef.current;
+    if (!mount) return;
+
+    let renderer: THREE.WebGLRenderer | null = null;
+    let composer: EffectComposer | null = null;
+    let animationId = 0;
+    let isPaused = false;
+
+    try {
+      const canvas = document.createElement("canvas");
+      const gl =
+        canvas.getContext("webgl") ||
+        canvas.getContext("experimental-webgl");
+
+      if (!gl) throw new Error("WebGL not supported");
+
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        powerPreference: "low-power",
+      });
+    } catch (e) {
+      console.warn("WebGL fallback", e);
+      setWebglFailed(true);
+      return;
+    }
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      70,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 6;
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    mount.appendChild(renderer.domElement);
+
+    // ✨ BLOOM
+    composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      0.7,
+      0.8,
+      0.2
+    );
+
+    composer.addPass(bloomPass);
+
+    // 🔹 PARTICLES
+    const geometry = new THREE.BufferGeometry();
+    const count = 1200;
+
+    const positions = new Float32Array(count * 3);
+    const basePositions = new Float32Array(count * 3);
+
+    for (let i = 0; i < count * 3; i++) {
+      const val = (Math.random() - 0.5) * 20;
+      positions[i] = val;
+      basePositions[i] = val;
+    }
+
+    geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3)
+    );
+
+    const material = new THREE.PointsMaterial({
+      color: 0x22d3ee,
+      size: 0.05,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // 🎨 COLOR (fixed)
+    const currentColor = new THREE.Color(0x22d3ee);
+    const targetColor = new THREE.Color(0x22d3ee);
+
+    const resolveColor = () => {
+      if (activeProject === "ai-puzzle") return 0x22d3ee;
+      if (activeProject === "pet-holder") return 0x22c55e;
+      if (activeProject === "creative-ui") return 0xf472b6;
+
+      if (mode === "projects") return 0xa78bfa;
+      if (mode === "help") return 0xfacc15;
+
+      return 0x22d3ee;
+    };
+
+    // 🖱️ MOUSE
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
+
+    const onMouseMove = (e: MouseEvent) => {
+      targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    };
+
+    // 💥 PULSE + RIPPLE
+    let pulse = 0;
+    let targetPulse = 0;
+
+    let rippleTime = 0;
+
+    window.__TRIGGER_PARTICLE_PULSE__ = (intensity = 1) => {
+      targetPulse = Math.min(1.5, intensity);
+      rippleTime = 0;
+    };
+
+    const clock = new THREE.Clock();
+
+    const animate = () => {
+      if (!renderer || !composer || isPaused) return;
+
+      animationId = requestAnimationFrame(animate);
+
+      const delta = Math.min(clock.getDelta(), 0.033);
+
+      pulse += (targetPulse - pulse) * 0.12;
+      targetPulse *= 0.85;
+
+      rippleTime += delta * 2;
+
+      mouseX += (targetMouseX - mouseX) * 0.03;
+      mouseY += (targetMouseY - mouseY) * 0.03;
+
+      // 🎨 COLOR UPDATE (correct)
+      const newColor = resolveColor();
+      if (targetColor.getHex() !== newColor) {
+        targetColor.set(newColor);
+        currentColor.copy(targetColor); // instant
+        targetPulse = 1.2;
+      }
+
+      currentColor.lerp(targetColor, 0.15);
+      material.color.copy(currentColor);
+
+      // 💥 PARTICLE RIPPLE
+      const pos = geometry.attributes.position.array as Float32Array;
+
+      for (let i = 0; i < pos.length; i += 3) {
+        const x = basePositions[i];
+        const y = basePositions[i + 1];
+        const z = basePositions[i + 2];
+
+        const dist = Math.sqrt(x * x + y * y);
+
+        const wave =
+          Math.sin(dist * 0.6 - rippleTime * 4) * pulse * 1.5;
+
+        pos[i] = x + (x / 10) * wave;
+        pos[i + 1] = y + (y / 10) * wave;
+        pos[i + 2] = z + wave * 0.5;
+      }
+
+      geometry.attributes.position.needsUpdate = true;
+
+      // rotation
+      particles.rotation.y += delta * 0.03 + pulse * 0.08;
+      particles.rotation.x += delta * 0.015 + pulse * 0.05;
+
+      // camera
+      camera.position.x += (mouseX * 0.4 - camera.position.x) * 0.03;
+      camera.position.y += (-mouseY * 0.4 - camera.position.y) * 0.03;
+      camera.position.z = 6 - pulse * 1.2;
+
+      camera.lookAt(scene.position);
+
+      particles.scale.setScalar(1 + pulse * 0.6);
+
+      // glow
+      bloomPass.strength = 0.7 + pulse * 1.2;
+
+      composer.render();
+    };
+
+    const onResize = () => {
+      if (!renderer || !composer) return;
+
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      composer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    const onVisibility = () => {
+      isPaused = document.hidden;
+      if (!isPaused) animate();
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("resize", onResize);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVisibility);
+
+      geometry.dispose();
+      material.dispose();
+
+      if (renderer) {
+        renderer.dispose();
+        try {
+          const gl = renderer.getContext();
+          const ext = gl.getExtension("WEBGL_lose_context");
+          ext?.loseContext();
+        } catch {}
+        renderer.domElement.remove();
+      }
+
+      delete window.__TRIGGER_PARTICLE_PULSE__;
+      initializedRef.current = false;
+    };
+  }, [mode, activeProject]);
+
+  if (webglFailed) {
+    return (
+      <div className="fixed inset-0 z-0 bg-slate-950 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={mountRef}
+      className="fixed inset-0 z-0 pointer-events-none"
+    />
+  );
+}
