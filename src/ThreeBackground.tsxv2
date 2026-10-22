@@ -1,0 +1,220 @@
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
+
+type Mode = "home" | "about" | "projects" | "contact" | "help";
+
+type SceneFocus = {
+  mode: Mode;
+  activeProject?: string | null;
+};
+
+export default function ThreeBackground({ mode, activeProject }: SceneFocus) {
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const modeRef = useRef<Mode>(mode);
+  const projectRef = useRef<string | null | undefined>(activeProject);
+
+  useEffect(() => {
+    modeRef.current = mode;
+    projectRef.current = activeProject;
+  }, [mode, activeProject]);
+
+  useEffect(() => {
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+
+    camera.position.z = 6;
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+    });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    mountRef.current?.appendChild(renderer.domElement);
+
+    const geometry = new THREE.BufferGeometry();
+    const vertices: number[] = [];
+
+    for (let i = 0; i < 3500; i++) {
+      vertices.push(
+        (Math.random() - 0.5) * 22,
+        (Math.random() - 0.5) * 22,
+        (Math.random() - 0.5) * 22
+      );
+    }
+
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(vertices, 3)
+    );
+
+    const material = new THREE.PointsMaterial({
+      color: 0x00ffff,
+      size: 0.055,
+      transparent: true,
+      opacity: 0.75,
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+
+    const onMouseMove = (e: MouseEvent) => {
+      targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+      targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+
+    const getSettings = () => {
+      if (projectRef.current === "pet-holder") {
+        return {
+          color: 0x22c55e,
+          speedX: 0.00025,
+          speedY: 0.00045,
+          size: 0.07,
+          opacity: 0.85,
+          cameraZ: 5.3,
+        };
+      }
+
+      if (projectRef.current === "perfect-game") {
+        return {
+          color: 0xf472b6,
+          speedX: 0.0005,
+          speedY: 0.00085,
+          size: 0.065,
+          opacity: 0.82,
+          cameraZ: 5.6,
+        };
+      }
+
+      if (projectRef.current === "data-platform") {
+        return {
+          color: 0x60a5fa,
+          speedX: 0.00035,
+          speedY: 0.0006,
+          size: 0.06,
+          opacity: 0.78,
+          cameraZ: 6.2,
+        };
+      }
+
+      switch (modeRef.current) {
+        case "about":
+          return {
+            color: 0x38bdf8,
+            speedX: 0.0003,
+            speedY: 0.0005,
+            size: 0.055,
+            opacity: 0.72,
+            cameraZ: 6,
+          };
+
+        case "projects":
+          return {
+            color: 0xa78bfa,
+            speedX: 0.00045,
+            speedY: 0.00075,
+            size: 0.06,
+            opacity: 0.78,
+            cameraZ: 5.8,
+          };
+
+        case "contact":
+          return {
+            color: 0x22c55e,
+            speedX: 0.00022,
+            speedY: 0.00035,
+            size: 0.058,
+            opacity: 0.72,
+            cameraZ: 6.4,
+          };
+
+        case "help":
+          return {
+            color: 0xfacc15,
+            speedX: 0.00035,
+            speedY: 0.00055,
+            size: 0.055,
+            opacity: 0.75,
+            cameraZ: 6,
+          };
+
+        default:
+          return {
+            color: 0x00ffff,
+            speedX: 0.00025,
+            speedY: 0.00045,
+            size: 0.05,
+            opacity: 0.7,
+            cameraZ: 6,
+          };
+      }
+    };
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+
+      const settings = getSettings();
+
+      material.color.lerp(new THREE.Color(settings.color), 0.025);
+      material.size += (settings.size - material.size) * 0.025;
+      material.opacity += (settings.opacity - material.opacity) * 0.025;
+
+      currentX += (targetX - currentX) * 0.02;
+      currentY += (targetY - currentY) * 0.02;
+
+      points.rotation.x += settings.speedX;
+      points.rotation.y += settings.speedY;
+
+      points.rotation.x += currentY * 0.002;
+      points.rotation.y += currentX * 0.002;
+
+      camera.position.x += (currentX * 0.7 - camera.position.x) * 0.025;
+      camera.position.y += (-currentY * 0.7 - camera.position.y) * 0.025;
+      camera.position.z += (settings.cameraZ - camera.position.z) * 0.025;
+
+      camera.lookAt(scene.position);
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", handleResize);
+
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+
+      if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
+    };
+  }, []);
+
+  return <div ref={mountRef} className="fixed inset-0 z-0" />;
+}

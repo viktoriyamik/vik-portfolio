@@ -1,0 +1,308 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { Cpu, Folder, Mail, Terminal, User } from "lucide-react";
+import ThreeBackground from "./ThreeBackground";
+
+type Mode = "home" | "about" | "projects" | "contact" | "help";
+
+type Project = {
+  name: string;
+  title: string;
+  stack: string[];
+  description: string;
+};
+
+type HistoryEntry = {
+  command: string;
+  output?: string;
+  mode?: Mode;
+  type?: "project";
+  project?: Project;
+};
+
+type CommandResult = {
+  clear?: boolean;
+  mode: Mode;
+  output?: string;
+  type?: "project";
+  project?: Project;
+};
+
+const PROJECTS: Record<string, Project> = {
+  "pet-holder": {
+    name: "pet-holder",
+    title: "Modular Pet Bottle Holder",
+    stack: ["3D Printing", "PLA", "Unity AR"],
+    description: "Custom modular holder with AR visualization.",
+  },
+  "perfect-game": {
+    name: "perfect-game",
+    title: "Perfect! Puzzle Game",
+    stack: ["Unity", "Game Design"],
+    description: "Precision-based mobile puzzle game.",
+  },
+  "data-platform": {
+    name: "data-platform",
+    title: "Data Platform Architecture",
+    stack: ["Azure", "Fabric", "MDM"],
+    description: "Scalable enterprise data platform.",
+  },
+};
+
+const FILE_SYSTEM: any = {
+  home: {
+    about: "I build software, data systems, and interactive experiences.",
+    contact: "Email: your@email.com",
+    projects: PROJECTS,
+  },
+};
+
+export default function App() {
+  const [input, setInput] = useState("");
+  const [mode, setMode] = useState<Mode>("home");
+  const [activeProject, setActiveProject] = useState<string | null>(null);
+
+  const [path, setPath] = useState<string[]>(["home"]);
+
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [draftInput, setDraftInput] = useState("");
+
+  const [history, setHistory] = useState<HistoryEntry[]>([
+    {
+      command: "boot",
+      output: "Developer Console initialized.\nType 'help' to explore.",
+    },
+  ]);
+
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    terminalRef.current?.scrollTo({
+      top: terminalRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [history]);
+
+  // 🔍 get current directory object
+  const getCurrentDir = () => {
+    let current = FILE_SYSTEM;
+    for (const p of path) {
+      current = current[p];
+    }
+    return current;
+  };
+
+  const handleCommand = (raw: string): CommandResult | null => {
+    const cmd = raw.trim();
+    if (!cmd) return null;
+
+    const parts = cmd.split(" ");
+    const base = parts[0];
+
+    const currentDir = getCurrentDir();
+
+    // 🔹 ls
+    if (base === "ls") {
+      return {
+        mode: "home",
+        output: Object.keys(currentDir).join("  "),
+      };
+    }
+
+    // 🔹 pwd
+    if (base === "pwd") {
+      return {
+        mode: "home",
+        output: "/" + path.join("/"),
+      };
+    }
+
+    // 🔹 cd
+    if (base === "cd") {
+      const target = parts[1];
+
+      if (!target || target === "~") {
+        setPath(["home"]);
+        return { mode: "home" };
+      }
+
+      if (target === "..") {
+        if (path.length > 1) {
+          setPath((prev) => prev.slice(0, -1));
+        }
+        return { mode: "home" };
+      }
+
+      if (currentDir[target]) {
+        setPath((prev) => [...prev, target]);
+
+        // if project → trigger 3D + card
+        if (PROJECTS[target]) {
+          setActiveProject(target);
+          return {
+            mode: "projects",
+            type: "project",
+            project: PROJECTS[target],
+          };
+        }
+
+        return { mode: "home" };
+      }
+
+      return { mode: "home", output: `cd: no such file or directory: ${target}` };
+    }
+
+    // 🔹 cat
+    if (base === "cat") {
+      const target = parts[1];
+
+      if (!target) {
+        return { mode: "home", output: "cat: missing file name" };
+      }
+
+      const item = currentDir[target];
+
+      if (!item) {
+        return { mode: "home", output: `cat: ${target}: not found` };
+      }
+
+      if (PROJECTS[target]) {
+        setActiveProject(target);
+        return {
+          mode: "projects",
+          type: "project",
+          project: PROJECTS[target],
+        };
+      }
+
+      return { mode: "home", output: item };
+    }
+
+    if (base === "clear") {
+      return { clear: true, mode: "home" };
+    }
+
+    return {
+      mode: "home",
+      output: `command not found: ${cmd}`,
+    };
+  };
+
+  const submit = () => {
+    const result = handleCommand(input);
+    if (!result) return;
+
+    setCommandHistory((prev) => [...prev, input]);
+    setHistoryIndex(-1);
+
+    if (result.clear) {
+      setHistory([]);
+    } else {
+      setHistory((prev) => [...prev, { command: input, ...result }]);
+    }
+
+    setInput("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (commandHistory.length === 0) return;
+
+      if (historyIndex === -1) setDraftInput(input);
+
+      const newIndex =
+        historyIndex === -1
+          ? commandHistory.length - 1
+          : Math.max(0, historyIndex - 1);
+
+      setHistoryIndex(newIndex);
+      setInput(commandHistory[newIndex]);
+    }
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+
+      const newIndex =
+        historyIndex === -1
+          ? -1
+          : Math.min(commandHistory.length - 1, historyIndex + 1);
+
+      setHistoryIndex(newIndex);
+
+      if (newIndex === -1) {
+        setInput(draftInput);
+      } else {
+        setInput(commandHistory[newIndex]);
+      }
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submit();
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white font-mono">
+      <ThreeBackground mode={mode} activeProject={activeProject} />
+
+      <main className="relative z-10 max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6">
+
+        <section className="border border-white/10 rounded-xl p-4 bg-black/40 backdrop-blur">
+          <div className="mb-4 text-cyan-400">
+            visitor@portfolio:{"/" + path.join("/")}$
+          </div>
+
+          <div className="h-80 overflow-y-auto space-y-3 text-sm">
+            <AnimatePresence>
+              {history.map((entry, i) => (
+                <div key={i}>
+                  <div className="text-cyan-400">
+                    visitor@portfolio:~$ {entry.command}
+                  </div>
+
+                  {entry.type === "project" && entry.project ? (
+                    <div className="p-3 mt-2 border rounded bg-white/5">
+                      <h3>{entry.project.title}</h3>
+                      <p>{entry.project.description}</p>
+                    </div>
+                  ) : (
+                    <pre>{entry.output}</pre>
+                  )}
+                </div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit();
+            }}
+            className="mt-4 flex gap-2"
+          >
+            <span className="text-cyan-400">
+              visitor@portfolio:{"/" + path.join("/")}$
+            </span>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="flex-1 bg-transparent outline-none"
+            />
+          </form>
+        </section>
+
+        <aside className="border border-white/10 rounded-xl p-4 bg-black/30 backdrop-blur">
+          <h2 className="text-cyan-400">System</h2>
+          <p className="text-sm text-gray-300">
+            Simulated Linux-like terminal with filesystem.
+          </p>
+        </aside>
+
+      </main>
+    </div>
+  );
+}

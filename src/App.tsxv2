@@ -1,0 +1,259 @@
+import ThreeBackground from "./ThreeBackground";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Terminal, Folder, User, Mail, Cpu } from "lucide-react";
+
+type Mode = "home" | "about" | "projects" | "contact" | "help";
+
+type Project = {
+  name: string;
+  title: string;
+  stack: string[];
+  description: string;
+};
+
+type HistoryEntry = {
+  command: string;
+  output?: string;
+  mode?: Mode;
+  type?: "project";
+  project?: Project;
+};
+
+const PROJECTS: Project[] = [
+  {
+    name: "pet-holder",
+    title: "Modular Pet Bottle Holder",
+    stack: ["3D Printing", "PLA", "Web Configurator", "Unity AR"],
+    description:
+      "A customizable modular bottle holder for pets with multiple mounting options and VR/AR visualization.",
+  },
+  {
+    name: "perfect-game",
+    title: "Perfect! Puzzle Game",
+    stack: ["Unity", "Game Design", "UX"],
+    description:
+      "A mobile puzzle game focusing on precision mechanics and minimal design.",
+  },
+  {
+    name: "data-platform",
+    title: "Data Platform Architecture",
+    stack: ["Azure", "Fabric", "MDM"],
+    description:
+      "Designed scalable data architecture solutions with governance and integration pipelines.",
+  },
+];
+
+const COMMANDS = [
+  "help",
+  "whoami",
+  "about",
+  "projects",
+  "skills",
+  "experience",
+  "contact",
+  "clear",
+];
+
+export default function App() {
+  const [input, setInput] = useState("");
+  const [mode, setMode] = useState<Mode>("home");
+  const [history, setHistory] = useState<HistoryEntry[]>([
+    {
+      command: "boot",
+      output:
+        "Developer Console initialized.\nType 'help' to explore.",
+    },
+  ]);
+
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    terminalRef.current?.scrollTo({
+      top: terminalRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [history]);
+
+  const suggestions = useMemo(() => {
+    const cmd = input.toLowerCase();
+    return COMMANDS.filter((c) => c.startsWith(cmd)).slice(0, 5);
+  }, [input]);
+
+  const handleCommand = (cmdRaw: string) => {
+    const cmd = cmdRaw.trim().toLowerCase();
+
+    if (!cmd) return;
+
+    if (cmd === "help") {
+      return {
+        mode: "help",
+        output:
+          "Commands:\n\nabout\nprojects\nskills\nexperience\ncontact\nclear",
+      };
+    }
+
+    if (cmd === "whoami") {
+      return {
+        mode: "about",
+        output:
+          "Full-stack developer / Data engineer / Interactive systems builder",
+      };
+    }
+
+    if (cmd === "about") {
+      return {
+        mode: "about",
+        output:
+          "I build modern web applications, data-driven systems, and interactive user interfaces combining engineering and design.",
+      };
+    }
+
+    if (cmd === "projects") {
+      return {
+        mode: "projects",
+        output: PROJECTS.map((p) => `- ${p.name}`).join("\n"),
+      };
+    }
+
+    if (cmd === "skills") {
+      return {
+        mode: "about",
+        output:
+          "JavaScript, TypeScript, React, Node.js, Azure, Data Engineering, Unity, 3D Design",
+      };
+    }
+
+    if (cmd === "experience") {
+      return {
+        mode: "about",
+        output:
+          "Experience in software development, data architecture, and building scalable applications and interactive systems.",
+      };
+    }
+
+    if (cmd === "contact") {
+      return {
+        mode: "contact",
+        output:
+          "Email: your@email.com\nLinkedIn: linkedin.com/in/yourname\nGitHub: github.com/yourname",
+      };
+    }
+
+    if (cmd === "clear") {
+      return { clear: true, mode: "home" };
+    }
+
+    return {
+      mode: "home",
+      output: `Command not found: ${cmd}`,
+    };
+  };
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const res = handleCommand(input);
+    if (!res) return;
+
+    if ((res as any).clear) {
+      setHistory([]);
+      setMode("home");
+    } else {
+      setHistory((prev) => [...prev, { command: input, ...res }]);
+      setMode(res.mode);
+    }
+
+    setInput("");
+  };
+
+  const iconMap = {
+    home: <Terminal size={16} />,
+    about: <User size={16} />,
+    projects: <Folder size={16} />,
+    contact: <Mail size={16} />,
+    help: <Cpu size={16} />,
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white font-mono">
+      <ThreeBackground mode={mode} />
+      <main className="relative z-10 max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6">
+        
+        {/* Terminal */}
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="border border-white/10 rounded-xl p-4 bg-black/40 backdrop-blur"
+        >
+          <div className="flex justify-between mb-4">
+            <div className="flex gap-2 items-center">
+              {iconMap[mode]}
+              <span>developer-console</span>
+            </div>
+          </div>
+
+          <div
+            ref={terminalRef}
+            className="h-80 overflow-y-auto space-y-3 text-sm"
+          >
+            <AnimatePresence>
+              {history.map((entry, i) => (
+                <div key={i}>
+                  <div className="text-cyan-400">
+                    $ {entry.command}
+                  </div>
+                  <pre className="text-gray-300 whitespace-pre-wrap">
+                    {entry.output}
+                  </pre>
+                </div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <form onSubmit={submit} className="mt-4 flex gap-2">
+            <span>$</span>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="flex-1 bg-transparent outline-none"
+            />
+          </form>
+
+          <div className="mt-2 flex gap-2 flex-wrap">
+            {suggestions.map((s) => (
+              <button
+                key={s}
+                onClick={() => setInput(s)}
+                className="text-xs px-2 py-1 border border-white/20 rounded"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Side Panel */}
+        <motion.aside
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="border border-white/10 rounded-xl p-4 bg-black/30 backdrop-blur"
+        >
+          <h2 className="text-xl text-cyan-400 mb-3">System</h2>
+          <p className="text-gray-400 text-sm">
+            Command-driven portfolio interface.
+            Each command updates application state and UI.
+          </p>
+
+          <div className="mt-4 space-y-2 text-sm text-gray-300">
+            <div>UI: React + Tailwind</div>
+            <div>Motion: Framer Motion</div>
+            <div>Data: Custom State Engine</div>
+            <div>Next: Three.js + GSAP</div>
+          </div>
+        </motion.aside>
+
+      </main>
+    </div>
+  );
+}

@@ -1,0 +1,206 @@
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+
+type ThreeBackgroundProps = {
+  mode?: string;
+  activeProject?: string | null;
+};
+
+export default function ThreeBackground({
+  mode = "home",
+  activeProject = null,
+}: ThreeBackgroundProps) {
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const initializedRef = useRef(false);
+  const modeRef = useRef(mode);
+  const activeProjectRef = useRef(activeProject);
+  const [webglFailed, setWebglFailed] = useState(false);
+
+  useEffect(() => {
+    modeRef.current = mode;
+    activeProjectRef.current = activeProject;
+  }, [mode, activeProject]);
+
+  useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    const mount = mountRef.current;
+    if (!mount) return;
+
+    let renderer: THREE.WebGLRenderer | null = null;
+    let animationId = 0;
+    let isPaused = false;
+
+    try {
+      const testCanvas = document.createElement("canvas");
+      const gl =
+        testCanvas.getContext("webgl") ||
+        testCanvas.getContext("experimental-webgl");
+
+      if (!gl) {
+        throw new Error("WebGL is not available");
+      }
+
+      renderer = new THREE.WebGLRenderer({
+        antialias: false,
+        alpha: true,
+        powerPreference: "low-power",
+      });
+    } catch (error) {
+      console.warn("WebGL unavailable. Using fallback background.", error);
+      setWebglFailed(true);
+      return;
+    }
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      70,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+
+    camera.position.z = 6;
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    mount.appendChild(renderer.domElement);
+
+    const geometry = new THREE.BufferGeometry();
+    const particleCount = 1200;
+    const positions = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      positions[i] = (Math.random() - 0.5) * 24;
+      positions[i + 1] = (Math.random() - 0.5) * 16;
+      positions[i + 2] = (Math.random() - 0.5) * 18;
+    }
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+    const material = new THREE.PointsMaterial({
+      color: 0x22d3ee,
+      size: 0.045,
+      transparent: true,
+      opacity: 0.7,
+      depthWrite: false,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    let targetMouseX = 0;
+    let targetMouseY = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    const getColorForState = () => {
+      if (activeProjectRef.current === "ai-puzzle") return 0x22d3ee;
+      if (activeProjectRef.current === "pet-holder") return 0x22c55e;
+      if (activeProjectRef.current === "creative-ui") return 0xf472b6;
+
+      if (modeRef.current === "projects") return 0xa78bfa;
+      if (modeRef.current === "contact") return 0x22c55e;
+      if (modeRef.current === "help") return 0xfacc15;
+
+      return 0x22d3ee;
+    };
+
+    const onMouseMove = (event: MouseEvent) => {
+      targetMouseX = (event.clientX / window.innerWidth - 0.5) * 2;
+      targetMouseY = (event.clientY / window.innerHeight - 0.5) * 2;
+    };
+
+    const onVisibilityChange = () => {
+      isPaused = document.hidden;
+      if (!isPaused) {
+        animate();
+      }
+    };
+
+    const onResize = () => {
+      if (!renderer) return;
+
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    };
+
+    const clock = new THREE.Clock();
+
+    const animate = () => {
+      if (!renderer || isPaused) return;
+
+      animationId = requestAnimationFrame(animate);
+
+      const delta = Math.min(clock.getDelta(), 0.033);
+
+      mouseX += (targetMouseX - mouseX) * 0.025;
+      mouseY += (targetMouseY - mouseY) * 0.025;
+
+      particles.rotation.y += delta * 0.035;
+      particles.rotation.x += delta * 0.015;
+
+      particles.rotation.y += mouseX * 0.0008;
+      particles.rotation.x += mouseY * 0.0008;
+
+      camera.position.x += (mouseX * 0.45 - camera.position.x) * 0.025;
+      camera.position.y += (-mouseY * 0.45 - camera.position.y) * 0.025;
+      camera.lookAt(scene.position);
+
+      material.color.lerp(new THREE.Color(getColorForState()), 0.025);
+
+      renderer.render(scene, camera);
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("resize", onResize);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+
+      geometry.dispose();
+      material.dispose();
+
+      if (renderer) {
+        renderer.dispose();
+
+        try {
+          const gl = renderer.getContext();
+          const ext = gl.getExtension("WEBGL_lose_context");
+          ext?.loseContext();
+        } catch {
+          // ignore cleanup failures
+        }
+
+        if (renderer.domElement.parentNode) {
+          renderer.domElement.parentNode.removeChild(renderer.domElement);
+        }
+      }
+
+      initializedRef.current = false;
+    };
+  }, []);
+
+  if (webglFailed) {
+    return (
+      <div className="fixed inset-0 z-0 overflow-hidden bg-slate-950">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.22),transparent_35%),radial-gradient(circle_at_80%_60%,rgba(168,85,247,0.18),transparent_35%)]" />
+        <div className="absolute inset-0 opacity-20 bg-[linear-gradient(90deg,rgba(34,211,238,0.12)_1px,transparent_1px),linear-gradient(rgba(34,211,238,0.12)_1px,transparent_1px)] bg-[size:48px_48px]" />
+      </div>
+    );
+  }
+
+  return <div ref={mountRef} className="fixed inset-0 z-0" />;
+}

@@ -1,0 +1,855 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import ThreeBackground from "./ThreeBackground";
+import { askPortfolioAI } from "./lib/ai";
+
+type Mode =
+  | "home"
+  | "about"
+  | "projects"
+  | "contact"
+  | "help";
+
+type Project = {
+  name: string;
+  title: string;
+  stack: string[];
+  description: string;
+};
+
+type HistoryEntry = {
+  command: string;
+  output?: string;
+  type?: "project";
+  project?: Project;
+};
+
+const PROJECTS: Record<string, Project> = {
+  "ai-puzzle": {
+    name: "ai-puzzle",
+    title: "AI Puzzle Game for Android",
+    stack: [
+      "React",
+      "TypeScript",
+      "Unity",
+      "Accessibility",
+      "UI/UX",
+      "AI Systems",
+    ],
+    description:
+      "Adaptive AI-powered Android puzzle experience with accessible interaction design and procedural gameplay systems.",
+  },
+
+  "pet-holder": {
+    name: "pet-holder",
+    title: "Modular Pet Bottle Holder",
+    stack: [
+      "3D Design",
+      "Unity AR",
+      "PLA",
+      "Product UX",
+    ],
+    description:
+      "Eco-friendly modular pet bottle holder system with AR visualization and customizable mounting.",
+  },
+
+  "creative-ui": {
+    name: "creative-ui",
+    title: "Accessible Creative UI System",
+    stack: [
+      "Figma",
+      "Adobe XD",
+      "Premiere Pro",
+      "Photoshop",
+      "Illustrator",
+      "Accessibility",
+      "UI/UX",
+      "Unity",
+    ],
+    description:
+      "High-contrast accessible UI system focused on interaction design, usability, visual consistency, and motion design.",
+  },
+};
+
+const SHORTCUTS = [
+  "help",
+  "whoami",
+  "contact",
+  "ls",
+  "pwd",
+  "cd projects",
+  "cat ai-puzzle",
+  "cat pet-holder",
+  "cat creative-ui",
+  "ask what projects do you have?",
+  "clear",
+];
+
+const AI_SHORTCUTS = [
+  "tell me about your past projects",
+  "tell me about your current projects",
+  "tell me about your accessibility experience",
+  "tell me about your IxDF studies",
+  "print CV",
+  "print blog",
+];
+
+const ASCII_LOGO = String.raw`
+██╗   ██╗██╗██╗  ██╗████████╗ ██████╗ ██████╗ ██╗██╗   ██╗ █████╗ 
+██║   ██║██║██║ ██╔╝╚══██╔══╝██╔═══██╗██╔══██╗██║╚██╗ ██╔╝██╔══██╗
+██║   ██║██║█████╔╝    ██║   ██║   ██║██████╔╝██║ ╚████╔╝ ███████║
+╚██╗ ██╔╝██║██╔═██╗    ██║   ██║   ██║██╔══██╗██║  ╚██╔╝  ██╔══██║
+ ╚████╔╝ ██║██║  ██╗   ██║   ╚██████╔╝██║  ██║██║   ██║   ██║  ██║
+  ╚═══╝  ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+███╗   ███╗██╗██╗  ██╗██╗  ██╗ █████╗ ██╗   ██╗██╗      ██████╗ ██╗   ██╗ █████╗ 
+████╗ ████║██║██║ ██╔╝██║  ██║██╔══██╗╚██╗ ██╔╝██║     ██╔═══██╗██║   ██║██╔══██╗
+██╔████╔██║██║█████╔╝ ███████║███████║ ╚████╔╝ ██║     ██║   ██║██║   ██║███████║
+██║╚██╔╝██║██║██╔═██╗ ██╔══██║██╔══██║  ╚██╔╝  ██║     ██║   ██║╚██╗ ██╔╝██╔══██║
+██║ ╚═╝ ██║██║██║  ██╗██║  ██║██║  ██║   ██║   ███████╗╚██████╔╝ ╚████╔╝ ██║  ██║
+╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝ ╚═════╝   ╚═══╝  ╚═╝  ╚═╝
+`;
+
+function App() {
+  const [input, setInput] = useState("");
+  const [aiInput, setAiInput] = useState("");
+  const [mode, setMode] = useState<Mode>("home");
+  const [activeProject, setActiveProject] =
+    useState("ai-puzzle");
+
+  const [history, setHistory] = useState<
+    HistoryEntry[]
+  >([
+    {
+      command: "boot",
+      output:
+        "System initialized. Type 'help' or use shortcuts below.",
+    },
+  ]);
+
+  const [, setCommandHistory] =
+    useState<string[]>([]);
+
+  const [, setHistoryIndex] =
+    useState(-1);
+
+  const [, setDraftInput] =
+    useState("");
+
+  const [aiAnswer, setAiAnswer] = useState(
+    "Ask about projects, AI, accessibility, UI/UX, or portfolio PDFs."
+  );
+
+const [aiSources, setAiSources] =
+  useState<
+    {
+      file: string;
+      url: string;
+    }[]
+  >([]);
+
+  const [isAiLoading, setIsAiLoading] =
+    useState(false);
+
+  const [aiConversation] =
+    useState<
+      {
+        role: "user" | "assistant";
+        text: string;
+      }[]
+    >([]);
+
+  const terminalRef =
+    useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    terminalRef.current?.scrollTo({
+      top: terminalRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [history]);
+
+  const currentProject =
+    PROJECTS[activeProject];
+
+  const playSound = () => {
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as any).webkitAudioContext;
+
+    if (!AudioContextClass) return;
+
+    const ctx = new AudioContextClass();
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.value = 520;
+
+    gain.gain.value = 0.03;
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.05);
+  };
+
+  const typeText = async (
+    text: string,
+    speed = 6
+  ) => {
+    let current = "";
+
+    setAiAnswer("");
+
+    for (let i = 0; i < text.length; i++) {
+      current += text[i];
+
+      setAiAnswer(current);
+
+      await new Promise((r) =>
+        setTimeout(r, speed)
+      );
+    }
+  };
+
+  const submitAI = async (
+    questionOverride?: string
+  ) => {
+    const question = (
+      questionOverride ?? aiInput
+    ).trim();
+
+    if (!question || isAiLoading) return;
+
+    playSound();
+
+    window.__TRIGGER_PARTICLE_PULSE__?.(1.2);
+
+    setAiInput("");
+    setIsAiLoading(true);
+
+    try {
+      const data = await askPortfolioAI(
+        question,
+        aiConversation.slice(-6)
+      );
+
+      await typeText(data.answer);
+
+
+const uniqueMap = new Map<
+  string,
+  {
+    file: string;
+    url: string;
+  }
+>();
+
+(data.sources || []).forEach(
+  (
+    s: {
+      file: string;
+      url: string;
+    }
+  ) => {
+    uniqueMap.set(s.file, {
+      file: s.file,
+
+      url:
+        s.url.startsWith("http")
+          ? s.url
+          : `https://vik.ooo${s.url}`,
+    });
+  }
+);
+
+setAiSources(
+  Array.from(uniqueMap.values())
+);
+
+      setHistory((prev) => [
+        ...prev,
+        {
+          command: `ask ${question}`,
+          output: data.answer,
+        },
+      ]);
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "AI request failed";
+
+      setAiAnswer(message);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  const handleCommand = (
+    raw: string
+  ): HistoryEntry | null => {
+    const cmd = raw.trim();
+
+    if (!cmd) return null;
+
+    const lower = cmd.toLowerCase();
+
+    if (lower === "help") {
+      return {
+        command: cmd,
+        output: `Available commands:
+
+help
+whoami
+contact
+ls
+pwd
+cd projects
+cat ai-puzzle
+cat pet-holder
+cat creative-ui
+ask <question>
+clear`,
+      };
+    }
+
+    if (lower === "whoami") {
+      return {
+        command: cmd,
+        output:
+          "Viktoriya Mikhaylova — frontend/UI engineer focused on AI-powered experiences, accessibility, UI/UX systems, Three.js interaction design, and creative product development.",
+      };
+    }
+
+    if (lower === "contact") {
+      return {
+        command: cmd,
+        output: `Email: viktoriya.mikhaylova@hotmail.com
+GitHub: https://github.com/viktoriyamik?tab=repositories
+LinkedIn: https://www.linkedin.com/in/viktoriya-mikhaylova/`,
+      };
+    }
+
+    if (lower === "ls") {
+      return {
+        command: cmd,
+        output:
+          "about  contact  projects  ai-puzzle  pet-holder  creative-ui",
+      };
+    }
+
+    if (lower === "pwd") {
+      return {
+        command: cmd,
+        output: "/home/viktoriya/ai-portfolio",
+      };
+    }
+
+    if (lower === "cd projects") {
+      setMode("projects");
+
+      return {
+        command: cmd,
+        output: "Entered projects directory.",
+      };
+    }
+
+    if (lower.startsWith("cat ")) {
+      const projectName = lower.replace(
+        "cat ",
+        ""
+      );
+
+      if (PROJECTS[projectName]) {
+        setMode("projects");
+        setActiveProject(projectName);
+
+        return {
+          command: cmd,
+          type: "project",
+          project: PROJECTS[projectName],
+        };
+      }
+
+      return {
+        command: cmd,
+        output: `File not found: ${projectName}`,
+      };
+    }
+
+    if (lower.startsWith("ask ")) {
+      const question = cmd.slice(4);
+
+      submitAI(question);
+
+      return {
+        command: cmd,
+        output: "Sending question to AI...",
+      };
+    }
+
+    if (lower === "clear") {
+      setHistory([]);
+
+      return null;
+    }
+
+    return {
+      command: cmd,
+      output: `command not found: ${cmd}`,
+    };
+  };
+
+  const submit = (
+    override?: string
+  ) => {
+    const command =
+      (override ?? input).trim();
+
+    if (!command) return;
+
+    playSound();
+
+    const result = handleCommand(command);
+
+    setCommandHistory((prev) => [
+      ...prev,
+      command,
+    ]);
+
+    setHistoryIndex(-1);
+    setDraftInput("");
+
+    if (result) {
+      setHistory((prev) => [...prev, result]);
+    }
+
+    setInput("");
+  };
+
+  const rightPanelSkills = useMemo(
+    () => [
+      "React",
+      "TypeScript",
+      "Three.js",
+      "Accessibility",
+      "UI/UX",
+      "Tailwind",
+      "Figma",
+      "Adobe XD",
+      "Premiere Pro",
+      "Photoshop",
+      "Illustrator",
+      "Unity",
+      "AI-assisted UX",
+    ],
+    []
+  );
+
+  return (
+    <div className="min-h-screen overflow-hidden bg-black text-white font-mono">
+      <ThreeBackground
+        mode={mode}
+        activeProject={activeProject}
+      />
+
+      <div className="pointer-events-none absolute top-4 left-1/2 z-20 w-[96vw] -translate-x-1/2 rotate-[-2deg] overflow-hidden">
+        <pre className="select-none whitespace-pre text-[6px] leading-[0.82] tracking-[-0.04em] text-cyan-300 opacity-90 drop-shadow-[0_0_24px_rgba(34,211,238,0.95)] sm:text-[7px] md:text-[8px] lg:text-[9px]">
+          {ASCII_LOGO}
+        </pre>
+      </div>
+
+      <main className="relative z-10 mx-auto grid max-w-7xl gap-6 px-6 pb-6 pt-52 md:grid-cols-[1fr_0.9fr]">
+        {/* LEFT TERMINAL */}
+        <section className="rounded-2xl border border-cyan-400/20 bg-black/80 p-5 shadow-2xl backdrop-blur-md">
+          <div className="mb-4 flex items-center justify-between border-b border-cyan-400/10 pb-3">
+            <div className="text-cyan-300">
+              viktoriya@ai-portfolio:~$
+            </div>
+
+            <div className="flex gap-2">
+              <span className="h-3 w-3 rounded-full bg-red-400" />
+              <span className="h-3 w-3 rounded-full bg-yellow-400" />
+              <span className="h-3 w-3 rounded-full bg-green-400" />
+            </div>
+          </div>
+
+          <div
+            ref={terminalRef}
+            className="h-[460px] overflow-y-auto space-y-4 pr-2 text-sm leading-6"
+          >
+            <AnimatePresence initial={false}>
+              {history.map((entry, index) => (
+                <motion.div
+                  key={`${entry.command}-${index}`}
+                  initial={{
+                    opacity: 0,
+                    y: 8,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                >
+                  <div className="text-cyan-300">
+                    viktoriya@ai-portfolio:~${" "}
+                    {entry.command}
+                  </div>
+
+                  {entry.type ===
+                    "project" &&
+                  entry.project ? (
+                    <div className="mt-2 rounded-xl border border-cyan-300/25 bg-cyan-300/5 p-4">
+                      <h3 className="mb-2 text-lg font-semibold text-cyan-200">
+                        {entry.project.title}
+                      </h3>
+
+                      <p className="mb-3 text-slate-200">
+                        {
+                          entry.project
+                            .description
+                        }
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        {entry.project.stack.map(
+                          (item) => (
+                            <span
+                              key={item}
+                              className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100"
+                            >
+                              {item}
+                            </span>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    
+<div className="space-y-2 whitespace-pre-wrap text-slate-100">
+  {(entry.output || "")
+    .split("\n")
+    .map((line, i) => {
+      const pdfMatch =
+        line.match(
+          /(https?:\/\/[^\s]+\.pdf)/i
+        );
+
+      if (pdfMatch) {
+        return (
+          <a
+            key={i}
+            href={pdfMatch[1]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+              block
+              rounded-lg
+              border
+              border-cyan-300/20
+              bg-cyan-300/5
+              px-3
+              py-2
+              text-cyan-300
+              underline
+              transition
+              hover:bg-cyan-300/10
+              hover:text-cyan-200
+            "
+          >
+            📄 Open PDF Source
+          </a>
+        );
+      }
+
+      return (
+        <div key={i}>
+          {line}
+        </div>
+      );
+    })}
+</div>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit();
+            }}
+            className="mt-4 flex items-center gap-2 border-t border-cyan-400/10 pt-4"
+          >
+            <span className="text-cyan-300">
+              viktoriya@ai-portfolio:~$
+            </span>
+
+            <input
+              value={input}
+              onChange={(e) =>
+                setInput(e.target.value)
+              }
+              className="min-w-0 flex-1 bg-transparent text-white outline-none placeholder:text-slate-500"
+              placeholder="type command..."
+              autoFocus
+            />
+          </form>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {SHORTCUTS.map((shortcut) => (
+              <button
+                key={shortcut}
+                type="button"
+                onClick={() =>
+                  submit(shortcut)
+                }
+                className="rounded-full border border-cyan-300/25 bg-slate-900/80 px-3 py-1 text-xs text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/10"
+              >
+                {shortcut}
+              </button>
+            ))}
+          </div>
+        </section>
+        {/* RIGHT PANEL */}
+        <aside className="rounded-2xl border border-cyan-400/20 bg-black/80 p-5 shadow-2xl backdrop-blur-md">
+          <h2 className="mb-4 text-xl font-semibold text-cyan-300">
+            AI System
+          </h2>
+
+          <div className="space-y-5 text-sm text-slate-200">
+            <div>
+              <div className="mb-1 text-cyan-300">
+                Active Project
+              </div>
+
+              <div className="font-semibold text-white">
+                {currentProject.title}
+              </div>
+
+              <p className="mt-1 text-xs leading-5 text-slate-300">
+                {currentProject.description}
+              </p>
+            </div>
+
+            <div>
+              <div className="mb-1 text-cyan-300">
+                Core Stack
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {currentProject.stack.map(
+                  (item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100"
+                    >
+                      {item}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-1 text-cyan-300">
+                Skills
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {rightPanelSkills.map(
+                  (skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs"
+                    >
+                      {skill}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-1 text-cyan-300">
+                Portfolio AI
+              </div>
+
+              <div className="text-xs leading-5 text-slate-300">
+                PDF-aware AI assistant with semantic search,
+                embeddings, RAG architecture, source citations,
+                memory, and project retrieval.
+              </div>
+            </div>
+
+            {/* AI ASSISTANT */}
+            <div>
+              <div className="mb-2 text-cyan-300">
+                AI Assistant
+              </div>
+
+              <div className="rounded-xl border border-cyan-300/20 bg-black/35 p-3">
+                
+
+<div className="mb-3 max-h-52 overflow-y-auto text-xs leading-5 text-slate-200">
+  {isAiLoading ? (
+    <div className="flex items-center gap-2 text-cyan-300">
+      <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-300" />
+      <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-300 delay-75" />
+      <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-300 delay-150" />
+      Thinking...
+    </div>
+  ) : (
+    <div className="space-y-2">
+      {aiAnswer
+        .split("\n")
+        .map((line, i) => {
+          const pdfMatch =
+            line.match(
+              /(https?:\/\/[^\s]+\.pdf)/i
+            );
+
+          if (pdfMatch) {
+            return (
+              <a
+                key={i}
+                href={pdfMatch[1]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  block
+                  rounded-lg
+                  border
+                  border-cyan-300/20
+                  bg-cyan-300/5
+                  px-3
+                  py-2
+                  text-cyan-300
+                  underline
+                  transition
+                  hover:bg-cyan-300/10
+                  hover:text-cyan-200
+                "
+              >
+                📄 Open PDF Source
+              </a>
+            );
+          }
+
+          return (
+            <div
+              key={i}
+              className="whitespace-pre-wrap"
+            >
+              {line}
+            </div>
+          );
+        })}
+    </div>
+  )}
+</div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    submitAI();
+                  }}
+                  className="flex gap-2"
+                >
+                  <input
+                    value={aiInput}
+                    onChange={(e) =>
+                      setAiInput(
+                        e.target.value
+                      )
+                    }
+                    className="min-w-0 flex-1 rounded-lg border border-white/10 bg-slate-900/80 px-2 py-1 text-xs outline-none placeholder:text-slate-500"
+                    placeholder="Ask AI..."
+                  />
+
+                  <button
+                    type="submit"
+                    className="rounded-lg border border-cyan-300/25 px-3 py-1 text-xs text-cyan-100 hover:bg-cyan-300/10"
+                  >
+                    ask
+                  </button>
+                </form>
+
+{aiSources.length > 0 && (
+  <div className="mt-4 space-y-2">
+    <div className="text-[10px] uppercase tracking-[0.25em] text-cyan-300/70">
+      Sources
+    </div>
+
+    <div className="flex flex-col gap-2">
+      {aiSources.map((source) => (
+        <a
+          key={source.url}
+          href={source.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            rounded-lg
+            border
+            border-cyan-300/20
+            bg-cyan-300/5
+            px-3
+            py-2
+            text-xs
+            text-cyan-300
+            transition
+            hover:bg-cyan-300/10
+            hover:text-cyan-200
+          "
+        >
+          📄 {source.file}
+        </a>
+      ))}
+    </div>
+  </div>
+)}
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {AI_SHORTCUTS.map((shortcut) => (
+                    <button
+                      key={shortcut}
+                      onClick={() =>
+                        submitAI(shortcut)
+                      }
+                      className="rounded-full border border-cyan-300/20 bg-cyan-300/5 px-2 py-1 text-[10px] text-cyan-100 hover:bg-cyan-300/10"
+                    >
+                      {shortcut}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer
+        className="
+          relative z-10
+          border-t border-cyan-400/10
+          bg-black/70
+          py-4
+          text-center
+          text-xs
+          tracking-[0.25em]
+          text-cyan-300/70
+          backdrop-blur-sm
+        "
+      >
+        © Viktoriya Mikhaylova
+      </footer>
+    </div>
+  );
+}
+
+export default App;
