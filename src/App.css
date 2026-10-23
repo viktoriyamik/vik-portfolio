@@ -19,3 +19,53 @@
 .case-bottom-nav{max-width:1240px;margin:30px auto 65px;padding:28px 5%;border-top:1px solid #dce3da;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .case-bottom-nav a{text-decoration:none}.case-bottom-nav a:hover{text-decoration:underline}.case-all{font-weight:700}.case-next{display:flex;align-items:center;gap:12px;color:#19352c}.case-next small{font-size:10px;letter-spacing:.12em;color:#687b70}.case-next strong{font-size:22px}.ab-case-action{display:flex!important;flex-wrap:wrap!important;gap:16px 20px!important;align-items:center!important}.ab-case-action a{margin:0!important;display:inline-flex;align-items:center;gap:9px}
 @media(max-width:600px){.case-bottom-nav{padding:22px 5%;align-items:flex-start}.case-next strong{font-size:18px}.ab-case-action{flex-direction:column;align-items:stretch!important}.ab-case-action a{justify-content:center}}
+
+
+/* Laurea Digital Living Lab — portfolio case */
+.featured-demonstrates{margin-top:10px!important;padding-top:9px;border-top:1px solid #dce3da;font-size:12px!important;line-height:1.55!important;color:#345445!important}
+.featured-demonstrates strong{display:block;text-transform:uppercase;letter-spacing:.08em;font-size:10px;color:#64796c}
+.portfolio-feature-visual--laurea{overflow:hidden;background:#e5eced}
+.portfolio-feature-visual--laurea img{display:block;width:100%;height:100%;min-height:190px;object-fit:cover}
+.dll-case{max-width:1250px;padding-bottom:20px}
+.dll-hero{display:grid;grid-template-columns:1fr 1.05fr;align-items:center;gap:clamp(24px,5vw,70px);padding:32px 0 48px}
+.dll-hero h1{font-size:clamp(42px,5.1vw,76px);line-height:1.06;letter-spacing:-.055em;margin:12px 0 22px}
+.dll-hero h1 em{display:block;color:#728b70}
+.dll-hero p{max-width:620px;line-height:1.75;color:#4e6456}
+.dll-hero .dll-lead{font-size:clamp(19px,2.1vw,25px);line-height:1.42;color:#19352c;font-weight:650;margin-bottom:15px}
+.dll-hero figure{margin:0}.dll-hero figure img{width:100%;height:clamp(280px,38vw,485px);object-fit:cover;border-radius:20px}
+.dll-hero figcaption{font-size:11px;color:#718277;margin-top:9px}
+.dll-visit{display:inline-flex;align-items:center;gap:12px;background:#193d30;color:#fff;padding:13px 20px;border-radius:9px;margin-top:22px;font-weight:700;text-decoration:none}
+.dll-visit:hover{background:#31654f;color:white;text-decoration:none}
+.dll-facts{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px;padding:23px 0;border-top:1px solid #dce3da;border-bottom:1px solid #dce3da}
+.dll-facts div{display:grid;gap:8px}.dll-facts small{font-size:10px;letter-spacing:.1em;color:#687c71}.dll-facts strong{font-size:14px;line-height:1.5}
+.dll-section{padding:70px 0;border-bottom:1px solid #dce3da}
+.dll-section h2,.dll-outcome h2{font-size:clamp(29px,3.3vw,46px);line-height:1.14;max-width:850px;margin:12px 0 22px;letter-spacing:-.04em}
+.dll-section>p,.dll-layout p,.dll-outcome p{line-height:1.85;color:#52675a;max-width:880px;font-size:15px}
+.dll-pathways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin-top:30px}
+.dll-pathways article{background:#f0f4ed;padding:25px;border-radius:14px;min-height:186px}
+.dll-pathways small{font-size:10px;letter-spacing:.12em;color:#697d70}
+.dll-pathways h3{font-size:19px;margin:17px 0 11px}
+.dll-pathways p{font-size:13px;line-height:1.7;color:#52675a}
+.dll-site-map{margin-top:30px;display:grid;justify-items:center;gap:13px;padding:35px 18px;background:#f5f8f3;border-radius:15px}
+.dll-site-map>strong{background:#dfe9dc;padding:14px 22px;border-radius:9px}
+.dll-site-map>span{color:#69836b;font-size:27px}
+.dll-site-map>div{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.dll-site-map b{background:white;border:1px solid #d9e5d9;padding:13px 15px;border-radius:9px;font-size:12px}
+.dll-footnote{font-size:11px!important;margin-top:12px}
+.dll-icons{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:32px 0 0}
+.dll-icons figure{margin:0;padding:27px 18px;background:#f4f7f1;border:1px solid #e4e9e0;border-radius:15px;text-align:center}
+.dll-icons img{width:112px;height:128px;max-width:100%;object-fit:contain}
+.dll-icons figcaption{margin-top:15px;font-size:14px;font-weight:700;line-height:1.5}
+.dll-layout{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.dll-layout p+p{margin-top:16px}
+.dll-responsive-example{display:flex;align-items:center;gap:18px;justify-content:center;background:#eef3ef;padding:24px;border-radius:17px;min-height:300px}
+.dll-desktop-preview{flex:1;min-width:0;background:white;border:7px solid #fafafa;border-top-width:20px;border-radius:11px;box-shadow:0 14px 32px #1e403324}
+.dll-desktop-preview img{width:100%;display:block;aspect-ratio:1.5;object-fit:cover}
+.dll-mobile-preview{width:116px;flex-shrink:0;background:white;padding:8px 8px 18px;border:5px solid #29382e;border-radius:19px;box-shadow:0 12px 28px #1e403328}
+.dll-mobile-preview img{width:100%;aspect-ratio:0.9;object-fit:cover}
+.dll-mobile-preview span{display:block;font-size:8px;margin:8px 0 5px;color:#56715d}
+.dll-mobile-preview b{font-size:10px;line-height:1.35;display:block}
+.dll-outcome{padding:65px 35px;margin:65px 0 25px;background:#e8efe5;border-radius:18px}
+.dll-outcome p+p{margin-top:15px}
+@media(max-width:800px){.dll-hero,.dll-layout{grid-template-columns:1fr}.dll-hero{padding-top:18px}.dll-facts{grid-template-columns:1fr 1fr}.dll-pathways{grid-template-columns:1fr}.dll-section{padding:47px 0}.dll-icons{gap:8px}.dll-icons figure{padding:16px 7px}.dll-icons img{height:90px;width:80px}.dll-icons figcaption{font-size:11px}.dll-outcome{padding:35px 22px}}
+@media(max-width:500px){.dll-facts{grid-template-columns:1fr}.dll-hero figure img{height:260px}.dll-responsive-example{padding:13px}.dll-mobile-preview{width:90px}.dll-hero h1{font-size:40px}}
