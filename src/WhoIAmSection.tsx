@@ -110,7 +110,7 @@ export default function WhoIAmSection() {
           <span className="vm-about-label">SELECTED PRODUCT THINKING</span>
           <h3>Real problems, connected journeys and responsible AI concepts.</h3>
         </div>
-        <p><strong>AURA Atelier</strong> explores emotionally intelligent styling and a considered transition from AI concierge to human advisor. <strong>CleanPeer</strong> connects a cleaner’s immediate problem with credible guidance, expert support and learning. <strong>HaeSiivooja</strong> brings customer booking and cleaner coordination into a single service experience. <strong>AccessBloom</strong> turns website accessibility findings into clear, actionable guidance, combining automated analysis with human review. <strong>Laurea Digital Living Lab</strong> adds evidence of website information architecture, responsive design and development.</p>
+        <p><strong>AURA Atelier</strong> explores emotionally intelligent styling and a considered transition from AI concierge to human advisor. <strong>CleanPeer</strong> connects a cleaner’s immediate problem with credible guidance, expert support and learning. <strong>HaeSiivooja</strong> brings customer booking and cleaner coordination into a single service experience. <strong>AccessBloom</strong> turns website accessibility findings into clear, actionable guidance, combining automated analysis with human review. <a href="https://www.digitallivinglab.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit Laurea Digital Living Lab website"><strong>Laurea Digital Living Lab ↗</strong></a> adds evidence of website information architecture, responsive design and development.</p>
       </div>
 
       <div className="vm-about-footer">
