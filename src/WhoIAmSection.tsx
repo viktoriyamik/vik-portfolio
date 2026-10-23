@@ -88,8 +88,9 @@ export default function WhoIAmSection() {
           <p>I choose tools according to the product, its users and what needs to be tested or delivered.</p>
         </div>
         <div className="vm-about-toolkit-list">
-          <div><h4>Product design &amp; prototyping</h4><p>Figma, interaction flows, design systems and functional prototypes.</p></div>
-          <div><h4>Graphic design &amp; photography</h4><p>Adobe Creative Cloud for visual assets, image editing, illustration and layout.</p></div>
+          <div><h4>Product design, research &amp; prototyping</h4><p>Figma, Miro, user journeys, information architecture, interaction flows, design systems and interactive prototypes.</p></div>
+          <div><h4>AI-assisted product design</h4><p>OpenAI and Claude for exploring concepts, prototyping AI interactions, evaluating prompts and designing human-in-the-loop and AI-agent experiences.</p></div>
+          <div><h4>Graphic design, typography &amp; photography</h4><p>Typography, visual hierarchy, composition and Adobe Creative Cloud for visual assets, illustration, image editing and layout.</p></div>
           <div><h4>Web implementation &amp; CMS</h4><p>React, HTML, CSS and JavaScript for interactive web experiences; WordPress and Wix for content-managed websites.</p></div>
         </div>
       </section>
