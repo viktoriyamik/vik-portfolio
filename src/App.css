@@ -69,3 +69,87 @@
 .dll-outcome p+p{margin-top:15px}
 @media(max-width:800px){.dll-hero,.dll-layout{grid-template-columns:1fr}.dll-hero{padding-top:18px}.dll-facts{grid-template-columns:1fr 1fr}.dll-pathways{grid-template-columns:1fr}.dll-section{padding:47px 0}.dll-icons{gap:8px}.dll-icons figure{padding:16px 7px}.dll-icons img{height:90px;width:80px}.dll-icons figcaption{font-size:11px}.dll-outcome{padding:35px 22px}}
 @media(max-width:500px){.dll-facts{grid-template-columns:1fr}.dll-hero figure img{height:260px}.dll-responsive-example{padding:13px}.dll-mobile-preview{width:90px}.dll-hero h1{font-size:40px}}
+
+/* vik-hero-portrait-v1: approved editorial portrait, responsive homepage hero */
+.intro.intro--portrait {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(345px, .9fr);
+  gap: clamp(24px, 4vw, 76px);
+  align-items: center;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: clamp(48px, 5vw, 85px) 5%;
+  box-sizing: border-box;
+}
+.intro.intro--portrait .intro-copy { min-width: 0; }
+.intro.intro--portrait .intro-copy h1 {
+  font-size: clamp(2.7rem, 4.2vw, 5.1rem);
+  line-height: 1.1;
+  max-width: 15ch;
+  margin: 26px 0;
+  text-wrap: balance;
+}
+.intro.intro--portrait .intro-copy > p:last-child {
+  font-size: clamp(1rem, 1.2vw, 1.2rem);
+  line-height: 1.65;
+  max-width: 58ch;
+  margin: 0;
+  color: #607264;
+}
+.intro.intro--portrait .hero-portrait {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: clamp(560px, 70vh, 790px);
+  min-width: 0;
+  margin: 0;
+  border-radius: 24px;
+  background: #343033;
+  overflow: hidden;
+  box-shadow: 0 20px 55px rgba(27, 35, 28, .13);
+}
+.intro.intro--portrait .hero-portrait picture,
+.intro.intro--portrait .hero-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.intro.intro--portrait .hero-portrait img {
+  object-fit: cover;
+  object-position: center 23%;
+}
+@media (max-width: 980px) {
+  .intro.intro--portrait {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 42px 5% 60px;
+  }
+  .intro.intro--portrait .intro-copy h1 {
+    max-width: 20ch;
+    font-size: clamp(2.7rem, 6vw, 4.8rem);
+  }
+  .intro.intro--portrait .hero-portrait {
+    justify-self: center;
+    width: min(100%, 630px);
+    height: auto;
+    aspect-ratio: 4 / 4.8;
+  }
+}
+@media (max-width: 600px) {
+  .intro.intro--portrait {
+    gap: 26px;
+    padding: 30px 5% 46px;
+  }
+  .intro.intro--portrait .intro-copy h1 {
+    max-width: 100%;
+    font-size: clamp(2.25rem, 8.4vw, 3.4rem);
+  }
+  .intro.intro--portrait .hero-portrait {
+    width: 100%;
+    max-height: 550px;
+    aspect-ratio: 4 / 4.8;
+    border-radius: 18px;
+  }
+  .intro.intro--portrait .hero-portrait img { object-position: center 18%; }
+}

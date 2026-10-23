@@ -120,7 +120,15 @@ function App(){
    <section className="case-section"><span>04 / SELECTED SCREENS</span><h2>Explore the experience</h2><div className={`case-gallery gallery-${current.id}`}>{images[(current as { id: ID }).id].map(image=><figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy"/><figcaption>{image.caption}</figcaption></figure>)}</div></section>
    <section className="case-section split"><span>05 / STATUS</span><div><h2>Where the work stands</h2><p>{current.outcome}</p><div className="links">{current.links.map(l=><a href={l.url} key={l.url} target="_blank" rel="noreferrer">{l.text} <ArrowUpRight size={17}/></a>)}</div></div></section>
   </main>:<main id="top">
-   <section className="intro"><p className="overline">VIKTORIYA MIKHAYLOVA / PRODUCT DESIGNER & UX/UI DESIGNER</p><h1>Designing useful digital products<br/>with <em>clarity and care.</em></h1><p>I connect research, product thinking and interface design to turn complex needs into experiences people can understand and use.</p></section>
+   <section className="intro intro--portrait">
+    <div className="intro-copy"><p className="overline">VIKTORIYA MIKHAYLOVA / PRODUCT DESIGNER & UX/UI DESIGNER</p><h1>Designing useful digital products<br/>with <em>clarity and care.</em></h1><p>I connect research, product thinking and interface design to turn complex needs into experiences people can understand and use.</p></div>
+    <figure className="hero-portrait">
+     <picture>
+      <source media="(max-width: 760px)" srcSet="/cases/vik-hero-portrait-mobile.webp" type="image/webp" />
+      <img src="/cases/vik-hero-portrait.webp" width={1122} height={1402} alt="Viktoriya in a red coat and hat against an abstract charcoal and beige background" loading="eager" decoding="async" fetchPriority="high" />
+     </picture>
+    </figure>
+   </section> {/* vik-hero-portrait-v1 */}
    <section className="portfolio-columns" id="work"><div className="featured"><p className="overline">SELECTED WORK / 01—05</p><h2>Selected work</h2><div className="featured-list">{cases.map((c,i)=><a href={`#case-${c.id}`} className="featured-card" key={c.id}>{c.id==='aura'?<img className="featured-image" src="/cases/aura-curated.png" alt="AURA Atelier mobile prototype and curated outfit suggestions"/>:<Visual id={c.id}/>}<div><small>0{i+1} / {c.category}</small><h3>{c.name}</h3><p>{c.headline}</p><p className="featured-demonstrates"><strong>Demonstrates</strong> {c.demonstrates}</p><span>View case study <ArrowUpRight size={15}/></span></div></a>)}</div></div><div className="portfolio-side"><Assistant/><AccessBloomCheck/></div></section>
    <WhoIAmSection />
    <section className="contact" id="contact"><p className="overline">CONTACT</p><h2>Let’s design<br/><em>what’s next.</em></h2><div className="contact-links"><a href="mailto:viktoriya.mikhaylova@hotmail.com">Email <span>viktoriya.mikhaylova@hotmail.com ↗</span></a><a href="https://github.com/viktoriyamik" target="_blank" rel="noreferrer">GitHub <span>github.com/viktoriyamik ↗</span></a><a href="https://www.linkedin.com/in/viktoriya-mikhaylova/" target="_blank" rel="noreferrer">LinkedIn <span>View profile ↗</span></a></div></section>
