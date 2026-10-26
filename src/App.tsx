@@ -121,7 +121,7 @@ function App(){
    <section className="case-section split"><span>05 / STATUS</span><div><h2>Where the work stands</h2><p>{current.outcome}</p><div className="links">{current.links.map(l=><a href={l.url} key={l.url} target="_blank" rel="noreferrer">{l.text} <ArrowUpRight size={17}/></a>)}</div></div></section>
   </main>:<main id="top">
    <section className="intro intro--portrait">
-    <div className="intro-copy"><p className="overline">VIKTORIYA MIKHAYLOVA / PRODUCT DESIGNER & UX/UI DESIGNER</p><h1>Designing useful digital products<br/>with <em>clarity and care.</em></h1><p>I connect research, product thinking and interface design to turn complex needs into experiences people can understand and use.</p></div>
+    <div className="intro-copy"><p className="overline">PRODUCT DESIGN · UX RESEARCH · HUMAN–AI INTERACTION</p><h1>Viktoriya Mikhaylova<br/><em>Product Designer</em></h1><p>Designing useful digital products with clarity and care. I connect research, product thinking and interface design to turn complex needs into experiences people can understand and use.</p></div>
     <figure className="hero-portrait">
      <picture>
       <source media="(max-width: 760px)" srcSet="/cases/vik-hero-portrait-mobile.webp" type="image/webp" />

@@ -84,9 +84,9 @@
 }
 .intro.intro--portrait .intro-copy { min-width: 0; }
 .intro.intro--portrait .intro-copy h1 {
-  font-size: clamp(2.7rem, 4.2vw, 5.1rem);
+  font-size: clamp(2.5rem, 3.8vw, 4.75rem);
   line-height: 1.1;
-  max-width: 15ch;
+  max-width: 100%;
   margin: 26px 0;
   text-wrap: balance;
 }
