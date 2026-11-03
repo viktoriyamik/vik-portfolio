@@ -33,6 +33,14 @@
 .vm-about-proof{padding:74px 0;border-bottom:1px solid #d0dcd1;display:grid;grid-template-columns:1fr 1fr;gap:clamp(35px,8vw,115px)}
 .vm-about-proof p{font-size:16px;line-height:1.85;max-width:560px}
 .vm-about-proof strong{color:#1d4031}
+.vm-about-project-list{display:grid;gap:0;align-content:start}
+.vm-about-proof .vm-about-project-list p{max-width:580px;margin:0;padding:13px 0;border-bottom:1px solid #d0dcd1;font-size:15px;line-height:1.68}
+.vm-about-proof .vm-about-project-list p:first-child{padding-top:0}
+.vm-about-proof .vm-about-project-list p:last-child{border-bottom:0;padding-bottom:0}
+.vm-about-project-list a{color:#205b40;text-underline-offset:3px;text-decoration-thickness:1px;font-weight:750}
+.vm-about-project-list a:hover{color:#16724b;text-decoration-thickness:2px}
+.vm-about-project-list a:focus-visible{outline:3px solid #235f41;outline-offset:3px}
+
 .vm-about-footer{padding-top:43px;display:flex;gap:60px;align-items:start;justify-content:space-between}
 .vm-about-footer>p{max-width:560px;font-size:15px}
 .vm-about-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
