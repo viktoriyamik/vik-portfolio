@@ -41,6 +41,6 @@ nginx -t
 previous="$site/dist-before-$stamp"
 mv "$site/dist" "$previous"
 if ! mv "$staging" "$site/dist"; then mv "$previous" "$site/dist"; exit 1; fi
-printf '\nDeployed. Verify https://vik.ooo/#case-haesiivooja\n'
+printf '\nDeployed. Verify https://vik.ooo/case-studies/leaveready/ and https://vik.ooo/leaveready-prototype/\n'
 printf 'Previous compiled site: %s\nFull backup: %s\n' "$previous" "$backup"
 # Frontend-only change: Nginx and portfolio-ai do not require a restart.
