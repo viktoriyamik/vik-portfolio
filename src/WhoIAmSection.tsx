@@ -42,7 +42,7 @@ export default function WhoIAmSection() {
             <h2 id="vm-about-title">I design <em>human-centred AI products.</em></h2>
           </div>
           <div className="vm-about-intro">
-            <p className="vm-about-lead">I’m Viktoriya, an <strong>AI-enabled Product Designer</strong> who turns complex needs and emerging technologies into useful, considered digital products.</p>
+            <p className="vm-about-lead">I’m Viktoriya, an <strong>AI Product Designer</strong> who turns complex needs and emerging technologies into useful, considered digital products.</p>
             <p>I work across the product lifecycle—from opportunity framing and research to experience strategy, interaction design, accessible interfaces and working prototypes. My focus is the whole product experience, not an isolated screen.</p>
             <p>My background spans <strong>Business Information Technology, Graphic Design, and Photography</strong>, combining systems thinking with visual communication and storytelling. I bring these perspectives into product design to make complex digital experiences feel intuitive, accessible, and human-centered.</p>
           </div>
