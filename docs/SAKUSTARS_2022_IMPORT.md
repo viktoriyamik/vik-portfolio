@@ -50,45 +50,40 @@ Nginx already serves `/home/lihvool/viki/dist`, so no new webroot or vhost is ne
 - https://vik.ooo/cases/sakustars-2022/manifest.json — source image index
 
 **GitHub media limit:** The importer compresses the web-playable copy of the video if the original exceeds 95 MB. GitHub's ordinary push limit is 100 MB per file. Keep a separate original in archival storage if compression was necessary.
-## Finish the revised SAKUstars case (2026 refresh)
+## Finish the SAKUstars case
 
-The live case source is `public/case-studies/sakustars-2022/index.html`. The redesigned page uses the lilac colour scheme and includes the official event website, improved nav, original gallery, animation, and embedded corrected PDF.
+The project page in `public/case-studies/sakustars-2022/index.html` now contains a static gallery of the original image files, so it does not depend on JavaScript to render the gallery. The facts identify the design role and tools separately. It contains no site-maintenance or file-import notes.
 
-### Missing Instagram screenshot
+### Corrected original project PDF (43 pages)
 
-The original first import missed one screenshot. Fetch that specific original PNG (without running the full importer again):
+The corrected PDF preserves the original 43-page artwork and event documentation, fixes the recurring "Autor" header, corrects the introductory text and removes the old personal contact details from page 43.
+
+**File:** `SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf`
+
+The PDF is a binary file and is **not yet committed to the repository**. Download the 43-page PDF from the ChatGPT conversation and copy it to the VPS via SCP or SFTP:
+
+```powershell
+scp "$env:USERPROFILE\Downloads\SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf" lihvool@vmi3282280.contaboserver.net:/home/lihvool/viki/public/cases/sakustars-2022/
+```
+
+The case's PDF section and its navigation item are automatically shown only when that URL serves an actual PDF. The page intentionally hides the viewer if Nginx returns SPA HTML as a fallback for a missing file.
+
+### Check and build
 
 ```bash
 cd /home/lihvool/viki
 git pull --ff-only origin main
-python3 scripts/add_sakustars_instagram.py
-```
-
-This adds `public/cases/sakustars-2022/media/SAKUstars2022_Instagram_2022-04-28.png` and updates gallery captions from "AKUstars" to "SAKUstars". If the original domain times out, do not claim the image was imported; supply the original PNG separately or retry once the source is available.
-
-### Corrected PDF (47 pages)
-
-The revised PDF was generated from the author's supplied PDF and preserves its original artwork, improves captions, corrects the repeated "Autor" header and removes outdated personal contact information from the final page.
-
-**File name:** `SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf`
-
-**Publish to:** `/home/lihvool/viki/public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf`
-
-Download the generated file from the ChatGPT conversation to your own computer, then upload it to the VPS with SFTP, SCP or the GitHub repository upload UI. The PDF is a binary artifact; adding its link to the source code does not upload its contents.
-
-Once the file is present on the VPS:
-
-```bash
-cd /home/lihvool/viki
-ls -lh public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf
-git add public/cases/sakustars-2022/
-git diff --cached --stat
-git commit -m "Import missing SAKUstars Instagram image and corrected project portfolio PDF"
+file public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf
+pdfinfo public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf | grep Pages
+git add public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf
+git commit -m "Add corrected original SAKUstars portfolio PDF"
 git push origin main
 npm run build
-
 test -s dist/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf && echo "PDF OK"
-test -s dist/cases/sakustars-2022/media/SAKUstars2022_Instagram_2022-04-28.png && echo "Instagram OK"
+test -s dist/cases/sakustars-2022/manifest.json && echo "Gallery manifest OK"
+curl -sSI https://vik.ooo/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf | grep -i content-type
 ```
 
-No Nginx restart is necessary because `vik.ooo` serves the Vite `dist` folder. Do not commit unrelated VPS backup files, and do not force-push.
+Expected content type: `application/pdf`. `text/html` indicates the wrong file or a missing path. Do not restart Nginx: it serves the existing Vite `dist` directory.
+
+All 19 image paths, including the Instagram screenshot, are already stored in the GitHub `public/cases/sakustars-2022/media` directory. No media-import rerun is needed.
