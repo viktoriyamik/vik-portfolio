@@ -79,6 +79,7 @@ const images:Record<ID,{src:string;alt:string;caption:string}[]>={
   {src:'/cases/cleanpeer-prototype.png',alt:'CleanPeer five-screen paper prototype with rationale',caption:'Five key screens and their design rationale'},
   {src:'/cases/cleanpeer-flow.png',alt:'CleanPeer cleaning-problem flow wireframe',caption:'Mapping the cleaning-problem journey'},
  ],
+ sakustars:[{src:'/cases/sakustars-2022/award-ceremony-preview.gif',alt:'Animated preview created from the SAKUstars 2022 award ceremony video',caption:'SAKUstars 2022 · original motion design'}],
 }
 
 function LaureaCase({back}:{back:()=>void}){
