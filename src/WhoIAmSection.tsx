@@ -118,6 +118,7 @@ export default function WhoIAmSection() {
           <p><a href="/#case-haesiivooja"><strong>HaeSiivooja ↗</strong></a> is a cleaning-service marketplace where cleaners can find customers and customers can find and book local cleaning professionals.</p>
           <p><a href="/#case-accessbloom"><strong>AccessBloom ↗</strong></a> is an AI-supported website accessibility checker that helps teams identify barriers, understand their impact and review practical fixes.</p>
           <p><a href="/#case-laurea"><strong>Laurea Digital Living Lab ↗</strong></a> is a website I designed and developed to help students and partners explore the lab’s activities, projects and opportunities. <a href="https://www.digitallivinglab.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit the live Laurea Digital Living Lab website">Visit live website ↗</a></p>
+          <p><a href="/case-studies/sakustars-2022/"><strong>SAKUstars 2022 ↗</strong></a> brought one event identity across its WordPress website, owl logo, posters, printed materials and animations. My work combined visual identity, web design, and usability testing.</p>
         </div>
       </div>
 
