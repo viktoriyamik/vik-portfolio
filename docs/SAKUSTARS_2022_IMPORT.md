@@ -56,34 +56,62 @@ The project page in `public/case-studies/sakustars-2022/index.html` now contains
 
 ### Corrected original project PDF (43 pages)
 
-The corrected PDF preserves the original 43-page artwork and event documentation, fixes the recurring "Autor" header, corrects the introductory text and removes the old personal contact details from page 43.
+The corrected portfolio PDF is already committed in GitHub at:
+`public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf`
 
-**File:** `SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf`
+Do **not** download the PDF from the chat or copy it separately. Pull the current main branch and build Vite. If the website returns its homepage instead of the PDF, that means the server is not serving the expected build/file; check the path and content type.
 
-The PDF is a binary file and is **not yet committed to the repository**. Download the 43-page PDF from the ChatGPT conversation and copy it to the VPS via SCP or SFTP:
+### The second animation (award ceremony with fireworks)
 
-```powershell
-scp "$env:USERPROFILE\Downloads\SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf" lihvool@vmi3282280.contaboserver.net:/home/lihvool/viki/public/cases/sakustars-2022/
-```
+The original URL supplied for the second video was:
 
-The case's PDF section and its navigation item are automatically shown only when that URL serves an actual PDF. The page intentionally hides the viewer if Nginx returns SPA HTML as a fallback for a missing file.
+`http://vmi394276.contaboserver.net/SAKUstars2022/SAKUstars2022_AnimationAwardCeremonyWithSalut.mp4`
 
-### Check and build
+This file has **not** been committed to GitHub, and its availability on the old server has not been independently verified. If the old server still has it, fetch and validate the MP4 from the Ubuntu VPS:
 
 ```bash
 cd /home/lihvool/viki
-git pull --ff-only origin main
-file public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf
-pdfinfo public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf | grep Pages
-git add public/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf
-git commit -m "Add corrected original SAKUstars portfolio PDF"
-git push origin main
-npm run build
-test -s dist/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf && echo "PDF OK"
-test -s dist/cases/sakustars-2022/manifest.json && echo "Gallery manifest OK"
-curl -sSI https://vik.ooo/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf | grep -i content-type
+mkdir -p public/cases/sakustars-2022
+curl -fL --retry 3 --connect-timeout 15 \
+  'http://vmi394276.contaboserver.net/SAKUstars2022/SAKUstars2022_AnimationAwardCeremonyWithSalut.mp4' \
+  -o public/cases/sakustars-2022/SAKUstars2022_AnimationAwardCeremonyWithSalut.mp4
+file public/cases/sakustars-2022/SAKUstars2022_AnimationAwardCeremonyWithSalut.mp4
+ffprobe -v error -show_entries format=duration:format_tags=encoder -of default=noprint_wrappers=1 \
+  public/cases/sakustars-2022/SAKUstars2022_AnimationAwardCeremonyWithSalut.mp4
 ```
 
-Expected content type: `application/pdf`. `text/html` indicates the wrong file or a missing path. Do not restart Nginx: it serves the existing Vite `dist` directory.
+If the download returns an error or the file command reports HTML rather than MP4 media, do not publish it. Instead, obtain the original file from your old VPS backup or your local archive and copy it into that exact destination using SFTP/SCP. The case automatically reveals the second video once the real MP4 is served by the site.
 
-All 19 image paths, including the Instagram screenshot, are already stored in the GitHub `public/cases/sakustars-2022/media` directory. No media-import rerun is needed.
+### Deploy the updated case
+
+```bash
+cd /home/lihvool/viki
+git status --short
+git pull --ff-only origin main
+npm ci
+npm run build
+
+# Verify the built case, original PDF and first MP4:
+test -s dist/case-studies/sakustars-2022/index.html && echo "Case OK"
+test -s dist/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf && echo "PDF OK"
+test -s dist/cases/sakustars-2022/SAKUstars2022_AnimationAwardCeremony.mp4 && echo "Video 1 OK"
+
+# If you have retrieved the second MP4 before building:
+test -s dist/cases/sakustars-2022/SAKUstars2022_AnimationAwardCeremonyWithSalut.mp4 && echo "Video 2 OK"
+
+# Check the public responses:
+curl -sSI https://vik.ooo/cases/sakustars-2022/SAKUstars_2022_Visual_Identity_Web_Design_Corrected.pdf | grep -Ei 'HTTP/|content-type|content-length'
+curl -sSI https://vik.ooo/cases/sakustars-2022/SAKUstars2022_AnimationAwardCeremony.mp4 | grep -Ei 'HTTP/|content-type|content-length'
+```
+
+Expect `application/pdf` for the PDF and `video/mp4` for the first video. An `text/html` response to the PDF means a single-page-app fallback rather than the file itself.
+
+If the second MP4 is valid and under GitHub's regular 100-MB file limit, commit it as a separate media update:
+
+```bash
+git add public/cases/sakustars-2022/SAKUstars2022_AnimationAwardCeremonyWithSalut.mp4
+git commit -m "Add original SAKUstars award ceremony fireworks animation"
+git push origin main
+```
+
+The case HTML and original project PDF are already in the repository. There is no need to restart Nginx if it is already serving `/home/lihvool/viki/dist`.
