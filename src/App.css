@@ -182,7 +182,7 @@
 }
 .intro.intro--portrait .intro-copy > p:last-child {
   max-width: 36ch;
-  font-size: clamp(1.24rem, 1.7vw, 1.6rem);
+  font-size: clamp(1.1rem, 1.45vw, 1.38rem);
   line-height: 1.5;
   font-weight: 500;
   color: #354c3d;
@@ -198,7 +198,7 @@
   .intro.intro--portrait .intro-copy h1 { font-size: clamp(2.15rem, 8.4vw, 3.4rem); }
   .intro.intro--portrait .intro-copy h1 em { font-size: clamp(1.6rem, 6.4vw, 2.8rem); }
   .intro.intro--portrait .intro-copy > p:last-child {
-    font-size: clamp(1.17rem, 4.3vw, 1.38rem);
+    font-size: clamp(1.05rem, 3.9vw, 1.22rem);
     line-height: 1.55;
     max-width: 100%;
   }
