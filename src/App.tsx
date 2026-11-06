@@ -8,6 +8,7 @@ import HaesiivoojaCase from './HaesiivoojaCase'
 import { AuraCase, CleanPeerCase } from './PortfolioDeepDives'
 
 type ID = 'leaveready' | 'haesiivooja' | 'aura' | 'cleanpeer' | 'accessbloom' | 'laurea' | 'sakustars'
+const caseUrl = (id: ID) => `/case-studies/${id === 'sakustars' ? 'sakustars-2022' : id}/`
 type Case = { id: ID; demonstrates:string; name: string; category: string; headline: string; summary: string; role: string; platform: string; status: string; challenge: string; process: string[]; decisions: {title:string;text:string}[]; outcome: string; links: {text:string;url:string}[] }
 const figma = 'https://www.figma.com/design/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio'
 const cases: Case[] = [
@@ -111,7 +112,7 @@ function LaureaCase({back}:{back:()=>void}){
 
 function App(){
  const [active,setActive]=useState<ID|null>(null),[menu,setMenu]=useState(false)
- useEffect(()=>{const read=()=>{const id=location.hash.slice(6) as ID;if(id==='leaveready'){location.assign('/case-studies/leaveready/');return}if(id==='sakustars'){location.assign('/case-studies/sakustars-2022/');return}setActive(cases.some(c=>c.id===id)?id:null)};read();addEventListener('hashchange',read);return()=>removeEventListener('hashchange',read)},[])
+ useEffect(()=>{const read=()=>{const id=location.hash.slice(6) as ID;if(cases.some(c=>c.id===id)){location.replace(caseUrl(id));return}setActive(null)};read();addEventListener('hashchange',read);return()=>removeEventListener('hashchange',read)},[])
  useEffect(()=>{if(active)scrollTo({top:0,behavior:'smooth'})},[active])
  const current=cases.find(c=>c.id===active)
  const jump=(id:string)=>{setMenu(false);location.hash=id;setActive(null);setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'}),0)}
@@ -137,11 +138,11 @@ function App(){
      </picture>
     </figure>
    </section> {/* vik-hero-portrait-v1 */}
-   <section className="portfolio-columns" id="work"><div className="featured"><p className="overline">SELECTED WORK / 01—07</p><h2>Selected work</h2><div className="featured-list">{cases.map((c,i)=><a href={c.id==='leaveready'?'/case-studies/leaveready/':c.id==='sakustars'?'/case-studies/sakustars-2022/':`#case-${c.id}`} className="featured-card" key={c.id}>{c.id==='aura'?<img className="featured-image" src="/cases/aura-curated.png" alt="AURA Atelier mobile prototype and curated outfit suggestions"/>:<Visual id={c.id}/>}<div><small>0{i+1} / {c.category}</small><h3>{c.name}</h3><p>{c.headline}</p><p className="featured-demonstrates"><strong>Demonstrates</strong> {c.demonstrates}</p><span>View case study <ArrowUpRight size={15}/></span></div></a>)}</div></div><div className="portfolio-side"><Assistant/><AccessBloomCheck/></div></section>
+   <section className="portfolio-columns" id="work"><div className="featured"><p className="overline">SELECTED WORK / 01—07</p><h2>Selected work</h2><div className="featured-list">{cases.map((c,i)=><a href={caseUrl(c.id)} className="featured-card" key={c.id}>{c.id==='aura'?<img className="featured-image" src="/cases/aura-curated.png" alt="AURA Atelier mobile prototype and curated outfit suggestions"/>:<Visual id={c.id}/>}<div><small>0{i+1} / {c.category}</small><h3>{c.name}</h3><p>{c.headline}</p><p className="featured-demonstrates"><strong>Demonstrates</strong> {c.demonstrates}</p><span>View case study <ArrowUpRight size={15}/></span></div></a>)}</div></div><div className="portfolio-side"><Assistant/><AccessBloomCheck/></div></section>
    <WhoIAmSection />
    <section className="contact" id="contact"><p className="overline">CONTACT</p><h2>Let’s design<br/><em>what’s next.</em></h2><div className="contact-links"><a href="mailto:viktoriya.mikhaylova@hotmail.com">Email <span>viktoriya.mikhaylova@hotmail.com ↗</span></a><a href="https://github.com/viktoriyamik" target="_blank" rel="noreferrer">GitHub <span>github.com/viktoriyamik ↗</span></a><a href="https://www.linkedin.com/in/viktoriya-mikhaylova/" target="_blank" rel="noreferrer">LinkedIn <span>View profile ↗</span></a></div></section>
   </main>}
-  {current&&<nav className="case-bottom-nav" aria-label="Case study navigation"><a href="#work" onClick={(e)=>{e.preventDefault();jump("work")}} className="case-all">← All projects</a><a className="case-next" href={cases[(cases.findIndex(c=>c.id===current.id)+1)%cases.length].id==='sakustars'?'/case-studies/sakustars-2022/':`#case-${cases[(cases.findIndex(c=>c.id===current.id)+1)%cases.length].id}`}><small>UP NEXT</small><strong>{cases[(cases.findIndex(c=>c.id===current.id)+1)%cases.length].name}</strong><ArrowRight size={20}/></a></nav>}
+  {current&&<nav className="case-bottom-nav" aria-label="Case study navigation"><a href="#work" onClick={(e)=>{e.preventDefault();jump("work")}} className="case-all">← All projects</a><a className="case-next" href={caseUrl(cases[(cases.findIndex(c=>c.id===current.id)+1)%cases.length].id)}><small>UP NEXT</small><strong>{cases[(cases.findIndex(c=>c.id===current.id)+1)%cases.length].name}</strong><ArrowRight size={20}/></a></nav>}
   <footer><span>© {new Date().getFullYear()} Viktoriya Mikhaylova</span><div><a href="mailto:viktoriya.mikhaylova@hotmail.com">Email ↗</a><a href="https://www.linkedin.com/in/viktoriya-mikhaylova/" target="_blank" rel="noreferrer">LinkedIn ↗</a></div></footer>
  </div>
 }
