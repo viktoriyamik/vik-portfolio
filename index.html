@@ -4,8 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f8f8f3" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://vik.ooo/" />
+    <!-- Early discovery of the portrait rendered by React: only one viewport-specific preload matches. -->
+    <link rel="preload" as="image" href="/cases/vik-hero-portrait-mobile.webp" type="image/webp" media="(max-width: 760px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/cases/vik-hero-portrait.webp" type="image/webp" media="(min-width: 761px)" fetchpriority="high" />
+    <!-- Keep the existing typefaces, but connect before fetching them rather than using a CSS @import. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" />
     <title>Viktoriya Mikhaylova | AI Product Designer</title>
     <meta name="description" content="AI Product Designer Viktoriya Mikhaylova creates accessible, human-centered digital products. Explore UX strategy, Human–AI Interaction and selected work." />
     <meta name="keywords" content="AI Product Designer, AI product design, Human-AI Interaction, human-centered AI, product strategy, UX research, UX/UI design, accessibility, inclusive design, Viktoriya Mikhaylova, LeaveReady, AccessBloom, Aura Atelier, CleanPeer, HaeSiivooja, SAKUstars 2022, visual identity design, WordPress web design" />

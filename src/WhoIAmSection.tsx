@@ -113,11 +113,11 @@ export default function WhoIAmSection() {
         </div>
         <div className="vm-about-project-list">
           <p><a href="/case-studies/leaveready/"><strong>LeaveReady ↗</strong></a> is an AI-assisted commute planner that compares routes when travel plans change. I reviewed AI-generated designs, corrected misleading information and designed how the app shows uncertainty while keeping users in control.</p>
-          <p><a href="/#case-aura"><strong>AURA Atelier ↗</strong></a> is an AI styling concierge concept that suggests outfits based on a client’s occasion and preferences, with an option to continue with a human boutique advisor.</p>
-          <p><a href="/#case-cleanpeer"><strong>CleanPeer ↗</strong></a> is a mobile-first concept for professional cleaners to describe a problem, find practical cleaning guidance and get AI or expert support.</p>
-          <p><a href="/#case-haesiivooja"><strong>HaeSiivooja ↗</strong></a> is a cleaning-service marketplace where cleaners can find customers and customers can find and book local cleaning professionals.</p>
-          <p><a href="/#case-accessbloom"><strong>AccessBloom ↗</strong></a> is an AI-supported website accessibility checker that helps teams identify barriers, understand their impact and review practical fixes.</p>
-          <p><a href="/#case-laurea"><strong>Laurea Digital Living Lab ↗</strong></a> is a website I designed and developed to help students and partners explore the lab’s activities, projects and opportunities. <a href="https://www.digitallivinglab.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit the live Laurea Digital Living Lab website">Visit live website ↗</a></p>
+          <p><a href="/case-studies/aura/"><strong>AURA Atelier ↗</strong></a> is an AI styling concierge concept that suggests outfits based on a client’s occasion and preferences, with an option to continue with a human boutique advisor.</p>
+          <p><a href="/case-studies/cleanpeer/"><strong>CleanPeer ↗</strong></a> is a mobile-first concept for professional cleaners to describe a problem, find practical cleaning guidance and get AI or expert support.</p>
+          <p><a href="/case-studies/haesiivooja/"><strong>HaeSiivooja ↗</strong></a> is a cleaning-service marketplace where cleaners can find customers and customers can find and book local cleaning professionals.</p>
+          <p><a href="/case-studies/accessbloom/"><strong>AccessBloom ↗</strong></a> is an AI-supported website accessibility checker that helps teams identify barriers, understand their impact and review practical fixes.</p>
+          <p><a href="/case-studies/laurea/"><strong>Laurea Digital Living Lab ↗</strong></a> is a website I designed and developed to help students and partners explore the lab’s activities, projects and opportunities. <a href="https://www.digitallivinglab.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit the live Laurea Digital Living Lab website">Visit live website ↗</a></p>
           <p><a href="/case-studies/sakustars-2022/"><strong>SAKUstars 2022 ↗</strong></a> brought one event identity across its WordPress website, owl logo, posters, printed materials and animations. My work combined visual identity, web design, and usability testing.</p>
         </div>
       </div>
