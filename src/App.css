@@ -216,3 +216,18 @@
   object-fit: cover;
   object-position: center;
 }
+
+
+/* Accessible project labels: WCAG AA contrast on white and off-white cards. */
+.portfolio-columns .overline { color:#364f3b; }
+.portfolio-columns .featured-card small {
+  color:#364f3b;
+  font-size:12px;
+  line-height:1.5;
+}
+.portfolio-columns .featured-card p { color:#405d47; }
+.portfolio-columns .featured-demonstrates strong { color:#364f3b; }
+@media(max-width:600px){
+  .portfolio-columns .featured-card small { font-size:11px; }
+  .portfolio-columns .featured-card p { font-size:13px; }
+}

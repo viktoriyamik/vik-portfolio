@@ -75,6 +75,30 @@ def main():
     except (HTTPError, URLError, TimeoutError, ET.ParseError) as e:
         failures += not report("sitemap.xml", False, str(e))
 
+    # Optional emerging AI-discovery conventions: valid MIME, Markdown and JSON.
+    try:
+        code, headers, body = get(BASE + "/llms.txt")
+        markdown = body.decode("utf-8", "replace")
+        valid = (code == 200
+                 and not markdown.lstrip().lower().startswith("<!doctype")
+                 and markdown.lstrip().startswith("# ")
+                 and markdown.count("](https://vik.ooo/case-studies/") == 7)
+        failures += not report("llms.txt is genuine Markdown with 7 case links", valid, headers.get("Content-Type", ""))
+    except (HTTPError, URLError, TimeoutError) as e:
+        failures += not report("llms.txt", False, str(e))
+
+    try:
+        import json
+        code, headers, body = get(BASE + "/.well-known/ard.json")
+        manifest = json.loads(body)
+        valid = (code == 200
+                 and isinstance(manifest, dict)
+                 and isinstance(manifest.get("entries"), list)
+                 and not body.lstrip().startswith(b"<"))
+        failures += not report("ARD manifest is valid JSON", valid, headers.get("Content-Type", ""))
+    except (HTTPError, URLError, TimeoutError, ValueError) as e:
+        failures += not report("ARD manifest", False, str(e))
+
     for url in URLS:
         try:
             code, headers, body = get(url)
@@ -100,7 +124,7 @@ def main():
         except (HTTPError, URLError, TimeoutError) as e:
             failures += not report(url, False, str(e))
 
-    print(f"\n{len(URLS) + 2 - failures}/{len(URLS) + 2} checks passed")
+    print(f"\n{len(URLS) + 4 - failures}/{len(URLS) + 4} checks passed")
     if failures:
         print("Fix the reported live URL or response before requesting indexing.")
     return 1 if failures else 0

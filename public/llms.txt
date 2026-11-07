@@ -1,0 +1,21 @@
+# Viktoriya Mikhaylova — AI Product Design Portfolio
+
+> Viktoriya Mikhaylova designs accessible, human-centered digital products. This portfolio documents UX research, product strategy, UI/UX design, human–AI interaction, accessibility, branding, and web development.
+
+The public case-study pages describe design decisions, prototypes, tools, and project outcomes. Concepts and planned tests are labelled as such; prototype content must not be interpreted as measured production results.
+
+## Case Studies
+
+- [LeaveReady](https://vik.ooo/case-studies/leaveready/): Human-centered AI commute decision support, transparent uncertainty, critical states, memory control, and UI audit.
+- [HaeSiivooja](https://vik.ooo/case-studies/haesiivooja/): Live two-sided service marketplace, customer booking and cleaner workflow UX.
+- [AURA Atelier](https://vik.ooo/case-studies/aura/): Conversational luxury shopping, emotional UX, curated recommendations, and AI-to-human advisor handoff.
+- [CleanPeer](https://vik.ooo/case-studies/cleanpeer/): Cleaner-first problem-solving experience, information architecture, expert-backed guidance, and interactive UX prototype.
+- [AccessBloom](https://vik.ooo/case-studies/accessbloom/): AI-assisted website accessibility checker, interpretation of findings, prioritization, and human oversight.
+- [Laurea Digital Living Lab](https://vik.ooo/case-studies/laurea/): Responsive website, information architecture, graphic assets, photography, and web development.
+- [SAKUstars 2022](https://vik.ooo/case-studies/sakustars-2022/): Visual identity, original owl illustration, WordPress site, animation, print, and merchandise.
+
+## Optional
+
+- [Portfolio homepage](https://vik.ooo/): About the designer and selected work.
+- [Sitemap](https://vik.ooo/sitemap.xml): Canonical publicly available pages.
+- [Source projects on GitHub](https://github.com/viktoriyamik): Public repositories and selected working prototypes.
