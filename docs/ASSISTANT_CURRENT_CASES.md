@@ -55,8 +55,10 @@ npm ci
 npm run test:assistant
 npm run build
 node --check server/server.mjs
-pm2 restart portfolio-ai --update-env
-pm2 status
+pm2 list
+# Only if the process already exists for your current PM2 user:
+# pm2 restart portfolio-ai --update-env
+# Otherwise use the discovery/startup steps above.
 ```
 
 The PM2 restart is necessary because the backend loads the old PDF embeddings at startup and imports the current-case catalogue. `npm run build` alone does not update the running API. Do not restart unrelated processes.

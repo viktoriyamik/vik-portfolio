@@ -7,12 +7,13 @@ const data = JSON.parse(fs.readFileSync(path.join(root, "data/archive-projects.j
 export const ARCHIVED_PROJECTS = Object.freeze(data.projects);
 
 const simplify = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-const archiveSignal = /\b(older|earlier|archive|archives|archived|historical|previous|past|other|additional|pdf|pdfs|ixdf|blog|blogs|articles|thesis|bachelor|academic)\b/i;
-const allWorkSignal = /\b(all|both|including|alongside|together with)\b/i;
+const archiveSignal = /\b(older|earlier|archive|archives|archived|historical|previous|past|pdf|pdfs|ixdf|blog|blogs|articles|thesis|bachelor|academic)\b/i;
+const otherWorkSignal = /\b(?:other|additional)\s+(?:projects|work|case studies|cases|designs|portfolio)\b/i;
+const bothCollectionsSignal = /\b(?:both|including|alongside|together with|current and|new and old)\b/i;
 
 export function isArchiveQuestion(question) {
   const q = String(question || "");
-  return archiveSignal.test(q) || ARCHIVED_PROJECTS.some((item) => {
+  return archiveSignal.test(q) || otherWorkSignal.test(q) || ARCHIVED_PROJECTS.some((item) => {
     const name = simplify(item.title);
     const value = " " + simplify(q) + " ";
     return name.length > 3 && value.includes(" " + name + " ");
@@ -20,7 +21,7 @@ export function isArchiveQuestion(question) {
 }
 
 export function wantsOnlyArchive(question) {
-  return isArchiveQuestion(question) && !allWorkSignal.test(question);
+  return isArchiveQuestion(question) && !bothCollectionsSignal.test(question);
 }
 
 export function findArchivedProjects(question) {

@@ -19,6 +19,9 @@ test("archive intent separates past projects from seven featured cases", () => {
   assert.equal(wantsOnlyArchive("Show your earlier portfolio PDFs"), true);
   assert.equal(isArchiveQuestion("Tell me about all seven case studies"), false);
   assert.equal(wantsOnlyArchive("Show all work including older projects"), false);
+  assert.equal(wantsOnlyArchive("Show all older projects"), true);
+  assert.equal(isArchiveQuestion("What other responsibilities did CleanPeer involve?"), false);
+  assert.equal(isArchiveQuestion("Show other projects from the archive"), true);
 });
 
 test("specific historical project produces an accessible reference", () => {

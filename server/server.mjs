@@ -255,7 +255,7 @@ ${m.text.replaceAll("Viktoriya Mikhaylova", "Viktoriya Lihvoinen")}
 
 const PORT = 3001;
 
-app.listen(PORT, () => {
+app.listen(PORT, "127.0.0.1", () => {
   console.log(
     `Seven-case portfolio AI backend running on port ${PORT}`
   );
