@@ -29,3 +29,7 @@ test("older indexed PDF projects are still reachable", () => {
   assert.equal(shouldSearchArchive("Tell me about my Bachelor's thesis", []), true);
   assert.equal(shouldSearchArchive("Tell me about CleanPeer", selectCurrentCases("CleanPeer")), false);
 });
+
+test("responsible AI questions select LeaveReady rather than unrelated archives", () => {
+  assert.ok(selectCurrentCases("How do you design responsible AI experiences?").some((c) => c.slug === "leaveready"));
+});
