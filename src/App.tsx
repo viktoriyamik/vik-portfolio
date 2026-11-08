@@ -44,10 +44,10 @@ function AccessBloomCheck(){
 type Source = { file: string; url: string }
 function Assistant(){
  const [question,setQuestion]=useState('')
- const [answer,setAnswer]=useState('Ask about Viktoriya’s projects, UX research or product design process.')
+ const [answer,setAnswer]=useState('Ask about Viktoriya Lihvoinen’s seven featured projects, UX research or product design process.')
  const [sources,setSources]=useState<Source[]>([])
  const [busy,setBusy]=useState(false)
- const suggestions=['Tell me about your projects','Tell me about your accessibility experience','Tell me about your IxDF studies','Show blog articles']
+ const suggestions=['Show all seven case studies','Tell me about AccessBloom','How do you design responsible AI experiences?','What UX research and testing have you done?']
  const ask=async (raw:string)=>{
   const query=raw.trim();if(!query||busy)return
   setBusy(true);setAnswer('Finding an answer…');setSources([])

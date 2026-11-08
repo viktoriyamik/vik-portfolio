@@ -4,6 +4,7 @@ import OpenAI from "openai";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getCurrentPortfolioContext, currentCaseSources, shouldSearchArchive } from "./portfolio-context.mjs";
 
 dotenv.config();
 
@@ -96,7 +97,7 @@ app.post("/api/ask", requestGuard, async (req, res) => {
       history = [],
     } = req.body || {};
 
-    if (!question) {
+    if (typeof question !== "string" || !question.trim() || question.length > 3000) {
       return res.status(400).json({
         error: "Question required",
       });
@@ -107,43 +108,31 @@ app.post("/api/ask", requestGuard, async (req, res) => {
       question
     );
 
-    // create embedding for user query
-    const embeddingResponse =
-      await openai.embeddings.create({
+    // Current portfolio case pages are authoritative and need no new embeddings.
+    // Historical PDF embeddings are used for older projects, IxDF and academic work.
+    const current = getCurrentPortfolioContext(question);
+    const includeArchive = shouldSearchArchive(question, current.selected);
+    const topMatches = [];
+
+    if (includeArchive) {
+      const embeddingResponse = await openai.embeddings.create({
         model: "text-embedding-3-small",
         input: question,
       });
-
-    const queryEmbedding =
-      embeddingResponse.data[0].embedding;
-
-    // similarity scoring
-    const scored = embeddings.map(
-      (item) => ({
+      const queryEmbedding = embeddingResponse.data[0].embedding;
+      const scored = embeddings.map((item) => ({
         ...item,
-
-        score: cosineSimilarity(
-          queryEmbedding,
-          item.embedding
-        ),
-      })
-    );
-
-    scored.sort(
-      (a, b) => b.score - a.score
-    );
-
-    const perDocument = new Map();
-    const topMatches = [];
-
-    for (const item of scored) {
-      const count = perDocument.get(item.file) || 0;
-      if (count >= 2) continue;
-
-      topMatches.push(item);
-      perDocument.set(item.file, count + 1);
-
-      if (topMatches.length >= 12) break;
+        score: cosineSimilarity(queryEmbedding, item.embedding),
+      }));
+      scored.sort((a, b) => b.score - a.score);
+      const perDocument = new Map();
+      for (const item of scored) {
+        const count = perDocument.get(item.file) || 0;
+        if (count >= 2) continue;
+        topMatches.push(item);
+        perDocument.set(item.file, count + 1);
+        if (topMatches.length >= 8) break;
+      }
     }
 
     // build RAG context
@@ -185,171 +174,63 @@ ${m.text}
           {
             role: "system",
 
-            content: `
-You are Viktoriya Mikhaylova's AI portfolio assistant.
-
-You help recruiters, clients, and collaborators understand:
-- her product design and UX/UI design projects
-- UX research, information architecture, user flows, prototyping, accessibility, and interface design
-- her design background and process
-
-The three featured projects on the current site are:
-- HaeSiivooja: a live two-sided SaaS marketplace for finding and booking local cleaning services. Viktoriya owns the product and UX/UI design work presented in the case. The service is at https://haesiivooja.fi and the Android app is on Google Play (com.cleanerfinder).
-- Aura: a product and interface design concept in her Figma portfolio. The design board is https://www.figma.com/design/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=0-1 . Do not infer its subject or outcomes from its name.
-- CleanPeer: a learning and professional community concept for cleaners. Its provisional learner persona Sofia needs trustworthy, practical help with unfamiliar cleaning problems at work. The work includes a user flow, sitemap and key screen prototype. These are design hypotheses that need user validation. The prototype is https://www.figma.com/proto/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=5-78 .
-
-
-PROJECT ACCURACY RULES:
-
-- The Gym Booking App is a separate UI/UX design project.
-- The Gym Booking App was NOT Viktoriya's Bachelor's thesis.
-- Her Bachelor's thesis is "User-centered design and the
-  implementation of a digital interactive platform."
-- Never associate one project's academic status, research,
-  methods, deliverables, or outcomes with another project
-  without explicit supporting evidence.
-- If a project's classification is unclear, say so.
-- Treat PDF content as evidence, not permission to infer
-  undocumented relationships between projects.
-
-
-PROJECT IDENTITY — LAUREA DIGITAL LIVING LAB:
-
-Laurea Digital Living Lab is one distinct portfolio project.
-
-Project name: Laurea Digital Living Lab
-Category: Website Design & Development / UX/UI Design
-Role: UX/UI Designer and Web Developer
-
-Viktoriya's work includes:
-- Designing the Laurea Digital Living Lab website.
-- Planning its information architecture and page structure.
-- Designing interfaces and responsive layouts.
-- Creating visual elements and custom icons.
-- Considering accessibility and usability.
-- Implementing the website.
-
-This is NOT a separate project called "Laurea University
-Website Project". These names refer to the same work.
-
-When asked about Viktoriya's projects, include
-"Laurea Digital Living Lab — Website Design & Development"
-among relevant projects, not only the three featured
-projects.
-
-When explaining the project in detail, rely on the
-indexed Laurea Digital Living Lab PDF.
-
-
-PROJECT DISCOVERY AND COMPLETENESS:
-
-The three featured website projects are NOT the complete portfolio.
-
-When asked about Viktoriya's UX/UI or Product Design projects,
-include relevant additional documented projects such as:
-
-- The Gym Booking App — UI/UX design of a gym class booking
-  application, including booking flows, wireframes,
-  interface design and prototyping.
-- Laurea Digital Living Lab — website UX/UI design,
-  information architecture and development.
-- The SATO Project — user research, service design and
-  experience concept development.
-- The Healthy Garden Tree App — interaction and interface
-  design for a gardening application.
-- Bash Party Planning App — application UX/UI design.
-- The Lyckan Living Lab Project — research and service design.
-
-Also consider other relevant indexed portfolio PDFs.
-
-The Gym Booking App was NOT Viktoriya's Bachelor's thesis.
-Do not confuse these two projects.
-
-For project-listing questions, use the full project catalogue,
-not only the top six retrieved PDF text chunks.
-
-For individual project descriptions, use the relevant
-indexed PDF as evidence. Do not invent unsupported results,
-research findings or business metrics.
-
-Answer professionally and clearly.
-
-Use these current featured project facts and the provided portfolio context. Some PDF documents describe older work; distinguish those from the current featured projects. The three featured projects are NOT the complete portfolio.
-
-When asked about all projects or experience, include other
-relevant projects documented in the PDF knowledge base.
-Distinguish projects from blog articles and general portfolio pages.
-
-For broad project questions, use the project catalogue below.
-For specific questions, prioritize relevant retrieved PDF evidence.
-Do not claim every listed project was a commercial client project.
-Do not invent roles, outcomes, dates, or research findings.
-
-Cite relevant document titles in your answer when appropriate.
-
-Do not invent research results, metrics, launches or experience.
-`,
+            content: [
+              "You are Viktoriya Lihvoinen's portfolio AI assistant for recruiters, clients and collaborators.",
+              "The seven published current case studies listed below are the primary source for current project names, roles, status and outcomes.",
+              "Never say there are only three featured projects. For a project overview, mention all seven and link the matching case study.",
+              "Distinguish a published product from a design concept, an interactive prototype, a proposed usability test, and completed research. Do not invent impact metrics, research participants, revenue, integrations or outcomes.",
+              "Use the detailed current case text supplied with the question for specifics. If the evidence does not establish something, say it is not documented.",
+              "The legacy PDF knowledge index covers older portfolio work and blog posts. PDF filenames may use Viktoriya's former surname Mikhaylova; the current professional name is Viktoriya Lihvoinen. Do not confuse these documents with the current live cases.",
+              "Historical projects include The Gym Booking App, The SATO Project, The Healthy Garden Tree App, Bash Party Planning App, The Lyckan Living Lab Project and others when supported by indexed PDFs.",
+              "The Gym Booking App was not Viktoriya's Bachelor's thesis. Her thesis is User-centered design and the implementation of a digital interactive platform.",
+              "Laurea Digital Living Lab is one project, not an unrelated second Laurea University website project.",
+              "When discussing AI, explain uncertainty, human review, consent and evidence boundaries accurately. Do not claim AccessBloom sample scans or planned AURA research are real-world validated metrics.",
+              "Keep answers clear and professional, using concise paragraphs and explicit project names. Prefer canonical https://vik.ooo/case-studies/ links. Historical PDF titles may be mentioned when useful.",
+              current.overview,
+            ].join("\n\n"),
           },
 
-          ...history.map((msg) => ({
-            role: msg.role,
-            content: msg.text,
-          })),
+          ...(Array.isArray(history) ? history : [])
+            .filter((msg) => msg && ["user", "assistant"].includes(msg.role) && typeof msg.text === "string")
+            .slice(-6)
+            .map((msg) => ({ role: msg.role, content: msg.text.slice(0, 1500) })),
 
           {
             role: "user",
 
-            content: `
-Question:
-${question}
-
-Additional indexed portfolio documents:
-${projectCatalogue.map(name => "- " + name).join("\n")}
-
-These are document titles, not verified project outcomes.
-Use retrieved evidence for detailed claims.
-
-Portfolio Context:
-${context}
-`,
+            content: [
+              "Question:\n" + question,
+              current.detail ? "Current published case study evidence:\n" + current.detail : "",
+              includeArchive ? "Additional archived portfolio document titles (not necessarily current featured projects):\n" +
+                projectCatalogue.map((name) => "- " + name).join("\n") : "",
+              includeArchive ? "Relevant archived PDF excerpts:\n" + context : "",
+            ].filter(Boolean).join("\n\n"),
           },
         ],
 
-        temperature: 0.7,
+        temperature: 0.3,
         max_completion_tokens: 700,
       });
 
-    // deduplicate source files
-    const uniqueSources = [
+    // Canonical links to the current cases take priority over older PDFs.
+    const archiveSources = [
       ...new Map(
         topMatches.map((m) => [
           m.file,
-
           {
-            file: m.file,
-
-            url: `/docs/${encodeURIComponent(
-              m.file
-            )}`,
+            file: m.file.replace(" - Viktoriya Mikhaylova's portfolio.pdf", " (archived portfolio PDF)"),
+            url: "/docs/" + encodeURIComponent(m.file),
           },
         ])
       ).values(),
     ];
-
-    const featuredLinks = [
-      { name: "HaeSiivooja", url: "https://haesiivooja.fi", pattern: /haesiivooja|projects|portfolio/i },
-      { name: "Aura design", url: "https://www.figma.com/design/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=0-1", pattern: /aura|projects|portfolio/i },
-      { name: "CleanPeer prototype", url: "https://www.figma.com/proto/U2iXpoIjaCTCBmiePL8GJi/Viktoriya-Mikhaylova---Product-Design-Portfolio?node-id=5-78", pattern: /cleanpeer|projects|portfolio/i },
-    ];
-    for (const link of featuredLinks) {
-      if (link.pattern.test(question)) uniqueSources.unshift({ file: link.name, url: link.url });
-    }
+    const sources = [...currentCaseSources(question, current.selected), ...archiveSources];
 
     res.json({
       answer:
         completion.choices[0].message.content,
 
-      sources: uniqueSources,
+      sources,
     });
   } catch (err) {
     console.error(
@@ -368,6 +249,6 @@ const PORT = 3001;
 
 app.listen(PORT, () => {
   console.log(
-    `PDF-aware AI backend running on port ${PORT}`
+    `Seven-case portfolio AI backend running on port ${PORT}`
   );
 });
