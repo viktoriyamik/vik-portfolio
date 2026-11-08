@@ -35,7 +35,7 @@ export default function WhoIAmSection() {
   return <section className="vm-about" id="whoami" aria-labelledby="vm-about-title">
     <div className="vm-about-inner">
       <header className="vm-about-header">
-        <div className="vm-about-eyebrow"><span aria-hidden="true" className="vm-about-dot"/> ABOUT / VIKTORIYA MIKHAYLOVA</div>
+        <div className="vm-about-eyebrow"><span aria-hidden="true" className="vm-about-dot"/> ABOUT / VIKTORIYA LIHVOINEN</div>
         <div className="vm-about-hero">
           <div>
             <p className="vm-about-kicker">Who I am</p>

@@ -39,7 +39,7 @@ function CaseTop({ back, label, title, emphasized, lead, facts, image, imageAlt,
     </header>
     <figure className={`pd-cover pd-cover--${color}`}>
       <img src={`${root}${image}`} alt={imageAlt} fetchPriority="high" />
-      <figcaption>Original interface designs by Viktoriya Mikhaylova · Click screenshots below to explore the work</figcaption>
+      <figcaption>Original interface designs by Viktoriya Lihvoinen · Click screenshots below to explore the work</figcaption>
     </figure>
     <dl className="pd-facts">{facts.map(f => <div key={f.label}><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
   </>
