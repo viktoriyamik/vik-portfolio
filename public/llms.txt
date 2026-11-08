@@ -1,6 +1,6 @@
-# Viktoriya Mikhaylova - AI Product Design Portfolio
+# Viktoriya Lihvoinen - AI Product Design Portfolio
 
-> Viktoriya Mikhaylova designs accessible, human-centered digital products. This portfolio documents UX research, product strategy, UI/UX design, human-AI interaction, accessibility, branding, and web development.
+> Viktoriya Lihvoinen designs accessible, human-centered digital products. This portfolio documents UX research, product strategy, UI/UX design, human-AI interaction, accessibility, branding, and web development.
 
 The public case-study pages describe design decisions, prototypes, tools, and project outcomes. Concepts and planned tests are labelled as such; prototype content must not be interpreted as measured production results.
 
