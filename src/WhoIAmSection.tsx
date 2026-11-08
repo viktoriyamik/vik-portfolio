@@ -124,7 +124,7 @@ export default function WhoIAmSection() {
 
       <div className="vm-about-footer">
         <p>I’m especially interested in AI-native product experiences, human–AI interaction, design systems, accessibility and research that helps teams make confident product decisions.</p>
-        <div className="vm-about-links"><a href="#work">Explore selected work <ArrowUpRight size={18} aria-hidden="true" /></a><a href="mailto:viktoriya.mikhaylova@hotmail.com">Get in touch <ArrowUpRight size={18} aria-hidden="true" /></a></div>
+        <div className="vm-about-links"><a href="#work">Explore selected work <ArrowUpRight size={18} aria-hidden="true" /></a><a href="mailto:viktoriya.lihvoinen@hotmail.com">Get in touch <ArrowUpRight size={18} aria-hidden="true" /></a></div>
       </div>
     </div>
   </section>
