@@ -1,0 +1,168 @@
+{
+  "owner": "Viktoriya Lihvoinen",
+  "currentCaseCount": 7,
+  "cases": [
+    {
+      "slug": "leaveready",
+      "name": "LeaveReady",
+      "status": "Design concept and interactive prototype",
+      "role": "Product strategy, UX/UI design and human-AI evaluation",
+      "summary": "AI-assisted commuting decisions; compares routes, makes uncertainty and sources visible, and keeps user consent and memory under user control. No live transport integrations or real bookings are claimed.",
+      "aliases": [
+        "leave ready",
+        "commute assistant",
+        "commuting",
+        "route comparison"
+      ],
+      "topics": [
+        "human-ai interaction",
+        "trustworthy ai",
+        "uncertainty",
+        "memory",
+        "bias",
+        "travel",
+        "commute",
+        "product strategy"
+      ],
+      "url": "https://vik.ooo/case-studies/leaveready/"
+    },
+    {
+      "slug": "haesiivooja",
+      "name": "HaeSiivooja",
+      "status": "Published web service and Android app",
+      "role": "Product design, UX/UI design and service design",
+      "summary": "Two-sided cleaning marketplace covering customer discovery, booking requests and status, and cleaners' availability and work management. No conversion improvements or user-test metrics are claimed.",
+      "aliases": [
+        "hae siivooja",
+        "cleaner marketplace",
+        "cleaning marketplace"
+      ],
+      "topics": [
+        "service design",
+        "booking",
+        "marketplace",
+        "cleaners",
+        "android",
+        "product design"
+      ],
+      "url": "https://vik.ooo/case-studies/haesiivooja/"
+    },
+    {
+      "slug": "aura",
+      "name": "AURA Atelier",
+      "status": "Design concept and interactive prototype",
+      "role": "Product strategy, UX research planning, UX/UI and conversational design",
+      "summary": "AI-assisted luxury styling: emotional context, curated recommendations and optional human boutique-advisor handoff. Personas and research plans are proposals, not completed field studies.",
+      "aliases": [
+        "aura",
+        "atelier",
+        "styling concierge",
+        "luxury concierge"
+      ],
+      "topics": [
+        "conversational ai",
+        "human-ai interaction",
+        "luxury retail",
+        "personalization",
+        "human handoff",
+        "figma",
+        "product design"
+      ],
+      "url": "https://vik.ooo/case-studies/aura/"
+    },
+    {
+      "slug": "cleanpeer",
+      "name": "CleanPeer",
+      "status": "Research-framed concept and mobile-first prototype",
+      "role": "Product strategy, UX research framing, information architecture and UX/UI design",
+      "summary": "Helps professional cleaners solve unfamiliar on-the-job problems using search, practical guidance and expert support. The primary persona is provisional; peer feedback is not a representative user study.",
+      "aliases": [
+        "clean peer",
+        "cleaning guidance",
+        "professional cleaner learning"
+      ],
+      "topics": [
+        "ux research",
+        "information architecture",
+        "wireframe",
+        "community",
+        "learning",
+        "cleaners",
+        "safety",
+        "expert guidance"
+      ],
+      "url": "https://vik.ooo/case-studies/cleanpeer/"
+    },
+    {
+      "slug": "accessbloom",
+      "name": "AccessBloom",
+      "status": "Interactive web application with publicly explorable samples",
+      "role": "Product design, human-AI interaction and development",
+      "summary": "Website accessibility review workspace with evidence-oriented findings, explanations and suggested next steps. Example findings are illustrative; automated accessibility checks and AI guidance require human verification.",
+      "aliases": [
+        "access bloom",
+        "accessibility checker",
+        "accesslens",
+        "access lens"
+      ],
+      "topics": [
+        "accessibility",
+        "wcag",
+        "audit",
+        "inclusive design",
+        "website analysis",
+        "ai assistance",
+        "development"
+      ],
+      "url": "https://vik.ooo/case-studies/accessbloom/"
+    },
+    {
+      "slug": "laurea",
+      "name": "Laurea Digital Living Lab",
+      "status": "Published responsive website",
+      "role": "Website design and development, information architecture, photography and graphic design",
+      "summary": "Website designed and built for a student-driven innovation environment, including content structure, responsive layouts, original icons, graphics and photography. No invented analytics outcomes.",
+      "aliases": [
+        "digital living lab",
+        "laurea website",
+        "living lab"
+      ],
+      "topics": [
+        "web development",
+        "information architecture",
+        "responsive website",
+        "iconography",
+        "photography",
+        "graphics",
+        "student",
+        "education"
+      ],
+      "url": "https://vik.ooo/case-studies/laurea/"
+    },
+    {
+      "slug": "sakustars-2022",
+      "name": "SAKUstars 2022",
+      "status": "Completed event visual identity and WordPress website (2022)",
+      "role": "Visual identity, UI/UX, WordPress web design, usability work and motion/print design",
+      "summary": "Original owl illustration selected as visual symbol; competition branding, lilac palette, WordPress site, social animations, print materials and merchandise. No unverified engagement metrics.",
+      "aliases": [
+        "sakustars",
+        "saku stars",
+        "saku stars 2022",
+        "owl identity"
+      ],
+      "topics": [
+        "visual identity",
+        "word press",
+        "wordpress",
+        "branding",
+        "animation",
+        "logo",
+        "usability",
+        "graphic design",
+        "print design"
+      ],
+      "url": "https://vik.ooo/case-studies/sakustars-2022/"
+    }
+  ]
+}
