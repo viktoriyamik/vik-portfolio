@@ -1,4 +1,5 @@
 import WhoIAmSection from './WhoIAmSection'
+import archiveData from '../data/archive-projects.json'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react'
@@ -47,7 +48,7 @@ function Assistant(){
  const [answer,setAnswer]=useState('Ask about Viktoriya Lihvoinen’s seven featured projects, UX research or product design process.')
  const [sources,setSources]=useState<Source[]>([])
  const [busy,setBusy]=useState(false)
- const suggestions=['Show all seven case studies','Tell me about AccessBloom','How do you design responsible AI experiences?','What UX research and testing have you done?']
+ const suggestions=['Show all seven case studies','Show earlier work from PDFs','Tell me about AccessBloom','What UX research and testing have you done?']
  const ask=async (raw:string)=>{
   const query=raw.trim();if(!query||busy)return
   setBusy(true);setAnswer('Finding an answer…');setSources([])
@@ -58,7 +59,7 @@ function Assistant(){
  return <aside className="assistant" aria-labelledby="assistant-title">
   <div className="assistant-top"><p className="overline">AI ASSISTANT</p><span aria-hidden="true">✳</span></div>
   <h2 id="assistant-title">Ask about<br/><em>the work.</em></h2>
-  <p className="assistant-intro">Explore Viktoriya’s projects and design background through the portfolio AI.</p>
+  <p className="assistant-intro">Explore Viktoriya Lihvoinen’s seven case studies and earlier portfolio projects through the AI assistant.</p>
   <div className="assistant-response" role="status" aria-live="polite">{answer}</div>
   <div className="assistant-sources">{sources.length>0&&<><small>SOURCES</small>{sources.map(source=><a key={source.url} href={source.url.startsWith('http')?source.url:source.url.startsWith('/')?source.url:`/${source.url}`} target="_blank" rel="noreferrer">{source.file} ↗</a>)}</>}</div>
   <form onSubmit={event=>{event.preventDefault();void ask(question)}}><label htmlFor="ai-question">Ask a question</label><div className="assistant-input"><input id="ai-question" value={question} onChange={event=>setQuestion(event.target.value)} placeholder="Ask about a case study…"/><button disabled={busy} type="submit">{busy?'Thinking…':'Ask ↗'}</button></div></form>
@@ -141,6 +142,19 @@ function App(){
     </figure>
    </section> {/* vik-hero-portrait-v1 */}
    <section className="portfolio-columns" id="work"><div className="featured"><p className="overline">SELECTED WORK / 01—07</p><h2>Selected work</h2><div className="featured-list">{cases.map((c,i)=><a href={caseUrl(c.id)} className="featured-card" key={c.id}>{c.id==='aura'?<img className="featured-image" src="/cases/aura-curated.png" alt="AURA Atelier mobile prototype and curated outfit suggestions" loading="lazy" decoding="async" fetchPriority="low"/>:<Visual id={c.id}/>}<div><small>0{i+1} / {c.category}</small><h3>{c.name}</h3><p>{c.headline}</p><p className="featured-demonstrates"><strong>Demonstrates</strong> {c.demonstrates}</p><span>View case study <ArrowUpRight size={15}/></span></div></a>)}</div></div><div className="portfolio-side"><Assistant/><AccessBloomCheck/></div></section>
+   <section className="portfolio-archive" id="archive" aria-labelledby="archive-title">
+     <div className="portfolio-archive-intro">
+       <p className="overline">PORTFOLIO ARCHIVE</p>
+       <h2 id="archive-title">Earlier <em>work.</em></h2>
+       <p>More projects from Viktoriya Lihvoinen’s previous UX, service design and graphic design work. Explore the original PDF archives; the seven detailed case studies above remain the featured portfolio.</p>
+     </div>
+     <div className="archive-project-list">
+       {archiveData.projects.map((project)=><a className="archive-project-link" key={project.filename} href={`/docs/${encodeURIComponent(project.filename)}`} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title} portfolio PDF in a new tab`}>
+         <div><small>{project.category}</small><strong>{project.title}</strong></div><span aria-hidden="true">PDF ↗</span>
+       </a>)}
+     </div>
+     <p className="archive-footnote">The original PDFs are historical project records. You can ask the AI assistant about these projects and additional archived work.</p>
+   </section>
    <WhoIAmSection />
    <section className="contact" id="contact"><p className="overline">CONTACT</p><h2>Let’s design<br/><em>what’s next.</em></h2><div className="contact-links"><a href="mailto:viktoriya.lihvoinen@hotmail.com">Email <span>viktoriya.lihvoinen@hotmail.com ↗</span></a><a href="https://github.com/viktoriyamik" target="_blank" rel="noreferrer">GitHub <span>github.com/viktoriyamik ↗</span></a><a href="https://www.linkedin.com/in/viktoriya-lihvoinen/" target="_blank" rel="noreferrer">LinkedIn <span>View profile ↗</span></a></div></section>
   </main>}

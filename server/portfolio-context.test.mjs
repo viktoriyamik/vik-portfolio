@@ -33,3 +33,15 @@ test("older indexed PDF projects are still reachable", () => {
 test("responsible AI questions select LeaveReady rather than unrelated archives", () => {
   assert.ok(selectCurrentCases("How do you design responsible AI experiences?").some((c) => c.slug === "leaveready"));
 });
+
+test("earlier project questions use the PDF archive instead of seven current cases", () => {
+  const q = "Show earlier work from PDFs";
+  assert.equal(selectCurrentCases(q).length, 0);
+  assert.equal(shouldSearchArchive(q, selectCurrentCases(q)), true);
+});
+
+test("all work including older projects selects both collections", () => {
+  const q = "Show all work including older projects";
+  assert.equal(selectCurrentCases(q).length, 7);
+  assert.equal(shouldSearchArchive(q, selectCurrentCases(q)), true);
+});

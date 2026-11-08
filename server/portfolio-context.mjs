@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isArchiveQuestion, wantsOnlyArchive } from "./archive-context.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const catalogue = JSON.parse(fs.readFileSync(path.join(root, "data/current-cases.json"), "utf8"));
@@ -25,7 +26,8 @@ function caseScore(question, item) {
 
 export function selectCurrentCases(question) {
   const q = String(question || "");
-  if (broadQuestion(q) && !/\b(older|archived|historical|previous pdfs)\b/i.test(q)) return CURRENT_CASES;
+  if (wantsOnlyArchive(q)) return [];
+  if (broadQuestion(q)) return CURRENT_CASES;
   return CURRENT_CASES.map((item) => ({item, score: caseScore(q, item)}))
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
@@ -35,7 +37,7 @@ export function selectCurrentCases(question) {
 
 export function shouldSearchArchive(question, selectedCases) {
   const q = String(question || "");
-  if (/\b(older|archived|historical|previous work|thesis|bachelor|ixdf|blog|blogs|articles|pdf|academic)\b/i.test(q)) return true;
+  if (isArchiveQuestion(q)) return true;
   return !selectedCases.length;
 }
 

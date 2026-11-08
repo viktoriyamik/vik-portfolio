@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:assistant": "node --test server/portfolio-context.test.mjs"
+    "test:assistant": "node --test server/*.test.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",

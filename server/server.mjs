@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { getCurrentPortfolioContext, currentCaseSources, shouldSearchArchive } from "./portfolio-context.mjs";
+import { ARCHIVED_PROJECTS, getArchiveOverview, archivedProjectSources, archivePublicTitle } from "./archive-context.mjs";
 
 dotenv.config();
 
@@ -90,6 +91,10 @@ function cosineSimilarity(a, b) {
   return dot / (magA * magB);
 }
 
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok", service: "portfolio-ai", featuredCases: 7, earlierPDFSelection: ARCHIVED_PROJECTS.length });
+});
+
 app.post("/api/ask", requestGuard, async (req, res) => {
   try {
     const {
@@ -111,6 +116,7 @@ app.post("/api/ask", requestGuard, async (req, res) => {
     // Current portfolio case pages are authoritative and need no new embeddings.
     // Historical PDF embeddings are used for older projects, IxDF and academic work.
     const current = getCurrentPortfolioContext(question);
+    const archiveOverview = getArchiveOverview(question);
     const includeArchive = shouldSearchArchive(question, current.selected);
     const topMatches = [];
 
@@ -140,9 +146,9 @@ app.post("/api/ask", requestGuard, async (req, res) => {
       .map(
         (m) =>
           `
-FILE: ${m.file}
+ARCHIVED PDF: ${archivePublicTitle(m.file)}
 
-${m.text}
+${m.text.replaceAll("Viktoriya Mikhaylova", "Viktoriya Lihvoinen")}
 `
       )
       .join("\n\n");
@@ -180,13 +186,17 @@ ${m.text}
               "Never say there are only three featured projects. For a project overview, mention all seven and link the matching case study.",
               "Distinguish a published product from a design concept, an interactive prototype, a proposed usability test, and completed research. Do not invent impact metrics, research participants, revenue, integrations or outcomes.",
               "Use the detailed current case text supplied with the question for specifics. If the evidence does not establish something, say it is not documented.",
-              "The legacy PDF knowledge index covers older portfolio work and blog posts. PDF filenames may use Viktoriya's former surname Mikhaylova; the current professional name is Viktoriya Lihvoinen. Do not confuse these documents with the current live cases.",
+              "Always identify the designer as Viktoriya Lihvoinen in every answer and link label. Historical PDF filenames are preserved as original file paths but must not change her displayed professional name.",
+              "The homepage also links to eight selected earlier portfolio PDFs. Those archived projects are additional work beyond the seven featured cases.",
+              "When asked for earlier, older, archived or other projects, prioritize the historical PDF archive. When asked for both current and older work, distinguish the two groups.",
               "Historical projects include The Gym Booking App, The SATO Project, The Healthy Garden Tree App, Bash Party Planning App, The Lyckan Living Lab Project and others when supported by indexed PDFs.",
               "The Gym Booking App was not Viktoriya's Bachelor's thesis. Her thesis is User-centered design and the implementation of a digital interactive platform.",
               "Laurea Digital Living Lab is one project, not an unrelated second Laurea University website project.",
               "When discussing AI, explain uncertainty, human review, consent and evidence boundaries accurately. Do not claim AccessBloom sample scans or planned AURA research are real-world validated metrics.",
               "Keep answers clear and professional, using concise paragraphs and explicit project names. Prefer canonical https://vik.ooo/case-studies/ links. Historical PDF titles may be mentioned when useful.",
               current.overview,
+              "Selected historical PDF titles: " + ARCHIVED_PROJECTS.map((p) => p.title).join("; "),
+              archiveOverview,
             ].join("\n\n"),
           },
 
@@ -201,6 +211,7 @@ ${m.text}
             content: [
               "Question:\n" + question,
               current.detail ? "Current published case study evidence:\n" + current.detail : "",
+              archiveOverview ? "Earlier portfolio archive links:\n" + archiveOverview : "",
               includeArchive ? "Additional archived portfolio document titles (not necessarily current featured projects):\n" +
                 projectCatalogue.map((name) => "- " + name).join("\n") : "",
               includeArchive ? "Relevant archived PDF excerpts:\n" + context : "",
@@ -212,19 +223,16 @@ ${m.text}
         max_completion_tokens: 700,
       });
 
-    // Canonical links to the current cases take priority over older PDFs.
-    const archiveSources = [
-      ...new Map(
-        topMatches.map((m) => [
-          m.file,
-          {
-            file: m.file.replace(" - Viktoriya Mikhaylova's portfolio.pdf", " (archived portfolio PDF)"),
-            url: "/docs/" + encodeURIComponent(m.file),
-          },
-        ])
-      ).values(),
-    ];
-    const sources = [...currentCaseSources(question, current.selected), ...archiveSources];
+    // Preserve original archive file URLs while exposing the current name in labels.
+    const pdfSources = [...new Map(topMatches.map((m) => [
+      m.file,
+      { file: archivePublicTitle(m.file) + " - historical PDF", url: "/docs/" + encodeURIComponent(m.file) }
+    ])).values()];
+    const sources = [...new Map([
+      ...currentCaseSources(question, current.selected),
+      ...archivedProjectSources(question),
+      ...pdfSources,
+    ].map((source) => [source.url, source])).values()];
 
     res.json({
       answer:
