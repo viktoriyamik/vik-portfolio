@@ -51,10 +51,9 @@ export function archivedPDFUrl(file) {
 export function getArchiveOverview(question) {
   if (!isArchiveQuestion(question)) return "";
   const selected = findArchivedProjects(question);
-  return "EARLIER PORTFOLIO WORK (archive PDF records, not current seven featured case studies):\n" +
+  return "EARLIER PORTFOLIO WORK (archived PDF records, separate from the current seven featured case studies):\n" +
     selected.map((project) =>
-      "- " + project.title + " | " + project.category + " | Original PDF: " +
-      archivedPDFUrl(project.filename)
+      "- " + project.title + " | " + project.category + " | Original PDF available in the portfolio archive and Sources"
     ).join("\n");
 }
 
