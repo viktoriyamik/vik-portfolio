@@ -12,13 +12,18 @@ The homepage assistant runs the Node API in `server/server.mjs`, not directly in
 
 If a current case's facts change, update its HTML and (if needed) the brief catalogue JSON, then restart the API process. For historical PDF changes, re-ingestion is a separate operation using `server/ingest.mjs` and requires an API key; **do not regenerate the old PDF index just to update the seven current cases**.
 
-## Earlier PDF work
+## Earlier PDF work and suggested questions
 
-The homepage has a separate **Earlier work** section beneath the featured case list with direct PDF links.
-`data/archive-projects.json` is the shared catalogue for the website and AI assistant. The historical PDF filenames are retained as original file paths, but all visible author references use **Viktoriya Lihvoinen**.
-The embedded archive index still supports additional PDF works and blog posts, not just the eight featured archive links.
+The homepage displays only seven featured case studies; there is no separate visible PDF archive section. The original PDFs are still accessible through the assistant's source links when relevant, and the older embedding index remains available for historical projects, blogs and IxDF studies.
 
-For questions such as "Show earlier work from PDFs", the assistant prefers the historical archive. For "Show all work including older projects", it describes both groups. Source labels are cleaned and do not display the previous surname.
+The homepage AI shortcuts are deliberately the original four questions:
+
+- Tell me about your projects
+- Tell me about your accessibility experience
+- Tell me about your IxDF studies
+- Show blog articles
+
+`data/archive-projects.json` still curates eight historic PDF records for older-work questions, but it is a backend knowledge catalogue rather than an additional homepage grid. The assistant always uses the professional name **Viktoriya Lihvoinen** in visible output and keeps original PDF filenames unchanged so historical links continue to work.
 
 ## PM2 discovery and safe startup
 

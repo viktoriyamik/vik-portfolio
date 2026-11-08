@@ -34,7 +34,13 @@ export function findArchivedProjects(question) {
     })
   );
   if (found.length) return found;
-  return isArchiveQuestion(question) ? ARCHIVED_PROJECTS : [];
+  // A blog or IxDF question should retrieve indexed PDF evidence, not unrelated
+  // curated project PDFs. Only list these eight when earlier projects are requested.
+  const qText = String(question || "");
+  const pastProjectTerms = /\b(older|earlier|archive|archives|archived|historical|previous|past|other|additional)\b/i.test(qText) &&
+    /\b(work|projects?|portfolio|pdfs?|designs?|cases?)\b/i.test(qText);
+  const archiveDocuments = /\b(?:portfolio pdfs|archived pdfs|earlier pdfs)\b/i.test(qText);
+  return pastProjectTerms || archiveDocuments ? ARCHIVED_PROJECTS : [];
 }
 
 export function archivePublicTitle(filename) {

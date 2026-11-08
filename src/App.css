@@ -231,20 +231,3 @@
   .portfolio-columns .featured-card small { font-size:11px; }
   .portfolio-columns .featured-card p { font-size:13px; }
 }
-
-
-/* Secondary archive section: featured seven case studies remain visually primary. */
-.portfolio-archive{max-width:1440px;margin:0 auto;padding:58px 5% 100px;border-top:1px solid #dce3da;color:#19352c;scroll-margin-top:32px}
-.portfolio-archive-intro{max-width:740px;margin-bottom:28px}
-.portfolio-archive-intro h2{font:700 clamp(2.25rem,4.5vw,3.6rem)/1.13 Manrope,sans-serif;letter-spacing:-.06em;margin:13px 0 18px}
-.portfolio-archive-intro h2 em{font:400 1em Georgia,serif;color:#5d8567}
-.portfolio-archive-intro p:last-child{font-size:1rem;line-height:1.7;color:#425a4b}
-.archive-project-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.archive-project-link{background:#f7f9f4;border:1px solid #d8e3d7;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px;text-decoration:none;color:#234a37;min-width:0;transition:border-color .18s,background .18s}
-.archive-project-link:hover{background:#edf3e9;border-color:#789b82}
-.archive-project-link:focus-visible{outline:3px solid #356f54;outline-offset:3px}
-.archive-project-link div{min-width:0}.archive-project-link small{display:block;font-size:.72rem;font-weight:700;letter-spacing:.035em;color:#4d6453;margin-bottom:6px}
-.archive-project-link strong{display:block;font-size:1rem;font-weight:750;overflow-wrap:anywhere}
-.archive-project-link>span{font-size:.79rem;white-space:nowrap;flex:none;font-weight:800}
-.archive-footnote{color:#4e6253;line-height:1.6;margin:20px 0 0;font-size:.86rem}
-@media(max-width:680px){.portfolio-archive{padding:44px 5% 70px}.archive-project-list{grid-template-columns:1fr}.archive-project-link{padding:15px 17px}}

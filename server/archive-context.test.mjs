@@ -36,3 +36,11 @@ test("user-visible archive source titles contain only a project name", () => {
   assert.equal(archivePublicTitle(filename), "The Gym Booking App");
   assert.match(archivedPDFUrl(filename), /^\/docs\//);
 });
+
+test("IxDF and blog questions search archive evidence without suggesting unrelated project PDFs", () => {
+  for (const question of ["Tell me about your IxDF studies", "Show blog articles"]) {
+    assert.equal(isArchiveQuestion(question), true);
+    assert.deepEqual(findArchivedProjects(question), []);
+    assert.deepEqual(archivedProjectSources(question), []);
+  }
+});
