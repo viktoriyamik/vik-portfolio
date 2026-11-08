@@ -1,0 +1,79 @@
+{
+  "owner": "Viktoriya Lihvoinen",
+  "kind": "historical portfolio PDF archive",
+  "note": "Original historic PDFs are retained; the displayed author name on the website is Viktoriya Lihvoinen.",
+  "projects": [
+    {
+      "title": "The Gym Booking App",
+      "category": "UI/UX · booking flows",
+      "summary": "Application interface and interaction design",
+      "filename": "The Gym Booking App - Viktoriya Mikhaylova's portfolio.pdf",
+      "aliases": [
+        "the gym booking app"
+      ]
+    },
+    {
+      "title": "The SATO Project",
+      "category": "Service and experience design",
+      "summary": "Earlier project archive",
+      "filename": "The SATO Project - Viktoriya Mikhaylova's portfolio.pdf",
+      "aliases": [
+        "the sato project"
+      ]
+    },
+    {
+      "title": "The Healthy Garden Tree App",
+      "category": "UI/UX · application design",
+      "summary": "Earlier interaction design work",
+      "filename": "The Healthy Garden Tree App - Viktoriya Mikhaylova's portfolio.pdf",
+      "aliases": [
+        "the healthy garden tree app"
+      ]
+    },
+    {
+      "title": "Bash Party Planning App",
+      "category": "UI/UX · application design",
+      "summary": "Earlier application portfolio work",
+      "filename": "Bash Party Planning App - Viktoriya Mikhaylova's portfolio.pdf",
+      "aliases": [
+        "bash party planning app"
+      ]
+    },
+    {
+      "title": "The Lyckan Living Lab Project",
+      "category": "Service and research design",
+      "summary": "Living Lab project archive",
+      "filename": "The Lyckan Living Lab Project - Viktoriya Mikhaylova's portfolio.pdf",
+      "aliases": [
+        "the lyckan living lab project"
+      ]
+    },
+    {
+      "title": "Guestbook App",
+      "category": "UI/UX · application design",
+      "summary": "Earlier app design work",
+      "filename": "Guestbook App - Viktoriya Mikhaylova's portfolio.pdf",
+      "aliases": [
+        "guestbook app"
+      ]
+    },
+    {
+      "title": "Graphic Design",
+      "category": "Visual communication",
+      "summary": "Selected graphic design portfolio",
+      "filename": "Graphic Design - Viktoriya Mikhaylova's portfolio.pdf",
+      "aliases": [
+        "graphic design"
+      ]
+    },
+    {
+      "title": "JÄÄkarhu Ice cream",
+      "category": "Branding and graphic design",
+      "summary": "Earlier visual design work",
+      "filename": "JÄÄkarhu Ice cream - Viktoriya Mikhaylova's portfolio.pdf",
+      "aliases": [
+        "j karhu ice cream"
+      ]
+    }
+  ]
+}
