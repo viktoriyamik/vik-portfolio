@@ -36,16 +36,16 @@ export default function HaesiivoojaCase({ back }: { back: () => void }) {
     <button className="back hc-back" onClick={back}><ArrowLeft size={18} /> All projects</button>
 
     <div className="hc-intro">
-      <p className="overline">HAESIIVOOJA / FINNISH CLEANING MARKETPLACE</p>
+      <p className="overline">HAESIIVOOJA / FIRST-OF-ITS-KIND FINNISH CLEANING MARKETPLACE</p>
       <h1>From “I need a cleaner”<br /><em>to a clear next step.</em></h1>
-      <p>Designing a cleaning-specific, two-sided SaaS marketplace where customers find independent professionals and cleaners find new customers across Finland.</p>
+      <p>Designed as Finland’s first-of-its-kind, cleaning-specific SaaS marketplace for choosing an independent cleaner directly—not booking an agency’s own staff or waiting for competing quotes.</p>
       <a href="https://haesiivooja.fi" target="_blank" rel="noreferrer">Explore the live service <ArrowUpRight size={16} /></a>
     </div>
 
     <figure className="hc-hero">
       <div className="hc-hero-copy">
         <img className="hc-hero-mascot" src="/cases/haesiivooja-mascot.png" width="118" height="118" alt="HaeSiivooja blue water-drop brand mascot" />
-        <span>ONE PLATFORM.<br />TWO CONNECTED JOURNEYS.</span>
+        <span>ONE DIRECT-BOOKING MARKETPLACE.<br />TWO CONNECTED JOURNEYS.</span>
         <p>Find a cleaner.<br />Find customers.<br />Understand the next step.</p>
         <small>Finnish cleaning-specific marketplace · Android open testing</small>
       </div>
@@ -55,7 +55,7 @@ export default function HaesiivoojaCase({ back }: { back: () => void }) {
 
     <dl className="hc-facts">
       <div><dt>MY ROLE</dt><dd>Sole product &amp; UX/UI designer</dd></div>
-      <div><dt>PRODUCT MODEL</dt><dd>Two-sided, cleaning-specific SaaS marketplace</dd></div>
+      <div><dt>PRODUCT MODEL</dt><dd>First-of-its-kind Finnish direct-cleaner marketplace</dd></div>
       <div><dt>PUBLIC AVAILABILITY</dt><dd>Website live · Android open testing</dd></div>
       <div><dt>ADDITIONAL PLATFORM</dt><dd>iOS developed · not publicly released</dd></div>
     </dl>
@@ -72,11 +72,16 @@ export default function HaesiivoojaCase({ back }: { back: () => void }) {
       <p className="overline">01 / DEFINE THE OPPORTUNITY</p>
       <div>
         <h2>Not another cleaning agency.<br />A marketplace built for both sides.</h2>
-        <p>HaeSiivooja takes a cleaning-specific approach to the Finnish service market. Rather than selling work performed by its own staff, the platform connects customers with independent cleaning professionals and gives those professionals a place to present their services and manage work.</p>
-        <p>The core design challenge was the asymmetry between the two audiences: customers start with a personal need and uncertainty about price, scope and trust; cleaners need an actionable request, a manageable schedule and a way to reach potential customers.</p>
+        <p>HaeSiivooja was designed around a first-of-its-kind proposition in Finland: a cleaning-only, two-sided SaaS marketplace in which customers choose an independent cleaning professional and initiate a booking request directly in the app. HaeSiivooja does not employ its own cleaning workforce or require customers to collect competing offers before approaching a cleaner.</p>
+        <p>The core design challenge was the asymmetry between the two audiences: customers start with a personal need and uncertainty about price, scope and trust; cleaners need an actionable request, a manageable schedule and a way to reach potential customers. Direct selection should reduce steps without suggesting that a booking is automatically confirmed.</p>
         <div className="hc-note">
           <strong>The product-design decision</strong>
           <p>Design one connected marketplace with two clearly different interfaces. Each role sees the information needed for its next decision, while the booking request remains the shared point of reference.</p>
+        </div>
+        
+        <div className="hc-note">
+          <strong>What makes the model different in Finland</strong>
+          <p>Freska offers cleaning as a managed service using its own recruited cleaners. Puhtaudella.fi is a request-for-quotes platform where providers respond with offers. HaeSiivooja is designed for customers to discover and choose an independent cleaner in the app, then send that cleaner a booking request directly. The distinction is the service model and customer control—not a claim that every booking is instantly confirmed.</p>
         </div>
         <p className="hc-model">The SaaS-style model separates the platform from the cleaning work: registration is free, customers pay a €12.50 booking service fee, and professionals can choose a €5.50/month or €60/year subscription. Cleaning work is priced separately by the provider. Clear fee communication is therefore part of the UX, not just the pricing page.</p>
       </div>
@@ -159,10 +164,10 @@ export default function HaesiivoojaCase({ back }: { back: () => void }) {
     <section className="hc-section hc-split hc-outcome" id="hc-outcome">
       <p className="overline">06 / THE DESIGN DELIVERED</p>
       <div>
-        <h2>A real two-sided product,<br />designed as one experience.</h2>
-        <p>The result is a connected product design for Finland's cleaning market: a customer-facing journey for defining and requesting cleaning, a professional-facing workspace for handling that demand, and a cohesive identity that makes the service recognisable.</p>
+        <h2>A first-of-its-kind model,<br />designed as one experience.</h2>
+        <p>HaeSiivooja brings a direct customer-to-independent-cleaner booking model into a single cleaning-focused product. Customers can find an individual professional and initiate a request without going through a cleaning agency or a quote-competition process. The cleaner manages their own services and availability; the two perspectives are connected through the booking workflow.</p>
         <ul>
-          <li><strong>One service model:</strong> an independent-provider marketplace rather than an agency-owned cleaning workforce.</li>
+          <li><strong>A distinctive Finnish service model:</strong> a first-of-its-kind, cleaning-specific direct-booking marketplace for independent providers rather than an agency-owned workforce or a quote-request intermediary.</li>
           <li><strong>Two role-specific experiences:</strong> discovery and booking for customers; service presentation, availability and work management for cleaners.</li>
           <li><strong>Clearer commercial logic:</strong> separate explanations of registration, the platform booking fee, professional subscriptions and the provider's cleaning price.</li>
           <li><strong>A connected visual system:</strong> the mascot's warmth carried into a usable, restrained teal-and-cyan interface.</li>
