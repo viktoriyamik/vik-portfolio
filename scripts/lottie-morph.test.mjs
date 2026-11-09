@@ -50,3 +50,23 @@ test("the locally licensed player and accessible fallback are present", () => {
   assert.match(component, /prefers-reduced-motion/);
   assert.match(component, /loop:\s*false/);
 });
+
+
+test("transparent morph never hides its artwork behind an opaque halo", () => {
+  const names = data.layers[0].shapes.map((shape) => shape.nm);
+  assert.ok(!names.includes("Outer guidance halo"));
+  assert.ok(names.indexOf("Decision checkmark") < names.indexOf("Actual vector path morph - sparkle to speech bubble"));
+  assert.ok(data.layers[0].ks.p.k[0] < 0, "New viewport should center the illustration");
+});
+
+test("hero illustration has no card chrome and reveals only after a drawn frame", () => {
+  const component = fs.readFileSync(path.join(root, "src/AiMorphIllustration.tsx"), "utf8");
+  const css = fs.readFileSync(path.join(root, "src/App.css"), "utf8");
+  assert.doesNotMatch(component, /hero-morph-content|Replay motion|DESIGN IN MOTION/);
+  assert.match(component, /enterFrame/);
+  assert.match(component, /drawablePath/);
+  assert.match(component, /goToAndPlay\(0, true\)/);
+  assert.doesNotMatch(css, /\.hero-morph-replay\s*\{/);
+  assert.match(css, /\.hero-morph\s*\{[^}]*background:transparent/s);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+});
