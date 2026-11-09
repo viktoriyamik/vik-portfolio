@@ -83,7 +83,7 @@ export default function HaesiivoojaCase({ back }: { back: () => void }) {
           <strong>What makes the model different in Finland</strong>
           <p>Freska offers cleaning as a managed service using its own recruited cleaners. Puhtaudella.fi is a request-for-quotes platform where providers respond with offers. HaeSiivooja is designed for customers to discover and choose an independent cleaner in the app, then send that cleaner a booking request directly. The distinction is the service model and customer control—not a claim that every booking is instantly confirmed.</p>
         </div>
-        <p className="hc-model">The SaaS-style model separates the platform from the cleaning work: registration is free, customers pay a €12.50 booking service fee, and professionals can choose a €5.50/month or €60/year subscription. Cleaning work is priced separately by the provider. Clear fee communication is therefore part of the UX, not just the pricing page.</p>
+        
       </div>
     </section>
 
