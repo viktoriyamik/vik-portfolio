@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:assistant": "node --test server/*.test.mjs",
-    "test:motion": "node --test scripts/lottie-morph.test.mjs"
+    "test:motion": "node --test scripts/lottie-morph.test.mjs",
+    "test:branding": "node scripts/check_public_branding.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",
