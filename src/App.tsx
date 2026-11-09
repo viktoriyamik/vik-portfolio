@@ -1,4 +1,5 @@
 import WhoIAmSection from './WhoIAmSection'
+import AiMorphIllustration from './AiMorphIllustration'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react'
@@ -155,7 +156,7 @@ function App(){
    <section className="case-section split"><span>05 / STATUS</span><div><h2>Where the work stands</h2><p>{current.outcome}</p><div className="links">{current.links.map(l=><a href={l.url} key={l.url} target="_blank" rel="noreferrer">{l.text} <ArrowUpRight size={17}/></a>)}</div></div></section>
   </main>:<main id="top">
    <section className="intro intro--portrait">
-    <div className="intro-copy"><p className="overline intro-specialties">PRODUCT DESIGN · UX RESEARCH · HUMAN–AI INTERACTION</p><h1>Viktoriya Lihvoinen<em>AI Product Designer</em></h1><p>I design useful, accessible digital products—using AI to explore possibilities and human judgment to decide what works. I combine research, product strategy and interface design to make complex experiences clear and trustworthy.</p></div>
+    <div className="intro-copy"><p className="overline intro-specialties">PRODUCT DESIGN · UX RESEARCH · HUMAN–AI INTERACTION</p><h1>Viktoriya Lihvoinen<em>AI Product Designer</em></h1><p className="hero-description">I design useful, accessible digital products—using AI to explore possibilities and human judgment to decide what works. I combine research, product strategy and interface design to make complex experiences clear and trustworthy.</p><AiMorphIllustration /></div>
     <figure className="hero-portrait">
      <picture>
       <source media="(max-width: 760px)" srcSet="/cases/vik-hero-portrait-mobile.webp" type="image/webp" />

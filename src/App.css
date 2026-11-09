@@ -89,7 +89,7 @@
   margin: 26px 0;
   text-wrap: balance;
 }
-.intro.intro--portrait .intro-copy > p:last-child {
+.intro.intro--portrait .intro-copy > p.hero-description {
   font-size: clamp(1rem, 1.2vw, 1.2rem);
   line-height: 1.65;
   max-width: 58ch;
@@ -179,7 +179,7 @@
   letter-spacing: -.055em;
   white-space: nowrap;
 }
-.intro.intro--portrait .intro-copy > p:last-child {
+.intro.intro--portrait .intro-copy > p.hero-description {
   max-width: 36ch;
   font-size: clamp(1.04rem, 1.32vw, 1.26rem);
   line-height: 1.5;
@@ -190,13 +190,13 @@
 @media (max-width: 980px) {
   .intro.intro--portrait .intro-copy .intro-specialties { font-size: clamp(.7rem, 1.5vw, .85rem); }
   .intro.intro--portrait .intro-copy h1 em { font-size: clamp(2.4rem, 5.3vw, 3.8rem); }
-  .intro.intro--portrait .intro-copy > p:last-child { max-width: 46ch; }
+  .intro.intro--portrait .intro-copy > p.hero-description { max-width: 46ch; }
 }
 @media (max-width: 600px) {
   .intro.intro--portrait .intro-copy .intro-specialties { font-size: clamp(.54rem, 2.65vw, .78rem); letter-spacing: 0; }
   .intro.intro--portrait .intro-copy h1 { font-size: clamp(2.15rem, 8.4vw, 3.4rem); }
   .intro.intro--portrait .intro-copy h1 em { font-size: clamp(1.6rem, 6.4vw, 2.8rem); }
-  .intro.intro--portrait .intro-copy > p:last-child {
+  .intro.intro--portrait .intro-copy > p.hero-description {
     font-size: clamp(1rem, 3.6vw, 1.15rem);
     line-height: 1.55;
     max-width: 100%;
@@ -249,7 +249,7 @@
 .intro--portrait .intro-copy > h1 {
   animation:portfolio-content-enter .68s cubic-bezier(.22,1,.36,1) .09s both;
 }
-.intro--portrait .intro-copy > p:last-child {
+.intro--portrait .intro-copy > p.hero-description {
   animation:portfolio-content-enter .68s cubic-bezier(.22,1,.36,1) .20s both;
 }
 .intro--portrait .hero-portrait {
@@ -283,7 +283,7 @@
   html { scroll-behavior:auto; }
   .intro--portrait .intro-copy > .intro-specialties,
   .intro--portrait .intro-copy > h1,
-  .intro--portrait .intro-copy > p:last-child,
+  .intro--portrait .intro-copy > p.hero-description,
   .intro--portrait .hero-portrait {
     animation:none !important;
     opacity:1 !important;
@@ -297,4 +297,53 @@
   }
   .featured-card .featured-image,
   .featured-card>div:last-child>span svg {transition:none !important;transform:none !important;}
+}
+
+
+/* Original Lottie morph: AI spark -> human choice, responsive and motion-safe. */
+.hero-morph {
+  display:flex; align-items:center; gap:10px;
+  margin-top:clamp(22px,3vw,32px); padding:10px 18px 10px 2px;
+  max-width:500px; min-width:0;
+  border:1px solid #dbe7d7; border-radius:20px;
+  background:linear-gradient(100deg,#f1f6ed 0%,#f7f9f3 100%);
+}
+.hero-morph-visual {
+  position:relative; flex:0 0 clamp(128px,14vw,172px);
+  width:clamp(128px,14vw,172px); aspect-ratio:380 / 260; overflow:hidden;
+}
+.hero-morph-fallback, .hero-morph-player {
+  position:absolute; inset:0; width:100%; height:100%;
+}
+.hero-morph-fallback {display:block; transition:opacity .18s ease;}
+.hero-morph-visual.is-ready .hero-morph-fallback {opacity:0;}
+.hero-morph-player svg {display:block; width:100%; height:100%;}
+.hero-morph-content {display:flex; flex-direction:column; align-items:flex-start; gap:4px; min-width:0;}
+.hero-morph-eyebrow {
+  font:800 .62rem/1.4 Manrope,sans-serif;
+  letter-spacing:.105em; color:#426f51;
+}
+.hero-morph-content strong {
+  font:700 clamp(.95rem,1.18vw,1.12rem)/1.28 Manrope,sans-serif;
+  letter-spacing:-.03em; color:#1e4130;
+}
+.hero-morph-content>span:not(.hero-morph-eyebrow) {font-size:.8rem; line-height:1.45;color:#4a6855;}
+.hero-morph-replay {
+  margin-top:4px;padding:3px 0;border:0;border-bottom:1px solid currentColor;
+  background:transparent;color:#2c6343; font-size:.72rem; font-weight:700; line-height:1.3;
+  cursor:pointer;
+}
+.hero-morph-replay:hover {color:#173f2c;}
+.hero-morph-replay:focus-visible {outline:3px solid #356f54;outline-offset:4px;}
+@media(max-width:600px){
+  .hero-morph {max-width:100%;gap:5px;padding-right:9px;margin-top:22px;}
+  .hero-morph-visual {flex-basis:124px;width:124px;}
+  .hero-morph-eyebrow {font-size:.58rem;}
+  .hero-morph-content strong {font-size:.96rem;}
+  .hero-morph-content>span:not(.hero-morph-eyebrow) {font-size:.74rem;}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-morph-fallback {opacity:1 !important;transition:none !important;}
+  .hero-morph-player {display:none !important;}
+  .hero-morph-replay {display:none !important;}
 }
