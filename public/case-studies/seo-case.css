@@ -2,7 +2,7 @@
 :root{color-scheme:light;font-family:Inter,Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;--ink:#20352b;--muted:#53675b;--accent:#446a52;--soft:#e9f0e7;--line:#dbe4dc;--surface:#fffefa}
 body.aura{--ink:#3d3029;--muted:#77665e;--accent:#835f49;--soft:#f5eee9;--line:#e8ddd5}
 body.cleanpeer{--ink:#193e38;--muted:#536d69;--accent:#15736a;--soft:#e5f2ee;--line:#d5e8e2}
-body.haesiivooja{--ink:#183b40;--muted:#566c70;--accent:#117a83;--soft:#e8f5f5;--line:#d3e6e7}
+body.haesiivooja{--ink:#103f49;--muted:#47636a;--accent:#096c7b;--soft:#e7f9fd;--line:#c8e9eb}
 body.accessbloom{--ink:#292344;--muted:#625974;--accent:#6d4ec2;--soft:#f0edfb;--line:#ddd5f2}
 body.laurea{--ink:#19372a;--muted:#526b59;--accent:#56795b;--soft:#edf3eb;--line:#d8e5d6}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--surface);color:var(--ink);font-size:16px;line-height:1.68}
@@ -42,3 +42,30 @@ footer{background:var(--ink);color:#fff;padding:40px 5%}footer .inner{max-width:
 @media(max-width:850px){.hero-grid,.chapter-grid{grid-template-columns:1fr}.grid.three,.media-grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:45px 0}.chapter{padding:56px 0}.demo iframe{height:500px}}
 @media(max-width:560px){.head-in{padding:12px 5%}.head-in nav{gap:12px}.hero{padding:38px 0}.facts,.grid,.grid.three,.media-grid,.media-grid.three{grid-template-columns:1fr}.chapter{padding:44px 0}.hero h1{overflow-wrap:break-word}.demo iframe{height:450px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* HaeSiivooja case study only: current mascot-led product identity. */
+body.haesiivooja .hero{
+ background:radial-gradient(ellipse at 86% 12%,rgba(18,203,231,.19),transparent 50%),linear-gradient(143deg,#f5fdfb 7%,#e7f9fd 68%,#fff9e8);
+}
+body.haesiivooja .overline{color:#096c7b}
+body.haesiivooja .button{border-radius:12px}
+body.haesiivooja .tile{background:#f0fafb;border-top:3px solid #12cbe7}
+body.haesiivooja .tile:nth-child(2){background:#f5fbf6;border-top-color:#65bdb1}
+body.haesiivooja .tile:nth-child(3){background:#fff9ec;border-top-color:#ffce55}
+body.haesiivooja .highlight{border-left-color:#ffce55;background:#f1fafb}
+body.haesiivooja .media-grid figure{border-color:#c8e9eb}
+body.haesiivooja .media-grid figure a{background:#e7f9fd}
+body.haesiivooja .demo{border-color:#c8e9eb}
+body.haesiivooja .demo-copy{background:#eaf9fa}
+body.haesiivooja .hs-brand-section{background:linear-gradient(138deg,#fbfefe,#f3fcf9);padding:56px 24px;border-radius:18px}
+body.haesiivooja .hs-brand-story{display:grid;grid-template-columns:265px minmax(0,1fr);gap:30px;align-items:center;margin:28px 0}
+body.haesiivooja .hs-mascot{margin:0;padding:12px;background:radial-gradient(circle,#dcf8fd,#f7fcfd);border-radius:20px;border:1px solid #c8e9eb;text-align:center}
+body.haesiivooja .hs-mascot img{display:block;width:100%;height:auto;max-height:265px;object-fit:contain}
+body.haesiivooja .hs-mascot figcaption{font-size:12px;color:#47636a;line-height:1.5;padding:9px}
+body.haesiivooja .hs-palette{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:24px 0}
+body.haesiivooja .hs-palette>div{background:white;padding:9px 9px 17px;border:1px solid #c8e9eb;border-radius:12px;min-width:0}
+body.haesiivooja .hs-palette i{display:block;height:65px;border-radius:8px;margin-bottom:12px}
+body.haesiivooja .hs-palette strong,body.haesiivooja .hs-palette small{display:block;padding:0 6px}
+body.haesiivooja .hs-palette strong{font-size:13px}
+body.haesiivooja .hs-palette small{font-size:11px;line-height:1.5;color:#47636a;margin-top:5px}
+@media(max-width:790px){body.haesiivooja .hs-brand-story{grid-template-columns:1fr}body.haesiivooja .hs-mascot{max-width:300px}}
+@media(max-width:540px){body.haesiivooja .hs-palette{grid-template-columns:repeat(2,minmax(0,1fr))}}
