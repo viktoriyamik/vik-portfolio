@@ -116,6 +116,29 @@ function App(){
  const [active,setActive]=useState<ID|null>(null),[menu,setMenu]=useState(false)
  useEffect(()=>{const read=()=>{const id=location.hash.slice(6) as ID;if(cases.some(c=>c.id===id)){location.replace(caseUrl(id));return}setActive(null)};read();addEventListener('hashchange',read);return()=>removeEventListener('hashchange',read)},[])
  useEffect(()=>{if(active)scrollTo({top:0,behavior:'smooth'})},[active])
+ useEffect(()=>{
+  // Progressive enhancement: content stays visible if JS or IntersectionObserver is unavailable.
+  // Motion is disabled entirely when the visitor prefers reduced motion.
+  if (!window.IntersectionObserver || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.featured-card.motion-reveal'));
+  if (!cards.length) return;
+  const observer = new IntersectionObserver(entries=>{
+   for (const entry of entries) {
+    if (entry.isIntersecting) {
+     entry.target.classList.add('is-visible');
+     observer.unobserve(entry.target);
+    }
+   }
+  },{threshold:0.08,rootMargin:'0px 0px -32px 0px'});
+  for (const card of cards) {
+   // Don't hide above-the-fold cards as the animation initializes.
+   if (card.getBoundingClientRect().top < window.innerHeight * 0.8) continue;
+   card.classList.add('motion-pending');
+   observer.observe(card);
+  }
+  return ()=>{observer.disconnect();for (const card of cards) card.classList.remove('motion-pending');};
+ },[]);
+
  const current=cases.find(c=>c.id===active)
  const jump=(id:string)=>{setMenu(false);location.hash=id;setActive(null);setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'}),0)}
  return <div className="site">
@@ -140,7 +163,7 @@ function App(){
      </picture>
     </figure>
    </section> {/* vik-hero-portrait-v1 */}
-   <section className="portfolio-columns" id="work"><div className="featured"><p className="overline">SELECTED WORK / 01—07</p><h2>Selected work</h2><div className="featured-list">{cases.map((c,i)=><a href={caseUrl(c.id)} className="featured-card" key={c.id}>{c.id==='aura'?<img className="featured-image" src="/cases/aura-curated.png" alt="AURA Atelier mobile prototype and curated outfit suggestions" loading="lazy" decoding="async" fetchPriority="low"/>:<Visual id={c.id}/>}<div><small>0{i+1} / {c.category}</small><h3>{c.name}</h3><p>{c.headline}</p><p className="featured-demonstrates"><strong>Demonstrates</strong> {c.demonstrates}</p><span>View case study <ArrowUpRight size={15}/></span></div></a>)}</div></div><div className="portfolio-side"><Assistant/><AccessBloomCheck/></div></section>
+   <section className="portfolio-columns" id="work"><div className="featured"><p className="overline">SELECTED WORK / 01—07</p><h2>Selected work</h2><div className="featured-list">{cases.map((c,i)=><a href={caseUrl(c.id)} className="featured-card motion-reveal" key={c.id}>{c.id==='aura'?<img className="featured-image" src="/cases/aura-curated.png" alt="AURA Atelier mobile prototype and curated outfit suggestions" loading="lazy" decoding="async" fetchPriority="low"/>:<Visual id={c.id}/>}<div><small>0{i+1} / {c.category}</small><h3>{c.name}</h3><p>{c.headline}</p><p className="featured-demonstrates"><strong>Demonstrates</strong> {c.demonstrates}</p><span>View case study <ArrowUpRight size={15}/></span></div></a>)}</div></div><div className="portfolio-side"><Assistant/><AccessBloomCheck/></div></section>
    <WhoIAmSection />
    <section className="contact" id="contact"><p className="overline">CONTACT</p><h2>Let’s design<br/><em>what’s next.</em></h2><div className="contact-links"><a href="mailto:viktoriya.lihvoinen@hotmail.com">Email <span>viktoriya.lihvoinen@hotmail.com ↗</span></a><a href="https://github.com/viktoriyamik" target="_blank" rel="noreferrer">GitHub <span>github.com/viktoriyamik ↗</span></a><a href="https://www.linkedin.com/in/viktoriya-lihvoinen/" target="_blank" rel="noreferrer">LinkedIn <span>View profile ↗</span></a></div></section>
   </main>}

@@ -231,3 +231,70 @@
   .portfolio-columns .featured-card small { font-size:11px; }
   .portfolio-columns .featured-card p { font-size:13px; }
 }
+
+
+/* Editorial portfolio motion: brief, purposeful and progressively enhanced.
+   No third-party player, continuous background animation or layout shift. */
+@keyframes portfolio-content-enter {
+  from { opacity:0; transform:translate3d(0,18px,0); }
+  to   { opacity:1; transform:translate3d(0,0,0); }
+}
+@keyframes portfolio-photo-enter {
+  from { opacity:0; transform:translate3d(0,14px,0) scale(.985); }
+  to   { opacity:1; transform:translate3d(0,0,0) scale(1); }
+}
+.intro--portrait .intro-copy > .intro-specialties {
+  animation:portfolio-content-enter .58s cubic-bezier(.22,1,.36,1) both;
+}
+.intro--portrait .intro-copy > h1 {
+  animation:portfolio-content-enter .68s cubic-bezier(.22,1,.36,1) .09s both;
+}
+.intro--portrait .intro-copy > p:last-child {
+  animation:portfolio-content-enter .68s cubic-bezier(.22,1,.36,1) .20s both;
+}
+.intro--portrait .hero-portrait {
+  animation:portfolio-photo-enter .85s cubic-bezier(.22,1,.36,1) .12s both;
+}
+/* Only JS-observed offscreen cards receive motion-pending; other cards stay visible. */
+.featured-card.motion-reveal.motion-pending {
+  opacity:0;
+  transition:opacity .65s ease,transform .22s ease,box-shadow .22s ease;
+}
+.featured-card.motion-reveal.motion-pending.is-visible { opacity:1; }
+.featured-card .featured-image {
+  transition:transform .55s cubic-bezier(.22,1,.36,1);
+  transform-origin:center;
+}
+.featured-card:hover .featured-image,
+.featured-card:focus-visible .featured-image { transform:scale(1.018); }
+.featured-card>div:last-child>span svg {
+  transition:transform .22s ease;
+}
+.featured-card:hover>div:last-child>span svg,
+.featured-card:focus-visible>div:last-child>span svg {
+  transform:translate3d(3px,-3px,0);
+}
+.featured-card:focus-visible {
+  outline:3px solid #326d4c;
+  outline-offset:4px;
+}
+/* Respect reduced motion preferences, including if they change while a page is open. */
+@media (prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  .intro--portrait .intro-copy > .intro-specialties,
+  .intro--portrait .intro-copy > h1,
+  .intro--portrait .intro-copy > p:last-child,
+  .intro--portrait .hero-portrait {
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+  .featured-card.motion-reveal,
+  .featured-card.motion-reveal.motion-pending,
+  .featured-card.motion-reveal.motion-pending.is-visible {
+    opacity:1 !important;
+    transition:none !important;
+  }
+  .featured-card .featured-image,
+  .featured-card>div:last-child>span svg {transition:none !important;transform:none !important;}
+}
