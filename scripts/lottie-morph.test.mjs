@@ -80,7 +80,9 @@ test("Concept 03 uses the original design-to-product animation in a seamless loo
   assert.equal(next.op, 290);
   assert.equal(next.w, 330);
   assert.equal(next.h, 240);
-  assert.equal(next.layers[0].shapes.length, 22);
+  assert.equal(next.layers[0].shapes.length, 21);
+  assert.ok(!next.layers[0].shapes.some((shape) => shape.nm === "Cursor indicates interaction"),
+    "The decorative green cursor must not appear during playback");
   const shape = next.layers[0].shapes.find(s => s.nm.includes("Single line morphs"));
   assert.ok(shape, "Continuous sketch-to-screen shape exists");
   const outline = shape.it.find(x => x.ty === "sh");
@@ -105,4 +107,15 @@ test("Concept 03 hero stays centered, clips stray vector shapes, and has no play
   assert.doesNotMatch(css, /\.hero-morph-toggle/);
   assert.doesNotMatch(component, /<button|manuallyPaused|togglePlayback/);
   assert.match(component, /loop:\s*true/);
+});
+
+
+test("Lottie generator removes the cursor vector from actual animation frames", () => {
+  const generated = JSON.parse(fs.readFileSync(path.join(root, "public/motion/problem-to-product-loop.json"), "utf8"));
+  const groups = generated.layers.flatMap(layer => layer.shapes ?? []);
+  assert.ok(groups.every(group => group.nm !== "Cursor indicates interaction"));
+  const source = fs.readFileSync(path.join(root, "scripts/generate-concept03-lottie.mjs"), "utf8");
+  assert.match(source, /shapes\.filter\(\(shape\) => shape\.nm !== cursorGroup\)/);
+  const component = fs.readFileSync(path.join(root, "src/AiMorphIllustration.tsx"), "utf8");
+  assert.match(component, /problem-to-product-loop\.json\?v=concept03-2/);
 });

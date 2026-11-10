@@ -53,6 +53,13 @@ function visit(value) {
   for (const nested of Object.values(value)) visit(nested)
 }
 visit(original.layers)
+// Do not render the floating dark-green pointer used in the old interaction
+// demonstration. It was mistaken for a stray green shape beside the hero.
+const cursorGroup = 'Cursor indicates interaction'
+if (original.layers[0].shapes.filter((shape) => shape.nm === cursorGroup).length !== 1) {
+  throw new Error('Expected a single removable cursor shape in Concept 03')
+}
+original.layers[0].shapes = original.layers[0].shapes.filter((shape) => shape.nm !== cursorGroup)
 original.op = loopEnd
 original.layers.forEach(layer => { layer.op = loopEnd })
 original.w = 330

@@ -71,7 +71,7 @@ export default function AiMorphIllustration() {
         renderer: 'svg',
         loop: true,
         autoplay: false,
-        path: '/motion/problem-to-product-loop.json?v=concept03-1',
+        path: '/motion/problem-to-product-loop.json?v=concept03-2',
         rendererSettings: {
           preserveAspectRatio: 'xMidYMid meet',
           progressiveLoad: false,
