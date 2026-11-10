@@ -64,7 +64,7 @@ test("hero illustration has no card chrome and reveals only after a drawn frame"
   const css = fs.readFileSync(path.join(root, "src/App.css"), "utf8");
   assert.doesNotMatch(component, /hero-morph-content|Replay motion|DESIGN IN MOTION/);
   assert.match(component, /enterFrame/);
-  assert.match(component, /drawablePath/);
+  assert.match(component, /hasPath/);
   assert.match(component, /goToAndPlay\(0, true\)/);
   assert.doesNotMatch(css, /\.hero-morph-replay\s*\{/);
   assert.match(css, /\.hero-morph\s*\{[^}]*background:transparent/s);
