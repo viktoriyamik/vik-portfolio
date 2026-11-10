@@ -7,3 +7,6 @@ dist/
 
 .env*
 !.env.example
+
+# Generated from the original Concept 03 Lottie source at build time
+public/motion/problem-to-product-loop.json

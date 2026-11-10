@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
 type LottieAnimation = {
+  play: () => void
+  pause: () => void
   goToAndPlay: (frame: number, isFrame: boolean) => void
   destroy: () => void
   addEventListener: (name: string, listener: () => void) => void
@@ -42,12 +44,16 @@ function loadPlayer(): Promise<LottiePlayer> {
 }
 
 /**
- * A transparent, decorative Lottie drawing integrated into the hero.
- * Its inline SVG is always available if the player, animation or motion is unavailable.
+ * Concept 03 — the original hand-drawn problem morphs into a wireframe,
+ * then a functioning UI. The animation plays forward and backward in a
+ * seamless vector loop; all other homepage content is unchanged.
  */
 export default function AiMorphIllustration() {
   const mountRef = useRef<HTMLDivElement>(null)
+  const animationRef = useRef<LottieAnimation | null>(null)
+  const manuallyPaused = useRef(false)
   const [hasRenderedFrame, setHasRenderedFrame] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
     const mount = mountRef.current
@@ -55,7 +61,9 @@ export default function AiMorphIllustration() {
 
     let cancelled = false
     let rendered = false
+    let isVisible = true
     let animation: LottieAnimation | undefined
+    let observer: IntersectionObserver | undefined
 
     void loadPlayer().then((lottie) => {
       if (cancelled || !mount.isConnected) return
@@ -63,58 +71,92 @@ export default function AiMorphIllustration() {
       animation = lottie.loadAnimation({
         container: mount,
         renderer: 'svg',
-        loop: false,
+        loop: true,
         autoplay: false,
-        // Version bump ensures a stale cached animation is not served after deployment.
-        path: '/motion/ai-spark-to-decision.json?v=transparent-2',
+        path: '/motion/problem-to-product-loop.json?v=concept03-1',
         rendererSettings: {
           preserveAspectRatio: 'xMidYMid meet',
           progressiveLoad: false,
         },
       })
+      animationRef.current = animation
 
       animation.addEventListener('enterFrame', () => {
         if (cancelled || rendered) return
-        // Don't hide the fallback until the SVG renderer actually produced a drawn path.
-        const drawablePath = Array.from(mount.querySelectorAll('svg path')).some((node) =>
+        const hasPath = Array.from(mount.querySelectorAll('svg path')).some((node) =>
           (node.getAttribute('d')?.length ?? 0) > 30
         )
-        if (drawablePath) {
+        if (hasPath) {
           rendered = true
           setHasRenderedFrame(true)
         }
       })
+
       animation.addEventListener('DOMLoaded', () => {
-        if (cancelled) return
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-        // The illustration is in the first viewport; play immediately instead of relying
-        // on an intersection observer that might miss the event.
+        if (cancelled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
         animation?.goToAndPlay(0, true)
+        if (typeof IntersectionObserver !== 'undefined') {
+          observer = new IntersectionObserver((entries) => {
+            isVisible = entries.some((entry) => entry.isIntersecting)
+            if (isVisible && !manuallyPaused.current && !document.hidden) animation?.play()
+            else animation?.pause()
+          }, { threshold: 0.05 })
+          observer.observe(mount)
+        }
       })
       animation.addEventListener('data_failed', () => {
         if (!cancelled) setHasRenderedFrame(false)
       })
     }).catch(() => {
-      // Keep the inline SVG; the site must not show an empty animation slot.
+      // An inline finished-interface SVG remains visible if playback fails.
     })
+
+    const onVisibilityChange = () => {
+      if (document.hidden) animationRef.current?.pause()
+      else if (isVisible && !manuallyPaused.current) animationRef.current?.play()
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     return () => {
       cancelled = true
+      observer?.disconnect()
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      animationRef.current = null
       animation?.destroy()
     }
   }, [])
 
-  return <figure className="hero-morph" role="img" aria-label="An AI idea transforms into a speech bubble with a checkmark, representing human judgment">
+  const togglePlayback = () => {
+    if (!animationRef.current) return
+    const nextPaused = !manuallyPaused.current
+    manuallyPaused.current = nextPaused
+    setIsPaused(nextPaused)
+    if (nextPaused) animationRef.current.pause()
+    else animationRef.current.play()
+  }
+
+  return <figure className="hero-morph" aria-label="Original vector animation: research sketch turns into a UX wireframe, then a completed interactive digital product">
     <div className={'hero-morph-stage' + (hasRenderedFrame ? ' has-rendered-frame' : '')}>
-      <svg className="hero-morph-fallback" viewBox="0 0 300 200" aria-hidden="true" focusable="false">
-        <g transform="translate(-40 -25)">
-          <path d="M172 64 L203 64 L232 70 Q256 81 256 110 L255 136 Q253 152 242 152 L251 178 L221 162 L168 165 Q126 165 126 120 Q126 75 172 64Z" fill="#dcebd9" stroke="#2c5744" strokeWidth="4.5" strokeLinejoin="round" />
-          <path d="M165 119 L180 135 L212 100" fill="none" stroke="#2c5744" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M156 149 L199 149" stroke="#65916a" strokeWidth="4" strokeLinecap="round" />
-          <circle cx="239" cy="84" r="5.5" fill="#b5cc98" />
+      <svg className="hero-morph-fallback" viewBox="0 0 330 240" role="img" aria-label="Completed digital product interface" focusable="false">
+        <g transform="translate(-155 -40)">
+          <path d="M200 70 L218 61 L250 61 L355 61 L400 61 L418 69 L427 82 L427 124 L427 211 L421 229 L406 238 L355 238 L250 238 L204 238 L187 225 L187 94Z" fill="#f9fbf8" stroke="#214d39" strokeWidth="3.2" strokeLinejoin="round" />
+          <rect x="205" y="82" width="205" height="18" rx="5" fill="#244f3a" />
+          <circle cx="216" cy="91" r="2.4" fill="#cfdfca" />
+          <circle cx="227" cy="91" r="2.4" fill="#a4c3a1" />
+          <rect x="208" y="115" width="97" height="104" rx="9" fill="#d9e9d7" />
+          <path d="M217 201 Q236 182 252 190 Q271 154 292 177" fill="none" stroke="#86aa86" strokeWidth="8" strokeLinecap="round" />
+          <path d="M317 133 H399" stroke="#294f3b" strokeWidth="7" strokeLinecap="round" />
+          <path d="M317 153 H395 M317 165 H370" stroke="#8baba0" strokeWidth="4" strokeLinecap="round" />
+          <rect x="315" y="181" width="97" height="32" rx="7" fill="#2b5b40" />
+          <path d="M348 198 L354 204 L365 192" stroke="white" strokeWidth="4" strokeLinecap="round" fill="none" />
         </g>
       </svg>
-      <div className="hero-morph-player" ref={mountRef} aria-hidden="true" />
+      <div className="hero-morph-player" ref={mountRef} aria-hidden="true"/>
+      {hasRenderedFrame && <button className="hero-morph-toggle" type="button" onClick={togglePlayback}
+        aria-label={isPaused ? 'Play product design animation' : 'Pause product design animation'}
+        aria-pressed={isPaused}>
+        {isPaused ? '▶' : 'Ⅱ'}
+      </button>}
     </div>
   </figure>
 }

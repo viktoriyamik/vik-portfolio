@@ -315,7 +315,7 @@
 .hero-morph-stage {
   position:relative;
   width:100%;
-  aspect-ratio:300 / 200;
+  aspect-ratio:330 / 240;
   overflow:visible;
 }
 .hero-morph-fallback,
@@ -339,3 +339,15 @@
   .hero-morph-player { display:none !important; }
 }
 
+
+/* A small, accessible play/pause control is part of the looping illustration. */
+.hero-morph-toggle {
+  position:absolute;right:5px;bottom:5px;z-index:2;
+  width:28px;height:28px;display:grid;place-items:center;
+  padding:0;border:1px solid #bfd1bd;border-radius:50%;
+  background:#f8f8f3e6;color:#244f3a;cursor:pointer;
+  font:700 13px/1 system-ui,sans-serif;
+}
+.hero-morph-toggle:hover {background:#e6f0e4;}
+.hero-morph-toggle:focus-visible {outline:3px solid #326d4c;outline-offset:3px;}
+@media(prefers-reduced-motion:reduce){.hero-morph-toggle{display:none !important;}}

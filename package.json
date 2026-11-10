@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test:assistant": "node --test server/*.test.mjs",
     "test:motion": "node --test scripts/lottie-morph.test.mjs",
-    "test:branding": "node scripts/check_public_branding.mjs"
+    "test:branding": "node scripts/check_public_branding.mjs",
+    "prebuild": "node scripts/generate-concept03-lottie.mjs",
+    "predev": "node scripts/generate-concept03-lottie.mjs",
+    "pretest:motion": "node scripts/generate-concept03-lottie.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",
