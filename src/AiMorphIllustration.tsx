@@ -51,9 +51,7 @@ function loadPlayer(): Promise<LottiePlayer> {
 export default function AiMorphIllustration() {
   const mountRef = useRef<HTMLDivElement>(null)
   const animationRef = useRef<LottieAnimation | null>(null)
-  const manuallyPaused = useRef(false)
   const [hasRenderedFrame, setHasRenderedFrame] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
     const mount = mountRef.current
@@ -98,7 +96,7 @@ export default function AiMorphIllustration() {
         if (typeof IntersectionObserver !== 'undefined') {
           observer = new IntersectionObserver((entries) => {
             isVisible = entries.some((entry) => entry.isIntersecting)
-            if (isVisible && !manuallyPaused.current && !document.hidden) animation?.play()
+            if (isVisible && !document.hidden) animation?.play()
             else animation?.pause()
           }, { threshold: 0.05 })
           observer.observe(mount)
@@ -113,7 +111,7 @@ export default function AiMorphIllustration() {
 
     const onVisibilityChange = () => {
       if (document.hidden) animationRef.current?.pause()
-      else if (isVisible && !manuallyPaused.current) animationRef.current?.play()
+      else if (isVisible) animationRef.current?.play()
     }
     document.addEventListener('visibilitychange', onVisibilityChange)
 
@@ -125,15 +123,6 @@ export default function AiMorphIllustration() {
       animation?.destroy()
     }
   }, [])
-
-  const togglePlayback = () => {
-    if (!animationRef.current) return
-    const nextPaused = !manuallyPaused.current
-    manuallyPaused.current = nextPaused
-    setIsPaused(nextPaused)
-    if (nextPaused) animationRef.current.pause()
-    else animationRef.current.play()
-  }
 
   return <figure className="hero-morph" aria-label="Original vector animation: research sketch turns into a UX wireframe, then a completed interactive digital product">
     <div className={'hero-morph-stage' + (hasRenderedFrame ? ' has-rendered-frame' : '')}>
@@ -152,11 +141,6 @@ export default function AiMorphIllustration() {
         </g>
       </svg>
       <div className="hero-morph-player" ref={mountRef} aria-hidden="true"/>
-      {hasRenderedFrame && <button className="hero-morph-toggle" type="button" onClick={togglePlayback}
-        aria-label={isPaused ? 'Play product design animation' : 'Pause product design animation'}
-        aria-pressed={isPaused}>
-        {isPaused ? '▶' : 'Ⅱ'}
-      </button>}
     </div>
   </figure>
 }

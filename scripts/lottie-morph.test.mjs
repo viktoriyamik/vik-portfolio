@@ -90,6 +90,19 @@ test("Concept 03 uses the original design-to-product animation in a seamless loo
   const component = fs.readFileSync(path.join(root, "src/AiMorphIllustration.tsx"), "utf8");
   assert.match(component, /problem-to-product-loop\.json/);
   assert.match(component, /loop:\s*true/);
-  assert.match(component, /Pause product design animation/);
+  assert.doesNotMatch(component, /hero-morph-toggle|togglePlayback|manuallyPaused|Pause product design animation/);
+  assert.match(component, /loop:\s*true/);
   assert.match(component, /prefers-reduced-motion/);
+});
+
+
+test("Concept 03 hero stays centered, clips stray vector shapes, and has no playback button", () => {
+  const css = fs.readFileSync(path.join(root, "src/App.css"), "utf8");
+  const component = fs.readFileSync(path.join(root, "src/AiMorphIllustration.tsx"), "utf8");
+  assert.match(css, /\.hero-morph\s*\{[^}]*margin:10px auto 0;/s);
+  assert.match(css, /\.hero-morph-stage\s*\{[^}]*overflow:hidden;/s);
+  assert.match(css, /@media\(max-width:600px\)[\s\S]*?\.hero-morph\s*\{[^}]*margin:0 auto;/);
+  assert.doesNotMatch(css, /\.hero-morph-toggle/);
+  assert.doesNotMatch(component, /<button|manuallyPaused|togglePlayback/);
+  assert.match(component, /loop:\s*true/);
 });
