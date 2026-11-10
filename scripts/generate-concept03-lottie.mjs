@@ -26,7 +26,7 @@ function mirrorKeyframes(property) {
   const frames = [
     ...forward,
     { time: reverseStart, value: clone(last) },
-    ...forward.toReversed().map(frame => ({
+    ...forward.slice().reverse().map(frame => ({
       time: Math.round((reverseStart + (forwardEnd - frame.time) * reverseScale) * 100) / 100,
       value: clone(frame.value),
     })),
